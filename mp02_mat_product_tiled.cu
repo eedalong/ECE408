@@ -27,6 +27,16 @@ __global__ void tiled_mat_product(float* M, float* N, float* P, int Width){
     P[Row * Width + Col] = PValue;
 }
 
+__global__ void mat_naive(float* M, float* N, float* P, int Width){
+    int Row = blockIdx.y * blockDim.y + threadIdx.y;
+    int Col = blockIdx.x * blockDim.x + threadIdx.x;
+    float PValue = 0;
+    for(int index = 0; index < Width; index ++){
+        PValue += M[Row * Width + index] * N[index * Width + Col];
+    }
+    P[Row * Width + Col] = PValue;
+}
+
 
 int main(){
     srand(time(NULL));
@@ -61,7 +71,22 @@ int main(){
     tiled_mat_product<<<grid_dim, block_dim>>>(M_device, N_device, P_device, Width);
     
     // copy result from device to host
+    cudaMemcpy(P_host, P_device, Width * Width * sizeof(float), cudaMemcpyDeviceToHost);
 
+    for(int i = 0; i < Width; i++){
+        for(int j = 0; j < Width; j++){
+            float tmp_value = 0;
+            for(int k = 0; k < Width; k++){
+                tmp_value += M_host[i * Width + k] * N_host[k * Width + j];
+            }
+            //printf("%f \t %f\n", tmp_value, P_host[i * Width + j]);
+            assert(tmp_value == P_host[i * Width + j]);
+        }
+    }
+
+    mat_naive<<<grid_dim, block_dim>>>(M_device, N_device, P_device, Width);
+    
+    // copy result from device to host
     cudaMemcpy(P_host, P_device, Width * Width * sizeof(float), cudaMemcpyDeviceToHost);
 
     for(int i = 0; i < Width; i++){
