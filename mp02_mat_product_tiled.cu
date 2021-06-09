@@ -17,7 +17,7 @@ __global__ void tiled_mat_product(float* M, float* N, float* P, int Width){
 
     for(int m = 0; m < Width / TILE_WIDTH; m++){
         subTileM[ty][tx] = M[Row * Width + m * TILE_WIDTH + tx];
-        subTileN[ty][tx] = M[(m * TILE_WIDTH + ty) * Width + Col];
+        subTileN[ty][tx] = N[(m * TILE_WIDTH + ty) * Width + Col];
         __syncthreads();
         for(int k = 0; k < TILE_WIDTH; k++){
             PValue += subTileM[ty][k] * subTileN[k][tx];
@@ -32,7 +32,7 @@ int main(){
     srand(time(NULL));
     int Width = 1 * TILE_WIDTH;
     dim3 block_dim(TILE_WIDTH, TILE_WIDTH, 1);
-    dim3 grid_dim(Width / TILE_WIDTH, Width/TILE_WIDTH, 1);
+    dim3 grid_dim(Width/TILE_WIDTH, Width/TILE_WIDTH, 1);
     // allocate host memory
     float* M_host = (float*) malloc(Width * Width * sizeof(float));
     float* N_host = (float*) malloc(Width * Width * sizeof(float));
