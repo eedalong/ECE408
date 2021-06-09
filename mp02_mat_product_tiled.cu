@@ -30,7 +30,7 @@ __global__ void tiled_mat_product(float* M, float* N, float* P, int Width){
 
 int main(){
     srand(time(NULL));
-    int Width = 256 * TILE_WIDTH;
+    int Width = 1 * TILE_WIDTH;
     dim3 block_dim(TILE_WIDTH, 1, 1);
     dim3 grid_dim(Width / TILE_WIDTH, 1, 1);
     // allocate host memory
@@ -70,6 +70,7 @@ int main(){
             for(int k = 0; k < Width; k++){
                 tmp_value += M_host[i * Width + k] * N_host[k * Width + j];
             }
+            printf("%f \t %f" tmp_value, P_host[i * Width + j]);
             assert(tmp_value == P_host[i * Width + j]);
         }
     }
