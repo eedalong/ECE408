@@ -15,7 +15,7 @@ Code For Course ECE408
     nvcc mp02.cu -o mp02
     ./mp02
 we can see from profile that tiled_multiplication is faster than naive implementation
-![nsys_profile](imgs/profile1.png)
+![nsys_profile](imgs/mp02.png)
 
 
 
