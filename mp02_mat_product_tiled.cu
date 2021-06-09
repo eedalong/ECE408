@@ -4,7 +4,7 @@
 #include<time.h>
 
 #define TILE_WIDTH 8
-__global__ tiled_mat_product(float* M, float* N, float* P, int Width){
+__global__ void tiled_mat_product(float* M, float* N, float* P, int Width){
     __shared__ float subTileM[TILE_WIDTH][TILE_WIDTH];
     __shared__ float subTileN[TILE_WIDTH][TILE_WIDTH];
 
