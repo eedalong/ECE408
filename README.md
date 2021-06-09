@@ -11,10 +11,10 @@ Code For Course ECE408
 *Notes:*
 `mp01.cu` is for vector_add
 
-## mp02_mat_product_tiled.cu
-    nvcc mp02_mat_product_tiled -o tiled_mult
-    ./tiled_mult
-
+## mp02.cu
+    nvcc mp02.cu -o mp02
+    ./mp02
+we can see from profile that tiled_multiplication is faster than naive implementation
 ![nsys_profile](imgs/profile1.png)
 
 

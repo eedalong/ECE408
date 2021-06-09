@@ -1,73 +1,105 @@
 #include<stdio.h>
 #include<time.h>
 #include<stdlib.h>
-
-#define BLOCK_WIDTH 4
-
-int ceil(int a, int b){
-    return (a + b - 1) / b;
-}
+#include<time.h>
+#include "assert.h"
 #define TILE_WIDTH 8
+__global__ void tiled_mat_product(float* M, float* N, float* P, int Width){
+    __shared__ float subTileM[TILE_WIDTH][TILE_WIDTH];
+    __shared__ float subTileN[TILE_WIDTH][TILE_WIDTH];
 
-__global__ matrix_multiply_v1(float* A, float* B, float*C, const int M, const int N, const int K){
-    int row = blockIdx.y * blockDim.y + threadIdx.y;
-    int col = blockIdx.x * blockDim.x + threadIdx.x;
-    float p_value = 0.0;
-    int index = 0;
-    // A[row,:] * B[:, col]
-    if(row < M && col < K){
-        for(index = 0; index< N; index++){
-            p_value += A[row * M + index] * B[index * N + col];
+    int bx = blockIdx.x; int by = blockIdx.y;
+    int tx = threadIdx.x; int ty = threadIdx.y;
+
+    int Row = by * TILE_WIDTH + ty;
+    int Col = bx * TILE_WIDTH + tx;
+    float PValue = 0;
+
+    for(int m = 0; m < Width / TILE_WIDTH; m++){
+        subTileM[ty][tx] = M[Row * Width + m * TILE_WIDTH + tx];
+        subTileN[ty][tx] = N[(m * TILE_WIDTH + ty) * Width + Col];
+        __syncthreads();
+        for(int k = 0; k < TILE_WIDTH; k++){
+            PValue += subTileM[ty][k] * subTileN[k][tx];
         }
-        C[row * M + col] = p_value;
+        __syncthreads();
     }
+    P[Row * Width + Col] = PValue;
 }
+
+__global__ void mat_naive(float* M, float* N, float* P, int Width){
+    int Row = blockIdx.y * blockDim.y + threadIdx.y;
+    int Col = blockIdx.x * blockDim.x + threadIdx.x;
+    float PValue = 0;
+    for(int index = 0; index < Width; index ++){
+        PValue += M[Row * Width + index] * N[index * Width + Col];
+    }
+    P[Row * Width + Col] = PValue;
+}
+
 
 int main(){
     srand(time(NULL));
-    float* A,B,C;
-    float* cudaA, cudaB, cudaC;
-    int index = 0;
-    int M = 64 * TILE_WIDTH;
-    int N = 64 * TILE_WIDTH;
-    int K = 64 * TILE_WIDTH;
-    // allocate cpu memory 
-    A = (float*) malloc(M * N * sizeof(float));
-    B = (float*) malloc(N * K * sizeof(float));
-    C = (float*) malloc(M * K * sizeof(float));
+    int Width = 64 * TILE_WIDTH;
+    dim3 block_dim(TILE_WIDTH, TILE_WIDTH, 1);
+    dim3 grid_dim(Width/TILE_WIDTH, Width/TILE_WIDTH, 1);
+    // allocate host memory
+    float* M_host = (float*) malloc(Width * Width * sizeof(float));
+    float* N_host = (float*) malloc(Width * Width * sizeof(float));
+    float* P_host = (float*) malloc(Width * Width * sizeof(float));
 
-    // init cpu array
-    for(index=0; index < M*N; index++){
-        A[index] = rand();
+    // init array
+    for(int index = 0; index < Width * Width; index++){
+        M_host[index] = rand() % 17;
+        N_host[index] = rand() % 17;
     }
-    for(index=0; index < N*K; index++){
-        B[index] = rand();
-    }
-
-
-    // allocate gpu memory
-    cudaMalloc((void **) &cudaA, M * N * sizeof(float));
-    cudaMalloc((void **) &cudaB, N * K * sizeof(float));
-    cudaMalloc((void **) &cudaC, M * K * sizeof(float));
+    
+    // device memory pointer
+    float* M_device;
+    float* N_device;
+    float* P_device;
+    // device memory
+    cudaMalloc((void**)&M_device, Width * Width * sizeof(float));
+    cudaMalloc((void**)&N_device, Width * Width * sizeof(float));
+    cudaMalloc((void**)&P_device, Width * Width * sizeof(float));
 
     // copy data from host to device
-    cudaMemcpy(cudaA, A, M * N * sizeof(float), cudaMemcpyHostToDevice);
-    cudaMemcpy(cudaB, B, N * K * sizeof(float), cudaMemcpyHostToDevice);
 
-    // calculate result
-    dim3 DimGrid(ceil(M, BLOCK_WIDTH), ceil(N, BLOCK_WIDTH));
-    dim3 DimBlock(BLOCK_WIDTH, BLOCK_WIDTH);
-    matrix_multiply_v1<<<DimGrid, DimBlock>>>(cudaA, cudaB, cudaC, M, N, K);
+    cudaMemcpy(M_device, M_host, Width * Width * sizeof(float), cudaMemcpyHostToDevice);
+    cudaMemcpy(N_device, N_host, Width * Width * sizeof(float), cudaMemcpyHostToDevice);
+    // init value
+    tiled_mat_product<<<grid_dim, block_dim>>>(M_device, N_device, P_device, Width);
+    
+    // copy result from device to host
+    cudaMemcpy(P_host, P_device, Width * Width * sizeof(float), cudaMemcpyDeviceToHost);
 
-    // move memory to host
-    cudaMemcpy(C, cudaC, M * K * sizeof(float), cudaMemcpyDeviceToHost);
+    for(int i = 0; i < Width; i++){
+        for(int j = 0; j < Width; j++){
+            float tmp_value = 0;
+            for(int k = 0; k < Width; k++){
+                tmp_value += M_host[i * Width + k] * N_host[k * Width + j];
+            }
+            //printf("%f \t %f\n", tmp_value, P_host[i * Width + j]);
+            assert(tmp_value == P_host[i * Width + j]);
+        }
+    }
 
-    // check result 
+    mat_naive<<<grid_dim, block_dim>>>(M_device, N_device, P_device, Width);
+    
+    // copy result from device to host
+    cudaMemcpy(P_host, P_device, Width * Width * sizeof(float), cudaMemcpyDeviceToHost);
 
+    for(int i = 0; i < Width; i++){
+        for(int j = 0; j < Width; j++){
+            float tmp_value = 0;
+            for(int k = 0; k < Width; k++){
+                tmp_value += M_host[i * Width + k] * N_host[k * Width + j];
+            }
+            //printf("%f \t %f\n", tmp_value, P_host[i * Width + j]);
+            assert(tmp_value == P_host[i * Width + j]);
+        }
+    }
 
-
-
-
-
+    printf("Pass The Test\n");
 
 }
