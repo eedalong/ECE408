@@ -55,14 +55,14 @@ int main(){
 
     // copy data from host to device
 
-    cudaMemcpy(M_device, M_host, Width * Width * sizeof(float));
-    cudaMemcpy(N_device, N_host, Width * Width * sizeof(float));
+    cudaMemcpy(M_device, M_host, Width * Width * sizeof(float), cudaMemcpyHostToDevice);
+    cudaMemcpy(N_device, N_host, Width * Width * sizeof(float), cudaMemcpyHostToDevice);
     // init value
     tiled_mat_product<<<grid_dim, block_dim>>>(M_device, N_device, P_device, Width);
     
     // copy result from device to host
 
-    cudaMemcpy(P_host, P_device, Width * Width * sizeof(float));
+    cudaMemcpy(P_host, P_device, Width * Width * sizeof(float), cudaMemcpyDeviceToHost);
 
 
 }
