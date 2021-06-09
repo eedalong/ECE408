@@ -31,8 +31,8 @@ __global__ void tiled_mat_product(float* M, float* N, float* P, int Width){
 int main(){
     srand(time(NULL));
     int Width = 1 * TILE_WIDTH;
-    dim3 block_dim(TILE_WIDTH, 1, 1);
-    dim3 grid_dim(Width / TILE_WIDTH, 1, 1);
+    dim3 block_dim(TILE_WIDTH, TILE_WIDTH, 1);
+    dim3 grid_dim(Width / TILE_WIDTH, Width/TILE_WIDTH, 1);
     // allocate host memory
     float* M_host = (float*) malloc(Width * Width * sizeof(float));
     float* N_host = (float*) malloc(Width * Width * sizeof(float));
