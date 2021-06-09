@@ -2,7 +2,7 @@
 #include<time.h>
 #include<stdlib.h>
 #include<time.h>
-
+#include "assert.h"
 #define TILE_WIDTH 8
 __global__ void tiled_mat_product(float* M, float* N, float* P, int Width){
     __shared__ float subTileM[TILE_WIDTH][TILE_WIDTH];
@@ -64,5 +64,16 @@ int main(){
 
     cudaMemcpy(P_host, P_device, Width * Width * sizeof(float), cudaMemcpyDeviceToHost);
 
+    for(int i = 0; i < Width; i++){
+        for(int j = 0; j < Width; j++){
+            float tmp_value = 0;
+            for(int k = 0; k < Width; k++){
+                tmp_value += M_host[i][k] * N_host[k][j];
+            }
+            assert(tmp_value == P_host[i * Width + j]);
+        }
+    }
+
+    printf("Pass The Test");
 
 }
