@@ -7,6 +7,7 @@
 int ceil(int a, int b){
     return (a + b - 1) / b;
 }
+#define TILE_WIDTH 8
 
 __global__ matrix_multiply_v1(float* A, float* B, float*C, const int M, const int N, const int K){
     int row = blockIdx.y * blockDim.y + threadIdx.y;
@@ -27,9 +28,9 @@ int main(){
     float* A,B,C;
     float* cudaA, cudaB, cudaC;
     int index = 0;
-    int M = rand()  + 1024;
-    int N = rand()  + 1024;
-    int K = rand() + 1024;
+    int M = 64 * TILE_WIDTH;
+    int N = 64 * TILE_WIDTH;
+    int K = 64 * TILE_WIDTH;
     // allocate cpu memory 
     A = (float*) malloc(M * N * sizeof(float));
     B = (float*) malloc(N * K * sizeof(float));
