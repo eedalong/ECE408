@@ -68,7 +68,7 @@ int main(){
         for(int j = 0; j < Width; j++){
             float tmp_value = 0;
             for(int k = 0; k < Width; k++){
-                tmp_value += M_host[i][k] * N_host[k][j];
+                tmp_value += M_host[i * Width + k] * N_host[k * Width + j];
             }
             assert(tmp_value == P_host[i * Width + j]);
         }
