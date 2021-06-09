@@ -70,7 +70,7 @@ int main(){
             for(int k = 0; k < Width; k++){
                 tmp_value += M_host[i * Width + k] * N_host[k * Width + j];
             }
-            printf("%f \t %f" tmp_value, P_host[i * Width + j]);
+            printf("%f \t %f", tmp_value, P_host[i * Width + j]);
             assert(tmp_value == P_host[i * Width + j]);
         }
     }
