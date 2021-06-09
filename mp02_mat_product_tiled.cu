@@ -32,7 +32,7 @@ int main(){
     srand(time(NULL));
     int Width = 256 * TILE_WIDTH;
     dim3 block_dim(TILE_WIDTH, 1, 1)
-    dim3 grid_dim(Width / TILE_WIDTH, 1, 1)
+    dim3 grid_dim(Width / TILE_WIDTH, 1, 1);
     // allocate host memory
     float* M_host = (float*) malloc(Width * Width * sizeof(float));
     float* N_host = (float*) malloc(Width * Width * sizeof(float));
