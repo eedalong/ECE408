@@ -1,7 +1,7 @@
 #include<stdio.h>
 #include<time.h>
 #include<stdlib.h>
-#include<time>
+#include<time.h>
 
 #define TILE_WIDTH 8
 __global__ tiled_mat_product(float* M, float* N, float* P, int Width){
