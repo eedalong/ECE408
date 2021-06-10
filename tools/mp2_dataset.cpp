@@ -23,7 +23,8 @@ void mat_multiply(float* A, float* B, float* C, int rowa, int cola, int rowb, in
     }
 }
 int main(int argc, const char** argv) {
-    if(argc != 1){
+    if(argc != 11){
+        printf("input arg count is %d\n", argc);
         printf("tool should be used as MP2_Dataset -d [directory/to/your/path/] -ra [row count of matrix a] -ca [column count of matrix a] -rb [row count of matrix b] -cb [column count of matrix b]\n");
         return -1;
     }
