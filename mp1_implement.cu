@@ -44,26 +44,26 @@ int main(int argc, char ** argv) {
 
     wbTime_start(GPU, "Copying input memory to the GPU.");
     //@@ Copy memory to the GPU here
-    cudaMemcpy(deviceInput1, hostInput1, sizeof(float) * length, cudaMemcpyHostToDevice);
-    cudaMemcpy(deviceInput2, hostInput2, sizeof(float) * length, cudaMemcpyHostToDevice);
+    cudaMemcpy(deviceInput1, hostInput1, sizeof(float) * inputLength, cudaMemcpyHostToDevice);
+    cudaMemcpy(deviceInput2, hostInput2, sizeof(float) * inputLength, cudaMemcpyHostToDevice);
 
 
     wbTime_stop(GPU, "Copying input memory to the GPU.");
     
     //@@ Initialize the grid and block dimensions here
-    dim3 DimGrid(ceil(length / BLOCK_SIZE), 1, 1);
+    dim3 DimGrid(ceil(inputLength / BLOCK_SIZE), 1, 1);
     dim3 DimBlock(BLOCK_SIZE, 1, 1);
     
     wbTime_start(Compute, "Performing CUDA computation");
     //@@ Launch the GPU Kernel here
-    vecAdd<<<DimGrid, DimBlock>>>(deviceInput1, deviceInput2, deviceOutput);
+    vecAdd<<<DimGrid, DimBlock>>>(deviceInput1, deviceInput2, deviceOutput, inputLength);
 
     cudaThreadSynchronize();
     wbTime_stop(Compute, "Performing CUDA computation");
     
     wbTime_start(Copy, "Copying output memory to the CPU");
     //@@ Copy the GPU memory back to the CPU here
-    cudaMemcpy(hostOutput, deviceOutput, sizeof(float) * length, cudaMemcpyDeviceToHost);
+    cudaMemcpy(hostOutput, deviceOutput, sizeof(float) * inputLength, cudaMemcpyDeviceToHost);
 
     wbTime_stop(Copy, "Copying output memory to the CPU");
 
