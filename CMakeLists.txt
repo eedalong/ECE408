@@ -43,10 +43,16 @@ include_directories(${CMAKE_SOURCE_DIR})
 include_directories(${CUDA_INCLUDE_DIRS})
 include_directories("lib/")
 
-CUDA_ADD_EXECUTABLE(MP0 mp0.cu ${wbhdr} ${wbsrc})
-CUDA_ADD_EXECUTABLE(MP1 mp1.cu ${wbhdr} ${wbsrc})
-CUDA_ADD_EXECUTABLE(MP2 mp2.cu ${wbhdr} ${wbsrc})
-CUDA_ADD_EXECUTABLE(MP3 mp3.cu ${wbhdr} ${wbsrc})
-CUDA_ADD_EXECUTABLE(MP4 mp4.cu ${wbhdr} ${wbsrc})
-CUDA_ADD_EXECUTABLE(MP5 mp5.cu ${wbhdr} ${wbsrc})
-CUDA_ADD_EXECUTABLE(MP6 mp6.cu ${wbhdr} ${wbsrc})
+# Add Template code 
+CUDA_ADD_EXECUTABLE(MP0_Template mp0_template.cu ${wbhdr} ${wbsrc})
+CUDA_ADD_EXECUTABLE(MP1_Implement mp1_implement.cu ${wbhdr} ${wbsrc})
+CUDA_ADD_EXECUTABLE(MP2_Templat mp2_template.cu ${wbhdr} ${wbsrc})
+CUDA_ADD_EXECUTABLE(MP3_Templat mp3_template.cu ${wbhdr} ${wbsrc})
+CUDA_ADD_EXECUTABLE(MP4_Templat mp4_template.cu ${wbhdr} ${wbsrc})
+CUDA_ADD_EXECUTABLE(MP5_Templat mp5_template.cu ${wbhdr} ${wbsrc})
+CUDA_ADD_EXECUTABLE(MP6_Templat mp6_template.cu ${wbhdr} ${wbsrc})
+
+
+# Add Implementation Code
+CUDA_ADD_EXECUTABLE(MP1_Implement mp1_implement.cu ${wbhdr} ${wbsrc})
+CUDA_ADD_EXECUTABLE(MP2_Implement mp2_implement.cu ${wbhdr} ${wbsrc})
