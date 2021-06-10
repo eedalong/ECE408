@@ -104,6 +104,12 @@ int main(int argc, char ** argv) {
 
     wbTime_stop(GPU, "Freeing GPU Memory");
 
+    float res = 0;
+    for(int index = 0; index < numAColumns; index ++){
+        res += hostA[index] * hostB[index * numBColumns];
+    }
+    printf("res is \t %f\n", res);
+
     wbSolution(args, hostC, numCRows, numCColumns);
 
     free(hostA);
