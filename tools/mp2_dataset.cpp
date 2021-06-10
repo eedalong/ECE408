@@ -94,23 +94,18 @@ int main(int argc, const char** argv) {
 
     // export
     wbLog(TRACE, "data directory is  ", directory); 
-    char* input_file1 = (char*) malloc(strlen(directory) + 12);
-    strcat(input_file1, directory);
-    strcat(input_file1, "/input0.raw");
-    char* input_file2 = (char*) malloc(strlen(directory) + 12);
-    strcat(input_file2, directory);
-    strcat(input_file2, "/input1.raw");
-    char* output_file = (char*) malloc(strlen(directory) + 12);
-    strcat(output_file, directory);
-    strcat(output_file, "/output.raw");
+    string input_file1 = string(directory) + string("/input1.raw");
+    string input_file2 = string(directory) + string("/input2.raw");
+    string output_file = string(directory) + string("/output.raw");
 
-    wbLog(TRACE, "input file1 is  ", input_file1);
-    wbLog(TRACE, "input file2 is  ", input_file1);
-    wbLog(TRACE, "output file is  ", output_file);
 
-    wbExport(input_file1, hostA, rowa, cola);
-    wbExport(input_file2, hostB, rowb, colb);
-    wbExport(output_file, output, rowa, cola);
+    wbLog(TRACE, "input file1 is  ", input_file1.c_str());
+    wbLog(TRACE, "input file2 is  ", input_file2.c_str());
+    wbLog(TRACE, "output file is  ", output_file.c_str());
+
+    wbExport(input_file1.c_str(), hostA, rowa, cola);
+    wbExport(input_file2.c_str(), hostB, rowb, colb);
+    wbExport(output_file.c_str(), output, rowa, cola);
 
     
     return 0;
