@@ -34,7 +34,7 @@ int main(int argc, const char** argv) {
     int rowa = 0, rowb = 0;
     int index = 1;
     while(index < argc){
-        printf("parameter index is %d\n", index);
+        printf("parsing parameters %s", argv[index]);
 
         if(strcmp(argv[index], "-d") == 0){
             index += 1;
