@@ -31,6 +31,7 @@ if(CUDA_FOUND)
     set(CUDA_NVCC_FLAGS_DEBUG ${CUDA_NVCC_FLAGS_DEBUG} "-G")
 	include_directories(${CMAKE_SOURCE_DIR})
 	include_directories(${CUDA_INCLUDE_DIRS})
+
 else(CUDA_FOUND)
     message("CUDA is not installed on this system.")
 endif()
@@ -40,6 +41,7 @@ file( GLOB  wbsrc lib/*.cpp lib/*.c )
 
 include_directories(${CMAKE_SOURCE_DIR})
 include_directories(${CUDA_INCLUDE_DIRS})
+include_directories("lib/")
 
 CUDA_ADD_EXECUTABLE(MP0 mp0.cu ${wbhdr} ${wbsrc})
 CUDA_ADD_EXECUTABLE(MP1 mp1.cu ${wbhdr} ${wbsrc})
