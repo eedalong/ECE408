@@ -21,13 +21,13 @@ __global__ void matrixMultiply(float * A, float * B, float * C,
     //@@ Insert code to implement matrix multiplication here
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
     if(idx < numCColumns * numCRows){
-        int row = int(idx / numAColumns);
-        int col = idx % numAColumns;
+        int row = int(idx / numCColumns);
+        int col = idx % numCColumns;
         float PValue = 0;
         for(int index = 0; index < numAColumns; index++){
             PValue += A[row * numAColumns + index] * B[index * numBColumns + col];
         }
-        C[row * numCColumns + col] = PValue;
+        C[idx] = PValue;
     }
     
 
