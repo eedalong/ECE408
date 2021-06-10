@@ -61,7 +61,7 @@ int main(int argc, const char** argv) {
         index += 1;
 
     }
-    wbLog(TRACE, "finished parsing parameters", "");
+    printf("finished parsing parameters");
     // check parameters
     if(directory == nullptr){
         printf("directory path is not correctly set\n");
