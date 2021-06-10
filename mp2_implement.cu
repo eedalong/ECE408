@@ -24,7 +24,7 @@ __global__ void matrixMultiply(float * A, float * B, float * C,
     int col = blockIdx.x * blockDim.x + threadIdx.x;
     int row = blockIdx.y * blockDim.y + threadIdx.y;
     float PValue = 0;
-    if(row < numCColumns && col < numCColumns){
+    if(row < numCRows && col < numCColumns){
         for(int j = 0; j < numAColumns; j ++){
             PValue += A[row * numAColumns + j] * B[j * numBColumns + col];
         }
