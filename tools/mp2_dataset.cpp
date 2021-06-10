@@ -32,9 +32,10 @@ int main(int argc, const char** argv) {
     char* directory = nullptr;
     int cola = 0, colb = 0;
     int rowa = 0, rowb = 0;
-    int index = 0;
+    int index = 1;
     while(index < argc){
-        wbLog(TRACE, "chech paramter ", argv[index]);
+        printf("parameter index is %d\n", index);
+        wbLog(TRACE, "check paramter ", argv[index]);
         if(strcmp(argv[index], "-d") == 0){
             index += 1;
             directory = (char*) malloc(strlen(argv[index]));
