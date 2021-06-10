@@ -12,14 +12,14 @@ void create_mat(float* mat, int row, int col){
 }
 
 void mat_multiply(float* A, float* B, float* C, int rowa, int cola, int rowb, int colb){
-    for(int index = 0; index < rowa * rowb; index++){
-        int row = index / colb;
-        int col = index % colb;
-        float Pvalue = 0;
-        for(int i = 0; i < cola; i++){
-            Pvalue += A[row * cola + i] * B[i * colb + col];
+    for(int i = 0; i < rowa; i++){
+        for(int j = 0; j < colb; j ++){
+            float Pvalue = 0;
+            for(int k = 0; k < cola; k++){
+                Pvalue += A[i * cola + k] * B[k  * colb + j];
+            }
+            C[i * colb + j] = Pvalue;
         }
-        C[index] = Pvalue;
     }
 }
 int main(int argc, const char** argv) {
