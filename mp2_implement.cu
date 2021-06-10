@@ -62,6 +62,7 @@ int main(int argc, char ** argv) {
 
     wbLog(TRACE, "The dimensions of A are ", numARows, " x ", numAColumns);
     wbLog(TRACE, "The dimensions of B are ", numBRows, " x ", numBColumns);
+    wbLog(TRACE, "The dimensions of C are ", numCRows, " x ", numCColumns);
 
     wbTime_start(GPU, "Allocating GPU memory.");
     //@@ Allocate GPU memory here
