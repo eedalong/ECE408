@@ -56,3 +56,7 @@ CUDA_ADD_EXECUTABLE(MP6_Template mp6_template.cu ${wbhdr} ${wbsrc})
 # Add Implementation Code
 CUDA_ADD_EXECUTABLE(MP1_Implement mp1_implement.cu ${wbhdr} ${wbsrc})
 CUDA_ADD_EXECUTABLE(MP2_Implement mp2_implement.cu ${wbhdr} ${wbsrc})
+
+
+#Add Tools
+CUDA_ADD_EXECUTABLE(MP2_Dataset mp2_dataset.cpp ${wbhdr} ${wbsrc})
