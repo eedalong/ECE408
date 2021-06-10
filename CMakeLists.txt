@@ -45,12 +45,12 @@ include_directories("lib/")
 
 # Add Template code 
 CUDA_ADD_EXECUTABLE(MP0_Template mp0_template.cu ${wbhdr} ${wbsrc})
-CUDA_ADD_EXECUTABLE(MP1_Implement mp1_implement.cu ${wbhdr} ${wbsrc})
-CUDA_ADD_EXECUTABLE(MP2_Templat mp2_template.cu ${wbhdr} ${wbsrc})
-CUDA_ADD_EXECUTABLE(MP3_Templat mp3_template.cu ${wbhdr} ${wbsrc})
-CUDA_ADD_EXECUTABLE(MP4_Templat mp4_template.cu ${wbhdr} ${wbsrc})
-CUDA_ADD_EXECUTABLE(MP5_Templat mp5_template.cu ${wbhdr} ${wbsrc})
-CUDA_ADD_EXECUTABLE(MP6_Templat mp6_template.cu ${wbhdr} ${wbsrc})
+CUDA_ADD_EXECUTABLE(MP1_Template mp1_template.cu ${wbhdr} ${wbsrc})
+CUDA_ADD_EXECUTABLE(MP2_Template mp2_template.cu ${wbhdr} ${wbsrc})
+CUDA_ADD_EXECUTABLE(MP3_Template mp3_template.cu ${wbhdr} ${wbsrc})
+CUDA_ADD_EXECUTABLE(MP4_Template mp4_template.cu ${wbhdr} ${wbsrc})
+CUDA_ADD_EXECUTABLE(MP5_Template mp5_template.cu ${wbhdr} ${wbsrc})
+CUDA_ADD_EXECUTABLE(MP6_Template mp6_template.cu ${wbhdr} ${wbsrc})
 
 
 # Add Implementation Code
