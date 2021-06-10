@@ -40,19 +40,19 @@ int main(int argc, const char** argv) {
             strcpy(directory, argv[index]);
             
         }
-        if(strcmp(argv[index], "-ra") == 0){
+        else if(strcmp(argv[index], "-ra") == 0){
             index += 1;
             rowa = atoi(argv[index]);
         }
-        if(strcmp(argv[index], "-rb") == 0){
+        else if(strcmp(argv[index], "-rb") == 0){
             index += 1;
             rowb = atoi(argv[index]);
         }
-        if(strcmp(argv[index], "-ca") == 0){
+        else if(strcmp(argv[index], "-ca") == 0){
             index += 1;
             cola = atoi(argv[index]);
         }
-        if(strcmp(argv[index], "-cb") == 0){
+        else if(strcmp(argv[index], "-cb") == 0){
             index += 1;
             colb = atoi(argv[index]);
         }
