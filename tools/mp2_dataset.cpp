@@ -37,7 +37,7 @@ int main(int argc, const char** argv) {
         if(strcmp(argv[index], "-d") == 0){
             index += 1;
             directory = (char*) malloc(strlen(argv[index]));
-            strcmp(directory, argv[index]);
+            strcpy(directory, argv[index]);
             
         }
         if(strcmp(argv[index], "-ra") == 0){
@@ -68,6 +68,7 @@ int main(int argc, const char** argv) {
         printf("matrix shape is not correctly set\n");
         return -1;
     }
+    wbAssert(cola == rowb);
 
     // allocate memory
     float* hostA;
@@ -84,10 +85,18 @@ int main(int argc, const char** argv) {
     // calculate output
     mat_multiply(hostA, hostB, output, rowa, cola, rowb, colb);
 
-    // export 
-    char* input_file1 = strcat(directory, "/input1.raw");
-    char* input_file2 = strcat(directory, "/input2.raw");
-    char* output_file = strcat(directory, "/output.raw");
+    // export
+    wbLog(TRACE, "data directory is  ", directory); 
+    char* input_file1 = "";
+    strcat(input_file1, directory);
+    strcat(input_file1, "/input0.raw");
+    char* input_file2 = "";
+    strcat(input_file2, directory);
+    strcat(input_file2, "/input1.raw");
+    char* output_file = "";
+    strcat(output_file, directory);
+    strcat(output_file, "/input1.raw");
+
     wbLog(TRACE, "input file1 is  ", input_file1);
     wbLog(TRACE, "input file2 is  ", input_file1);
     wbLog(TRACE, "output file is  ", output_file);
