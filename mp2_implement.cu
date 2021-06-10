@@ -54,7 +54,7 @@ int main(int argc, char ** argv) {
     hostA = (float *) wbImport(wbArg_getInputFile(args, 0), &numARows, &numAColumns);
     hostB = (float *) wbImport(wbArg_getInputFile(args, 1), &numBRows, &numBColumns);
     //@@ Set numCRows and numCColumns
-    numCRows = numAColumns;
+    numCRows = numARows;
     numCColumns = numBColumns;
     //@@ Allocate the hostC matrix
     hostC = (float *) malloc(sizeof(float) * numCRows * numCColumns);
