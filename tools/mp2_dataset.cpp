@@ -81,6 +81,11 @@ int main(int argc, const char** argv) {
     float* hostA;
     float* hostB;
     float* output;
+    wbLog(TRACE, "hostA size is", rowa, "X", cola);
+    wbLog(TRACE, "hostB size is", rowb, "X", colb);
+    wbLog(TRACE, "hostB size is", rowa, "X", colb);
+    
+
     hostA = (float*) malloc(sizeof(float) * rowa * cola);
     hostB = (float*) malloc(sizeof(float) * rowb * colb);
     output = (float*) malloc(sizeof(float) * rowa * colb);
@@ -105,7 +110,7 @@ int main(int argc, const char** argv) {
 
     wbExport(input_file1.c_str(), hostA, rowa, cola);
     wbExport(input_file2.c_str(), hostB, rowb, colb);
-    wbExport(output_file.c_str(), output, rowa, cola);
+    wbExport(output_file.c_str(), output, rowa, colb);
 
     
     return 0;
