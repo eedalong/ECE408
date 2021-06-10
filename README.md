@@ -1,21 +1,15 @@
-Code For Course ECE408
-## hello_world.cu
-    nvcc hello_world.cu -o hello_world
-    ./hello_world
-*Notes:*
-`cudaDeviceSynchronize` should be used to synchronize host with device, or we will not see any output from cuda kernel
+## Code Project For Course ECE408
+This is code project for ECE408(Applied Parallel Programming). And you can use this project as a good start for your own lab implementation. Here's how you finish your own project.
 
-## mp01.cu
-    nvcc mp01.cu -o mp01
-    ./mp01
-*Notes:*
-`mp01.cu` is for vector_add
+### 1. Finish your own code based on template code
+`mpx_template.cu` are template codes and you need to full fill these code files. For me, I add these implementations in `mpx_implement.cu`.
 
-## mp02.cu
-    nvcc mp02.cu -o mp02
-    ./mp02
-we can see from profile that tiled_multiplication is faster than naive implementation with the help of better memory access method
-![nsys_profile](imgs/mp02.png)
+### 2. Compile & Run
+    mkdir build
+    cd build
+    cmake ..
+    make 
+
 
 
 
