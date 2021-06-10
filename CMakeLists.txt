@@ -62,4 +62,4 @@ CUDA_ADD_EXECUTABLE(MP2_Implement mp2_implement.cu ${wbhdr} ${wbsrc})
 CUDA_ADD_EXECUTABLE(MP2_Dataset tools/mp2_dataset.cpp ${wbhdr} ${wbsrc})
 
 # Reference Code
-CUDA_ADD_EXECUTABLE(MP2_Reference mp2.cu ${wbhdr} ${wbsrc})
+CUDA_ADD_EXECUTABLE(MP2_Reference mp02.cu ${wbhdr} ${wbsrc})
