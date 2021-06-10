@@ -35,7 +35,7 @@ int main(int argc, const char** argv) {
     while(index < argc){
         if(strcmp(argv[index], "-d") == 0){
             directory = (char*) malloc(strlen(argv[index]));
-            strcmp(file_name, argv[index]);
+            strcmp(directory, argv[index]);
         }
         if(strcmp(argv[index], "-ra") == 0){
             rowa = atoi(argv[index]);
