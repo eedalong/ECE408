@@ -18,7 +18,7 @@ if(CUDA_FOUND)
         set(CUDA_NVCC_FLAGS "")
     else (MSVC)
         set(CUDA_NVCC_FLAGS "
-                                -gencode;arch=compute_85,code=sm_85; ")
+                                -gencode;arch=compute_86,code=sm_86; ")
     endif (MSVC)
 
     # add -Wextra compiler flag for gcc compilations
