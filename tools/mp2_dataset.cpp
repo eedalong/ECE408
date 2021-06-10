@@ -34,7 +34,6 @@ int main(int argc, const char** argv) {
     int rowa = 0, rowb = 0;
     int index = 1;
     while(index < argc){
-        printf("check index = %d\t arg content is %s", index, argv[index]);
         if(strcmp(argv[index], "-d") == 0){
             index += 1;
             directory = (char*) malloc(strlen(argv[index]));
@@ -66,7 +65,6 @@ int main(int argc, const char** argv) {
         index += 1;
 
     }
-    printf("finished parsing parameters");
     // check parameters
     if(directory == nullptr){
         printf("directory path is not correctly set\n");
@@ -78,7 +76,7 @@ int main(int argc, const char** argv) {
     }
 
  
-    /*
+    
     // allocate memory
     float* hostA;
     float* hostB;
@@ -96,13 +94,13 @@ int main(int argc, const char** argv) {
 
     // export
     wbLog(TRACE, "data directory is  ", directory); 
-    char* input_file1 = "";
+    char* input_file1 = (char*) malloc(1);
     strcat(input_file1, directory);
     strcat(input_file1, "/input0.raw");
-    char* input_file2 = "";
+    char* input_file2 = (char*) malloc(1);
     strcat(input_file2, directory);
     strcat(input_file2, "/input1.raw");
-    char* output_file = "";
+    char* output_file = (char*) malloc(1);
     strcat(output_file, directory);
     strcat(output_file, "/input1.raw");
 
@@ -114,7 +112,7 @@ int main(int argc, const char** argv) {
     wbExport(input_file2, hostB, rowb, colb);
     wbExport(output_file, output, rowa, cola);
 
-    */
+    
     return 0;
 
 
