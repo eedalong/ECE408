@@ -50,6 +50,7 @@ int main(int argc, const char** argv) {
         if(strcmp(argv[index], "-cb") == 0){
             colb = atoi(argv[index]);
         }
+        index += 1;
 
     }
     // check parameters
