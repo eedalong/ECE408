@@ -34,29 +34,34 @@ int main(int argc, const char** argv) {
     int rowa = 0, rowb = 0;
     int index = 1;
     while(index < argc){
-        printf("parsing parameters %s", argv[index]);
 
         if(strcmp(argv[index], "-d") == 0){
             index += 1;
             directory = (char*) malloc(strlen(argv[index]));
             strcpy(directory, argv[index]);
+            wbLog(TRACE, "data directory is  ", directory); 
+            
             
         }
         else if(strcmp(argv[index], "-ra") == 0){
             index += 1;
             rowa = atoi(argv[index]);
+            wbLog(TRACE, "rowa is  ", rowa); 
         }
         else if(strcmp(argv[index], "-rb") == 0){
             index += 1;
             rowb = atoi(argv[index]);
+            wbLog(TRACE, "rowb is  ", rowb); 
         }
         else if(strcmp(argv[index], "-ca") == 0){
             index += 1;
             cola = atoi(argv[index]);
+            wbLog(TRACE, "cola is  ", cola); 
         }
         else if(strcmp(argv[index], "-cb") == 0){
             index += 1;
             colb = atoi(argv[index]);
+            wbLog(TRACE, "colb is  ", colb); 
         }
         index += 1;
 
