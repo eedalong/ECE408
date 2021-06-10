@@ -34,7 +34,7 @@ int main(int argc, const char** argv) {
     int rowa = 0, rowb = 0;
     int index = 1;
     while(index < argc){
-
+        printf("check index = %d\t arg content is %s", index, argv[index]);
         if(strcmp(argv[index], "-d") == 0){
             index += 1;
             directory = (char*) malloc(strlen(argv[index]));
@@ -78,7 +78,7 @@ int main(int argc, const char** argv) {
     }
 
  
-
+    /*
     // allocate memory
     float* hostA;
     float* hostB;
@@ -114,7 +114,7 @@ int main(int argc, const char** argv) {
     wbExport(input_file2, hostB, rowb, colb);
     wbExport(output_file, output, rowa, cola);
 
-    
+    */
     return 0;
 
 
