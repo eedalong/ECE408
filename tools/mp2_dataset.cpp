@@ -35,7 +35,7 @@ int main(int argc, const char** argv) {
     int index = 1;
     while(index < argc){
         printf("parameter index is %d\n", index);
-        wbLog(TRACE, "check paramter ", argv[index]);
+
         if(strcmp(argv[index], "-d") == 0){
             index += 1;
             directory = (char*) malloc(strlen(argv[index]));
@@ -61,6 +61,7 @@ int main(int argc, const char** argv) {
         index += 1;
 
     }
+    wbLog(TRACE, "finished parsing parameters", "");
     // check parameters
     if(directory == nullptr){
         printf("directory path is not correctly set\n");
@@ -70,6 +71,7 @@ int main(int argc, const char** argv) {
         printf("matrix shape is not correctly set\n");
         return -1;
     }
+
  
 
     // allocate memory
@@ -88,7 +90,6 @@ int main(int argc, const char** argv) {
     mat_multiply(hostA, hostB, output, rowa, cola, rowb, colb);
 
     // export
-    wbLog(TRACE, "finished parsing parameters", "");
     wbLog(TRACE, "data directory is  ", directory); 
     char* input_file1 = "";
     strcat(input_file1, directory);
