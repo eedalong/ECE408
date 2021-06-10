@@ -1,5 +1,6 @@
 #include    <wb.h>
 
+
 #define BLOCK_SIZE 8
 
 #define wbCheck(stmt) do {                                 \
@@ -10,6 +11,7 @@
         }                                                  \
     } while(0)
 
+
 int ceil(int a, int b){
     return int((a + b - 1) / b);
 }
@@ -19,8 +21,8 @@ __global__ void matrixMultiply(float * A, float * B, float * C,
 			       int numBRows, int numBColumns,
 			       int numCRows, int numCColumns) {
     //@@ Insert code to implement matrix multiplication here
-    int row = blockIdx.x * blockDim.x + threadIdx.x;
-    int col = blockIdx.y * blockDim.y + threadIdx.y;
+    int col = blockIdx.x * blockDim.x + threadIdx.x;
+    int row = blockIdx.y * blockDim.y + threadIdx.y;
     float PValue = 0;
     if(row < numCColumns && col < numCColumns){
         for(int j = 0; j < numAColumns; j ++){
@@ -79,7 +81,7 @@ int main(int argc, char ** argv) {
     wbTime_stop(GPU, "Copying input memory to the GPU.");
     
     //@@ Initialize the grid and block dimensions here
-    dim3 DimGrid(ceil(numCRows, BLOCK_SIZE), ceil(numCColumns, BLOCK_SIZE), 1);
+    dim3 DimGrid(ceil(numCColumns, BLOCK_SIZE), ceil(numCRows, BLOCK_SIZE), 1);
     dim3 DimBlock(BLOCK_SIZE, BLOCK_SIZE,1);
     
     wbTime_start(Compute, "Performing CUDA computation");
