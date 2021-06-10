@@ -88,6 +88,10 @@ int main(int argc, const char** argv) {
     char* input_file1 = strcat(directory, "/input1.raw");
     char* input_file2 = strcat(directory, "/input2.raw");
     char* output_file = strcat(directory, "/output.raw");
+    wbLog(TRACE, "input file1 is  ", input_file1);
+    wbLog(TRACE, "input file2 is  ", input_file1);
+    wbLog(TRACE, "output file is  ", output_file);
+
     wbExport(input_file1, hostA, rowa, cola);
     wbExport(input_file2, hostB, rowb, colb);
     wbExport(output_file, output, rowa, cola);
