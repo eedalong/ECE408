@@ -35,19 +35,25 @@ int main(int argc, const char** argv) {
     int index = 0;
     while(index < argc){
         if(strcmp(argv[index], "-d") == 0){
+            index += 1;
             directory = (char*) malloc(strlen(argv[index]));
             strcmp(directory, argv[index]);
+            
         }
         if(strcmp(argv[index], "-ra") == 0){
+            index += 1;
             rowa = atoi(argv[index]);
         }
         if(strcmp(argv[index], "-rb") == 0){
+            index += 1;
             rowb = atoi(argv[index]);
         }
         if(strcmp(argv[index], "-ca") == 0){
+            index += 1;
             cola = atoi(argv[index]);
         }
         if(strcmp(argv[index], "-cb") == 0){
+            index += 1;
             colb = atoi(argv[index]);
         }
         index += 1;
