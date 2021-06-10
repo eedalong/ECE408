@@ -75,9 +75,9 @@ int main(int argc, char ** argv) {
 
     wbTime_stop(GPU, "Freeing GPU Memory");
 
-    for(int index = 0; index < inputLength; index ++){
-        printf("%f\t%f\t%f\n", hostInput1[index],hostInput2[index],hostOutput[index]);
-    }
+    //for(int index = 0; index < inputLength; index ++){
+    //    printf("%f\t%f\t%f\n", hostInput1[index],hostInput2[index],hostOutput[index]);
+    //}
 
     wbSolution(args, hostOutput, inputLength);
 
