@@ -1,0 +1,3 @@
+[submodule "libwb"]
+	path = libwb
+	url = git@github.com:abduld/libwb.git
