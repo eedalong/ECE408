@@ -94,8 +94,8 @@ int main(int argc, const char** argv) {
 
     // export
     wbLog(TRACE, "data directory is  ", directory); 
-    string input_file1 = string(directory) + string("/input1.raw");
-    string input_file2 = string(directory) + string("/input2.raw");
+    string input_file1 = string(directory) + string("/input0.raw");
+    string input_file2 = string(directory) + string("/input1.raw");
     string output_file = string(directory) + string("/output.raw");
 
 
