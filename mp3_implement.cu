@@ -27,7 +27,7 @@ __global__ void matrixMultiplyShared(float * A, float * B, float * C,
     int tx = threadIdx.x; int ty = threadIdx.y;
     int Row = by * blockDim.y + ty;
     int Col = bx * blockDim.x + tx;
-    if(Row > numCRows || Col  > numCColumns){
+    if(Row >= numCRows || Col >= numCColumns){
         return;
     }
     int step = (numAColumns + BLOCK_SIZE - 1) / BLOCK_SIZE;
