@@ -1,8 +1,8 @@
 ############################################################################################
-# <summary> CMakeLists.txt for libWB and CUDA. 								</summary>
-# <date>    2013-01-07          											</date>
-# <author>  Tran Minh Quan. edit by Johannes Kast, Michael Sarahan 			</author>
-# <email>   quantm@unist.ac.kr  kast.jo@googlemail.com msarahan@gmail.com	</email>
+# <summary> CMakeLists.txt for ECE408 								</summary>
+# <date>    2021-06-07          											</date>
+# <author>  yuanxiulong 			</author>
+# <email>   yuanxl19@mails.tsinghua.edu.cn	</email>
 ############################################################################################
 project(ECE408)
 cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
