@@ -34,17 +34,17 @@ __global__ void matrixMultiplyShared(float * A, float * B, float * C,
     float PValue = 0;
     for(int m = 0; m < step; m++){
         // 1. Load Matrix A Tile
-        //if((m * BLOCK_SIZE + tx) >= numAColumns){
-        //    subTileA[ty][tx] = 0.0;
-        //}else{
+        if(Row * numAColumns + m * BLOCK_SIZE + tx >= numAColumns * numARows){
+            subTileA[ty][tx] = 0.0;
+        }else{
             subTileA[ty][tx] = A[Row * numAColumns + m * BLOCK_SIZE + tx];
-        //}
+        }
         // 2. Load Matrix B Tile
-        //if((m * BLOCK_SIZE + ty) >= numBRows){
-        //    subTileB[ty][tx] = 0.0;
-        //}else{
+        if((m * BLOCK_SIZE + ty) * numBColumns + Col >= numBRows * numBColumns){
+            subTileB[ty][tx] = 0.0;
+        }else{
             subTileB[ty][tx] = B[(m * BLOCK_SIZE + ty) * numBColumns + Col];
-        //}
+        }
         __syncthreads();
         // 3. Calculate Multiplication
         for(int k = 0; k < BLOCK_SIZE; k++){
