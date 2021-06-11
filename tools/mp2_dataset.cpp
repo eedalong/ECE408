@@ -7,7 +7,8 @@ using namespace std;
 
 void create_mat(float* mat, int row, int col){
     for(int index = 0; index < row * col; index++){
-        mat[index] = float((rand() % 1337)) / 1111.0;
+        //mat[index] = float((rand() % 1337)) / 1111.0;
+        mat[index] = rand() % 17;
     }
 }
 
