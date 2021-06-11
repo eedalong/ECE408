@@ -30,7 +30,7 @@ __global__ void reduction(float * input, float * output, int len) {
     __syncthreads();
     for(unsigned int s = blockDim.x / 2; s >= 1; s >>= 1){
         if(tx < s){
-            shared_data[tid] += shared_data[tid + s];
+            shared_data[tx] += shared_data[tx + s];
         }
         __syncthreads();
 
