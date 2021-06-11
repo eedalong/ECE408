@@ -104,6 +104,8 @@ int main(int argc, char ** argv) {
 
     wbTime_start(GPU, "Freeing GPU Memory");
     //@@ Free the GPU memory here
+    cudaFree(deviceInput);
+    cudaFree(deviceOutput);
 
     wbTime_stop(GPU, "Freeing GPU Memory");
 
