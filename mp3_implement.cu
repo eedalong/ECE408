@@ -30,7 +30,7 @@ __global__ void matrixMultiplyShared(float * A, float * B, float * C,
     if(Row > numCRows || Col  > numCColumns){
         return;
     }
-    int step = ceil(numAColumns, BLOCK_SIZE);
+    int step = int((numAColumns + BLOCK_SIZE - 1) / BLOCK_SIZE);
     float PValue = 0;
     for(int m = 0; m < step; m++){
         if((Row * numAColumns + m * BLOCK_SIZE + tx) >= numARows * numAColumns){
