@@ -13,9 +13,7 @@
 int ceil(int a, int b){
     return (a + b - 1) / b;
 }
-__device__ int ceil(int a, int b){
-    return (a + b - 1) / b;
-}
+
 // Compute C = A * B
 __global__ void matrixMultiplyShared(float * A, float * B, float * C,
 			             int numARows, int numAColumns,
@@ -33,19 +31,19 @@ __global__ void matrixMultiplyShared(float * A, float * B, float * C,
         return;
     }
     int step = ceil(numAColumns, BLOCK_SIZE);
+    float PValue = 0;
     for(int m = 0; m < step; m++){
-        if(Row * numAColumns + m * BLOCK_SIZE + tx) > numARows * numAColumns){
+        if((Row * numAColumns + m * BLOCK_SIZE + tx) >= numARows * numAColumns){
             subTileA[ty][tx] = 0;
         }else{
             subTileA[ty][tx] = A[Row * numAColumns + m * BLOCK_SIZE + tx];
         }
-        if((((m * BLOCK_SIZE + ty) * numBColumns) + Col) > numBColumns * numBRows){
+        if(((m * BLOCK_SIZE + ty) * numBColumns + Col) >= numBColumns * numBRows){
             subTileB[ty][tx] = 0;
         }else{
             subTileB[ty][tx] = B[((m * BLOCK_SIZE + ty) * numBColumns) + Col];
         }
         __syncthreads();
-        float PValue = 0;
         for(int k = 0; k < BLOCK_SIZE; k++){
             PValue += subTileA[ty][k] * subTileB[k][tx];
         }
