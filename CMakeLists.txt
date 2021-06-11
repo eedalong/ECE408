@@ -60,6 +60,3 @@ CUDA_ADD_EXECUTABLE(MP4_Implement mp4_implement.cu ${wbhdr} ${wbsrc})
 
 #Add Tools
 CUDA_ADD_EXECUTABLE(MP2_Dataset tools/mp2_dataset.cpp ${wbhdr} ${wbsrc})
-
-# Reference Code
-CUDA_ADD_EXECUTABLE(MP2_Reference reference/mp02.cu ${wbhdr} ${wbsrc})
