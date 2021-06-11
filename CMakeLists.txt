@@ -44,13 +44,13 @@ include_directories(${CUDA_INCLUDE_DIRS})
 include_directories("lib/")
 
 # Add Template code 
-CUDA_ADD_EXECUTABLE(MP0_Template mp0_template.cu ${wbhdr} ${wbsrc})
-CUDA_ADD_EXECUTABLE(MP1_Template mp1_template.cu ${wbhdr} ${wbsrc})
-CUDA_ADD_EXECUTABLE(MP2_Template mp2_template.cu ${wbhdr} ${wbsrc})
-CUDA_ADD_EXECUTABLE(MP3_Template mp3_template.cu ${wbhdr} ${wbsrc})
-CUDA_ADD_EXECUTABLE(MP4_Template mp4_template.cu ${wbhdr} ${wbsrc})
-CUDA_ADD_EXECUTABLE(MP5_Template mp5_template.cu ${wbhdr} ${wbsrc})
-CUDA_ADD_EXECUTABLE(MP6_Template mp6_template.cu ${wbhdr} ${wbsrc})
+#CUDA_ADD_EXECUTABLE(MP0_Template mp0_template.cu ${wbhdr} ${wbsrc})
+#CUDA_ADD_EXECUTABLE(MP1_Template mp1_template.cu ${wbhdr} ${wbsrc})
+#CUDA_ADD_EXECUTABLE(MP2_Template mp2_template.cu ${wbhdr} ${wbsrc})
+#CUDA_ADD_EXECUTABLE(MP3_Template mp3_template.cu ${wbhdr} ${wbsrc})
+#CUDA_ADD_EXECUTABLE(MP4_Template mp4_template.cu ${wbhdr} ${wbsrc})
+#CUDA_ADD_EXECUTABLE(MP5_Template mp5_template.cu ${wbhdr} ${wbsrc})
+#CUDA_ADD_EXECUTABLE(MP6_Template mp6_template.cu ${wbhdr} ${wbsrc})
 
 
 # Add Implementation Code
@@ -62,4 +62,4 @@ CUDA_ADD_EXECUTABLE(MP2_Implement mp2_implement.cu ${wbhdr} ${wbsrc})
 CUDA_ADD_EXECUTABLE(MP2_Dataset tools/mp2_dataset.cpp ${wbhdr} ${wbsrc})
 
 # Reference Code
-CUDA_ADD_EXECUTABLE(MP2_Reference mp02.cu ${wbhdr} ${wbsrc})
+CUDA_ADD_EXECUTABLE(MP2_Reference reference/mp02.cu ${wbhdr} ${wbsrc})
