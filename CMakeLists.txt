@@ -17,8 +17,7 @@ if(CUDA_FOUND)
     if (MSVC)
         set(CUDA_NVCC_FLAGS "")
     else (MSVC)
-        set(CUDA_NVCC_FLAGS "
-                                -gencode;arch=compute_86,code=sm_86; ")
+        set(CUDA_NVCC_FLAGS "-gencode;arch=compute_86,code=sm_86;")
     endif (MSVC)
 
     # add -Wextra compiler flag for gcc compilations
@@ -56,7 +55,7 @@ include_directories("lib/")
 # Add Implementation Code
 CUDA_ADD_EXECUTABLE(MP1_Implement mp1_implement.cu ${wbhdr} ${wbsrc})
 CUDA_ADD_EXECUTABLE(MP2_Implement mp2_implement.cu ${wbhdr} ${wbsrc})
-
+CUDA_ADD_EXECUTABLE(MP3_Implement mp3_implement.cu ${wbhdr} ${wbsrc})
 
 #Add Tools
 CUDA_ADD_EXECUTABLE(MP2_Dataset tools/mp2_dataset.cpp ${wbhdr} ${wbsrc})
