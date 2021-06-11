@@ -30,7 +30,7 @@ __global__ void matrixMultiplyShared(float * A, float * B, float * C,
     if(Row > numCRows || Col  > numCColumns){
         return;
     }
-    int step = numAColumns / BLOCK_SIZE;
+    int step = (numAColumns + BLOCK_SIZE - 1) / BLOCK_SIZE;
     float PValue = 0;
     for(int m = 0; m < step; m++){
         // 1. Load Matrix A Tile
