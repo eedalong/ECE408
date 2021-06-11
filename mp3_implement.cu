@@ -13,10 +13,7 @@
 int ceil(int a, int b){
     return (a + b - 1) / b;
 }
-/*
-This solution is not correct when C's shape cannot divide BLOCK_SIZE, I am still working on finding the cause.
 
-*/
 // Compute C = A * B
 __global__ void matrixMultiplyShared(float * A, float * B, float * C,
 			             int numARows, int numAColumns,
