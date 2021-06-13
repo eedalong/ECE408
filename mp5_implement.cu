@@ -36,22 +36,23 @@ __global__ void scan(float * input, float * output, float* block_sum, int len) {
     shared_data[2 * tid] = 0;
     shared_data[2 * tid + 1] = 0;
 
-    if(bid_offset + 2 * tid < len)
+    if((bid_offset + 2 * tid) < len)
         shared_data[2 * tid] = input[bid_offset + 2 * tid];
-    if(bid_offset + 2 * tid + 1 < len)
+    if((bid_offset + 2 * tid + 1) < len)
         shared_data[2 * tid + 1] = input[bid_offset + 2 * tid + 1];
     __syncthreads();
 
     // up-sweep phase 
     int offset = 1;
-    for(int d = elementsNumPerBlock / 2; d > 0; d >>= 1){
+    for(int d = elementsNumPerBlock / 2; d > 0; d /= 2){
+        __syncthreads();
         if(tid < d){
             int bi = offset * 2 * (tid + 1) - 1;
             int ai = bi - offset;
             shared_data[bi] += shared_data[ai];
         }
         offset <<= 1;
-        __syncthreads();
+       
     }
 
     // clear last element to zero and save it to block_sum
@@ -63,8 +64,8 @@ __global__ void scan(float * input, float * output, float* block_sum, int len) {
     __syncthreads();
 
     // down-sweep phase
-    for(int d = 1; d < elementsNumPerBlock; d <<= 1){
-
+    for(int d = 1; d < elementsNumPerBlock; d *= 2){
+        __syncthreads();
         if(tid < d){
             int bi = offset * 2 * (tid + 1) - 1;
             int ai = bi - offset;
@@ -73,18 +74,18 @@ __global__ void scan(float * input, float * output, float* block_sum, int len) {
             shared_data[bi] += t;
         }
         offset >>= 1;
-        __syncthreads();
+        
     }
 
     __syncthreads();
-    /*
+    
     if(bid_offset + 2 * tid < len){
-        output[bid_offset + 2 * tid] += shared_data[2 * tid];
+        output[bid_offset + 2 * tid] = shared_data[2 * tid];
     }
     if(bid_offset + 2 * tid + 1 < len){
-        output[bid_offset + 2 * tid + 1] += shared_data[2 * tid + 1];
+        output[bid_offset + 2 * tid + 1] = shared_data[2 * tid + 1];
     }
-    */
+    
 
 }
 
@@ -141,13 +142,13 @@ int main(int argc, char ** argv) {
     wbTime_stop(GPU, "Copying input memory to the GPU.");
 
     //@@ Initialize the grid and block dimensions here
-    dim3 GridDim(blockNum, 1, 1);
-    dim3 BlockDim(BLOCK_SIZE, 1, 1);
+    dim3 DimGrid(blockNum, 1, 1);
+    dim3 DimBlock(BLOCK_SIZE, 1, 1);
     wbTime_start(Compute, "Performing CUDA computation");
     //@@ Modify this to complete the functionality of the scan
     //@@ on the deivce
     std::cout << "Performing CUDA computation"<<std::endl;
-    scan<<<GridDim, BlockDim>>>(deviceInput, deviceOutput, blockSum, numElements);
+    scan<<<DimGrid, DimBlock>>>(deviceInput, deviceOutput, blockSum, numElements);
     cudaDeviceSynchronize();
     std::cout << "Performing blockSum add computation"<<std::endl;
     // add block sum to each block
