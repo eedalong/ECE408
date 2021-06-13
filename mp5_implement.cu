@@ -84,10 +84,10 @@ __global__ void pscan(float * input, float * output, float* block_sum, int len) 
     __syncthreads();
     
     if(bid_offset + 2 * tid < len){
-        output[bid_offset + 2 * tid] = shared_data[2 * tid];
+        output[bid_offset + 2 * tid] += shared_data[2 * tid];
     }
     if(bid_offset + 2 * tid + 1 < len){
-        output[bid_offset + 2 * tid + 1] = shared_data[2 * tid + 1];
+        output[bid_offset + 2 * tid + 1] += shared_data[2 * tid + 1];
     }
     
 
