@@ -26,23 +26,27 @@ __global__ void pscan(float * input, float * output, float* block_sum, int len) 
     //@@ function and call them from here
 
     // for each thread, we process BLOCK_SIZE * 2 elements
-    __shared__ float shared_data[BLOCK_SIZE << 1];
+    __shared__ float shared_data[BLOCK_SIZE * 2];
     int bid = blockIdx.x;
     int tid = threadIdx.x;
-    int elementsNumPerBlock = BLOCK_SIZE << 1;
+    int elementsNumPerBlock = BLOCK_SIZE * 2;
     int bid_offset = bid * elementsNumPerBlock;
     
     // each thread load 2 elements
-    shared_data[2 * tid] = 0;
-    shared_data[2 * tid + 1] = 0;
 
     if((bid_offset + 2 * tid) < len)
         shared_data[2 * tid] = input[bid_offset + 2 * tid];
+    else
+        shared_data[2 * tid] = 0;
     if((bid_offset + 2 * tid + 1) < len)
         shared_data[2 * tid + 1] = input[bid_offset + 2 * tid + 1];
+    else
+        shared_data[2 * tid + 1] = 0;
+
     __syncthreads();
 
     // up-sweep phase 
+
     int offset = 1;
     for(int d = elementsNumPerBlock / 2; d > 0; d /= 2){
         __syncthreads();
@@ -51,7 +55,7 @@ __global__ void pscan(float * input, float * output, float* block_sum, int len) 
             int ai = bi - offset;
             shared_data[bi] += shared_data[ai];
         }
-        offset <<= 1;
+        offset *= 2;
        
     }
 
@@ -65,6 +69,7 @@ __global__ void pscan(float * input, float * output, float* block_sum, int len) 
 
     // down-sweep phase
     for(int d = 1; d < elementsNumPerBlock; d *= 2){
+        offset >>= 1;
         __syncthreads();
         if(tid < d){
             int bi = offset * 2 * (tid + 1) - 1;
@@ -72,8 +77,7 @@ __global__ void pscan(float * input, float * output, float* block_sum, int len) 
             float t = shared_data[ai];
             shared_data[ai] = shared_data[bi];
             shared_data[bi] += t;
-        }
-        offset >>= 1;
+        } 
         
     }
 
