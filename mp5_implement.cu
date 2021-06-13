@@ -162,8 +162,8 @@ int main(int argc, char ** argv) {
     // add block sum to each block
     // TODO Debug
     if(blockNum > 1){
-        dim3 GridDimAdd(blockNum-1, 1, 1);
-        uniform_add<<<GridDimAdd, BlockDim>>>(deviceOutput, deviceSum, numElements);
+        dim3 DimGridAdd(blockNum-1, 1, 1);
+        uniform_add<<<DimGridAdd, DimBlock>>>(deviceOutput, deviceSum, numElements);
         cudaDeviceSynchronize();
     }
     wbTime_stop(Compute, "Performing CUDA computation");
