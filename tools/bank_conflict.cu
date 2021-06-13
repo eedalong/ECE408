@@ -1,5 +1,7 @@
 #include <cuda.h>
 #include <iostream>
+#include <string.h>
+#include <stdlib.h>
 
 /*
 1. stride = 0: all threads request same value, this is where broadcasting happened
@@ -10,10 +12,9 @@
 6. stride = 32: 32-way bank conflict
 
 */
-__global__ void TestKernel(unsigned long long* time){
+__global__ void TestKernel(unsigned long long* time, int stride){
     __shared__ float shared_data[1024];
     unsigned long long startTime = clock();
-    int stride = 2;
     int tid = threadIdx.x;
     shared_data[tid * stride] ++ ;
     unsigned long long endTime = clock();
@@ -21,12 +22,25 @@ __global__ void TestKernel(unsigned long long* time){
 }
 
 
-int main(){
+int main(int argc, char** argv){
+    /*
+    Bank_Conflict -s 2
+    */
+    if(argc != 3){
+        printf("this should be used like: ./Bank_Conflict -s(stride) 2");
+        return -1;
+    }
+    int stride = 0;
+    for(int index = 0; index < argc; index++){
+        if(strcmp(argv[index], "-s")){
+            stride = atoi(argv[index + 1])
+        }
+    }
     unsigned long long time;
     unsigned long long * dtime;
     cudaMalloc((void**) &dtime, sizeof(unsigned long long));
     for(int index=0; index < 10; index++){
-        TestKernel<<<1, 32>>>(dtime);
+        TestKernel<<<1, 32>>>(dtime, stride);
         cudaMemcpy(&time, dtime, sizeof(unsigned long long), cudaMemcpyDeviceToHost);
         std::cout <<"Time: "<<(time - 14) / 32 << std::endl;
         std::cout << std::endl;
