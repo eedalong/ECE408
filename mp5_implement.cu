@@ -34,7 +34,7 @@ __global__ void scan(float * input, float * output, float* block_sum, int len) {
     
     // each thread load 2 elements
     shared_data[2 * tid] = 0;
-    shared_data[2 * \\ + 1] = 0;
+    shared_data[2 * tid + 1] = 0;
 
     if(bid_offset + 2 * tid < len)
         shared_data[2 * tid] = input[bid_offset + 2 * tid];
