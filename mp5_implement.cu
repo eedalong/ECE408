@@ -158,6 +158,7 @@ int main(int argc, char ** argv) {
     wbTime_start(Copy, "Copying output memory to the CPU");
     wbCheck(cudaMemcpy(hostOutput, deviceOutput, numElements*sizeof(float), cudaMemcpyDeviceToHost));
     wbTime_stop(Copy, "Copying output memory to the CPU");
+    std::cout << "Finished Copy output memory to the CPU"<<std::endl;
 
 
     wbTime_start(GPU, "Freeing GPU Memory");
