@@ -33,7 +33,7 @@ int main(int argc, char** argv){
     int stride = 0;
     for(int index = 0; index < argc; index++){
         if(strcmp(argv[index], "-s")){
-            stride = atoi(argv[index + 1])
+            stride = atoi(argv[index + 1]);
         }
     }
     unsigned long long time;
