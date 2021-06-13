@@ -17,6 +17,9 @@ __global__ void TestKernel(unsigned long long* time, int stride){
     int tid = threadIdx.x;
     unsigned long long startTime = clock();
     shared_data[tid * stride] = 4;
+    for(index = 0; index < 10; index ++){
+        shared_data[tid * stride] += 4;
+    }
     unsigned long long endTime = clock();
     *time = (endTime - startTime);
 }
