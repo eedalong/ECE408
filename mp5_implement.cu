@@ -118,12 +118,12 @@ int main(int argc, char ** argv) {
     wbTime_start(GPU, "Allocating GPU memory.");
     wbCheck(cudaMalloc((void**)&deviceInput, numElements*sizeof(float)));
     wbCheck(cudaMalloc((void**)&deviceOutput, numElements*sizeof(float)));
-    wbCheck(cudaMalloc((void**)&blockSum, int(ceil(numElements / float(BLOCK_SIZE << 1)) * sizeof(float))
+    wbCheck(cudaMalloc((void**)&blockSum, int(ceil(numElements / float(BLOCK_SIZE << 1))) * sizeof(float)))
     wbTime_stop(GPU, "Allocating GPU memory.");
 
     wbTime_start(GPU, "Clearing blockSum memory.");
     //wbCheck(cudaMemset(deviceOutput, 0, numElements*sizeof(float)));
-    wbCheck(cudaMemset(blockSum, 0, int(ceil(numElements / float(BLOCK_SIZE << 1)) * sizeof(float))));
+    wbCheck(cudaMemset(blockSum, 0, int(ceil(numElements / float(BLOCK_SIZE << 1))) * sizeof(float)));
     wbTime_stop(GPU, "Clearing blockSum memory.");
 
     wbTime_start(GPU, "Copying input memory to the GPU.");
