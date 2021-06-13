@@ -130,14 +130,14 @@ int main(int argc, char ** argv) {
     wbTime_start(GPU, "Allocating GPU memory.");
     wbCheck(cudaMalloc((void**)&deviceInput, numElements*sizeof(float)));
     wbCheck(cudaMalloc((void**)&deviceOutput, numElements*sizeof(float)));
-    wbCheck(cudaMalloc((void**)&blockSum, blockNum * sizeof(float)));
+    wbCheck(cudaMalloc((void**)&deviceSum, blockNum * sizeof(float)));
     wbTime_stop(GPU, "Allocating GPU memory.");
 
-    wbTime_start(GPU, "Clearing blockSum memory.");
+    wbTime_start(GPU, "Clearing deviceSum memory.");
     wbCheck(cudaMemset(deviceOutput, 0, numElements*sizeof(float)));
-    wbCheck(cudaMemset(blockSum, 0, blockNum * sizeof(float)));
-    wbTime_stop(GPU, "Clearing blockSum memory.");
-    std::cout << "blockSum memory cleared"<<std::endl;
+    wbCheck(cudaMemset(deviceSum, 0, blockNum * sizeof(float)));
+    wbTime_stop(GPU, "Clearing deviceSum memory.");
+    std::cout << "deviceSum memory cleared"<<std::endl;
     wbTime_start(GPU, "Copying input memory to the GPU.");
     wbCheck(cudaMemcpy(deviceInput, hostInput, numElements*sizeof(float), cudaMemcpyHostToDevice));
     wbCheck(cudaMemcpy(deviceOutput, hostInput, numElements*sizeof(float), cudaMemcpyHostToDevice));
@@ -150,17 +150,18 @@ int main(int argc, char ** argv) {
     //@@ Modify this to complete the functionality of the scan
     //@@ on the deivce
     std::cout << "Performing CUDA computation"<<std::endl;
-    pscan<<<DimGrid, DimBlock>>>(deviceInput, deviceOutput, blockSum, numElements);
+    pscan<<<DimGrid, DimBlock>>>(deviceInput, deviceOutput, deviceSum, numElements);
     cudaDeviceSynchronize();
-    std::cout << "Performing blockSum add computation"<<std::endl;
+    std::cout << "Performing deviceSum add computation"<<std::endl;
     // add block sum to each block
     // TODO Debug
-    //uniform_add<<<GridDim, BlockDim>>>(deviceOutput, blockSum, numElements);
+    //uniform_add<<<GridDim, BlockDim>>>(deviceOutput, deviceSum, numElements);
     //cudaDeviceSynchronize();
     wbTime_stop(Compute, "Performing CUDA computation");
     std::cout << "Copying output memory to the CPU"<<std::endl;
     wbTime_start(Copy, "Copying output memory to the CPU");
     cudaMemcpy(hostOutput, deviceOutput, numElements*sizeof(float), cudaMemcpyDeviceToHost);
+    cudaMemcpy(hostSum, deviceSum, blockNum * sizeof(float), cudaMemcpyDeviceToHost);
     wbTime_stop(Copy, "Copying output memory to the CPU");
     std::cout << "Finished Copy output memory to the CPU"<<std::endl;
 
@@ -169,10 +170,10 @@ int main(int argc, char ** argv) {
     std::cout << "Freeing GPU Memory"<<std::endl;
     cudaFree(deviceInput);
     cudaFree(deviceOutput);
-    cudaFree(blockSum);
+    cudaFree(deviceSum);
     wbTime_stop(GPU, "Freeing GPU Memory");
-    for(int index = 0; index < 10; index++){
-        std::cout<< hostOutput[index]<<" ";
+    for(int index = 0; index < blockNum; index++){
+        std::cout<< hostSum[index]<<" ";
     }
     std::cout<<std::endl;
 
