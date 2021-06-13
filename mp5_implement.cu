@@ -159,11 +159,17 @@ int main(int argc, char ** argv) {
     wbCheck(cudaMemcpy(hostOutput, deviceOutput, numElements*sizeof(float), cudaMemcpyDeviceToHost));
     wbTime_stop(Copy, "Copying output memory to the CPU");
 
+
     wbTime_start(GPU, "Freeing GPU Memory");
+    std::cout << "Freeing GPU Memory"<<std::endl;
     cudaFree(deviceInput);
     cudaFree(deviceOutput);
     cudaFree(blockSum);
     wbTime_stop(GPU, "Freeing GPU Memory");
+    for(int index = 0; index < 10; index++){
+        std::cout<< hostOutput[index]<<" ";
+    }
+    std::cout<<std::endl;
 
     wbSolution(args, hostOutput, numElements);
 
