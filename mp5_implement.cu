@@ -118,7 +118,7 @@ int main(int argc, char ** argv) {
     wbTime_start(GPU, "Allocating GPU memory.");
     wbCheck(cudaMalloc((void**)&deviceInput, numElements*sizeof(float)));
     wbCheck(cudaMalloc((void**)&deviceOutput, numElements*sizeof(float)));
-    wbCheck(cudaMalloc((void**)&blockSum, int(ceil(numElements / float(BLOCK_SIZE << 1))) * sizeof(float)))
+    wbCheck(cudaMalloc((void**)&blockSum, int(ceil(numElements / float(BLOCK_SIZE << 1))) * sizeof(float)));
     wbTime_stop(GPU, "Allocating GPU memory.");
 
     wbTime_start(GPU, "Clearing blockSum memory.");
@@ -132,7 +132,7 @@ int main(int argc, char ** argv) {
     wbTime_stop(GPU, "Copying input memory to the GPU.");
 
     //@@ Initialize the grid and block dimensions here
-    dim3 GridDim(int(ceil(numElements / float(BLOCK_SIZE << 1)), 1, 1));
+    dim3 GridDim(int(ceil(numElements / float(BLOCK_SIZE << 1))), 1, 1);
     dim3 BlockDim(BLOCK_SIZE, 1, 1);
     wbTime_start(Compute, "Performing CUDA computation");
     //@@ Modify this to complete the functionality of the scan
