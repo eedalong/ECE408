@@ -20,7 +20,7 @@ __global__ void TestKernel(unsigned long long* time, int stride){
     shared_data[tid * stride] += 4;
     shared_data[tid * stride] *= 4;
     unsigned long long endTime = clock();
-    *time = endTime - startTime;
+    *time = (endTime - startTime);
 }
 
 
@@ -45,6 +45,7 @@ int main(int argc, const char** argv){
     for(int index=0; index < 10; index++){
         TestKernel<<<1, 32>>>(dtime, stride);
         cudaMemcpy(&time, dtime, sizeof(unsigned long long), cudaMemcpyDeviceToHost);
+        // 14 is overhead for calling clock
         std::cout <<"Time: "<<(time - 14) / 32 << std::endl;
         std::cout << std::endl;
     } 
