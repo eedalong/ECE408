@@ -32,7 +32,7 @@ int main(int argc, const char** argv){
     }
     int stride = 0;
     for(int index = 0; index < argc; index++){
-        printf(f"check argv %s \n", argv[index]);
+        printf("check argv %s \n", argv[index]);
         if(strcmp(argv[index], "-s")){
             stride = atoi(argv[index + 1]);
         }
