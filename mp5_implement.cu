@@ -147,8 +147,8 @@ int main(int argc, char ** argv) {
     //@@ Modify this to complete the functionality of the scan
     //@@ on the deivce
     std::cout << "Performing CUDA computation"<<std::endl;
-    //scan<<<GridDim, BlockDim>>>(deviceInput, deviceOutput, blockSum, numElements);
-    //cudaDeviceSynchronize();
+    scan<<<GridDim, BlockDim>>>(deviceInput, deviceOutput, blockSum, numElements);
+    cudaDeviceSynchronize();
     std::cout << "Performing blockSum add computation"<<std::endl;
     // add block sum to each block
     // TODO Debug
