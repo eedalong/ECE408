@@ -4,7 +4,7 @@
 
 #include    <wb.h>
 #include <iostream>
-#define BLOCK_SIZE 512 //@@ You can change this
+#define BLOCK_SIZE 256 //@@ You can change this
 
 #define wbCheck(stmt) do {                                 \
         cudaError_t err = stmt;                            \
@@ -19,7 +19,7 @@ int ceil(int a, int b){
     return (a + b - 1) / b;
 }
 
-__global__ void scan(float * input, float * output, float* block_sum, int len) {
+__global__ void pscan(float * input, float * output, float* block_sum, int len) {
     //@@ Modify the body of this function to complete the functionality of
     //@@ the scan on the device
     //@@ You may need multiple kernel calls; write your kernels before this
@@ -109,9 +109,10 @@ int main(int argc, char ** argv) {
     wbArg_t args;
     float * hostInput; // The input 1D list
     float * hostOutput; // The output list
+    float * hostSum;
     float * deviceInput;
     float * deviceOutput;
-    float * blockSum;
+    float * deivceSum;
     int numElements; // number of elements in the list
     int blockNum = 0;
 
@@ -121,6 +122,7 @@ int main(int argc, char ** argv) {
     hostInput = (float *) wbImport(wbArg_getInputFile(args, 0), &numElements);
     hostOutput = (float*) malloc(numElements * sizeof(float));
     blockNum = ceil(numElements, BLOCK_SIZE << 1);
+    hostSum = (float*) malloc(blockNum * sizeof(float));
     wbTime_stop(Generic, "Importing data and creating memory on host");
 
     wbLog(TRACE, "The number of input elements in the input is ", numElements);
@@ -132,7 +134,7 @@ int main(int argc, char ** argv) {
     wbTime_stop(GPU, "Allocating GPU memory.");
 
     wbTime_start(GPU, "Clearing blockSum memory.");
-    //wbCheck(cudaMemset(deviceOutput, 0, numElements*sizeof(float)));
+    wbCheck(cudaMemset(deviceOutput, 0, numElements*sizeof(float)));
     wbCheck(cudaMemset(blockSum, 0, blockNum * sizeof(float)));
     wbTime_stop(GPU, "Clearing blockSum memory.");
     std::cout << "blockSum memory cleared"<<std::endl;
@@ -148,7 +150,7 @@ int main(int argc, char ** argv) {
     //@@ Modify this to complete the functionality of the scan
     //@@ on the deivce
     std::cout << "Performing CUDA computation"<<std::endl;
-    scan<<<DimGrid, DimBlock>>>(deviceInput, deviceOutput, blockSum, numElements);
+    pscan<<<DimGrid, DimBlock>>>(deviceInput, deviceOutput, blockSum, numElements);
     cudaDeviceSynchronize();
     std::cout << "Performing blockSum add computation"<<std::endl;
     // add block sum to each block
