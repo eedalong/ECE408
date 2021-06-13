@@ -16,7 +16,9 @@ __global__ void TestKernel(unsigned long long* time, int stride){
     __shared__ float shared_data[1024];
     unsigned long long startTime = clock();
     int tid = threadIdx.x;
-    shared_data[tid * stride] ++ ;
+    shared_data[tid * stride] = 4;
+    shared_data[tid * stride] += 4;
+    shared_data[tid * stride] *= 4;
     unsigned long long endTime = clock();
     *time = endTime - startTime;
 }
@@ -32,7 +34,6 @@ int main(int argc, const char** argv){
     }
     int stride = 0;
     for(int index = 0; index < argc; index++){
-        printf("check argv %s \n", argv[index]);
         if(strcmp(argv[index], "-s") == 0){
             stride = atoi(argv[index + 1]);
         }
