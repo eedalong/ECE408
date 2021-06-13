@@ -27,7 +27,7 @@ int main(int argc, const char** argv){
     Bank_Conflict -s 2
     */
     if(argc != 3){
-        printf("this should be used like: ./Bank_Conflict -s(stride) 2");
+        printf("this should be used like: ./Bank_Conflict -s(stride) 2\n");
         return -1;
     }
     int stride = 0;
@@ -36,7 +36,7 @@ int main(int argc, const char** argv){
             stride = atoi(argv[index + 1]);
         }
     }
-    std::cout << "stride set is "<<stride<<std::endl
+    std::cout << "stride set is "<<stride<<std::endl;
     unsigned long long time;
     unsigned long long * dtime;
     cudaMalloc((void**) &dtime, sizeof(unsigned long long));
