@@ -68,13 +68,15 @@ __global__ void scan(float * input, float * output, float* block_sum, int len) {
         if(tid < d){
             int bi = offset * 2 * (tid + 1) - 1;
             int ai = bi - offset;
-            int t = shared_data[ai];
+            float t = shared_data[ai];
             shared_data[ai] = shared_data[bi];
             shared_data[bi] += t;
         }
         offset >>= 1;
         __syncthreads();
     }
+
+    __syncthreads();
 
     if(bid_offset + 2 * tid < len){
         output[bid_offset + 2 * tid] += shared_data[2 * tid];
@@ -146,7 +148,7 @@ int main(int argc, char ** argv) {
     std::cout << "Performing CUDA computation"<<std::endl;
     scan<<<GridDim, BlockDim>>>(deviceInput, deviceOutput, blockSum, numElements);
     cudaDeviceSynchronize();
-
+    std::cout << "Performing blockSum add computation"<<std::endl;
     // add block sum to each block
     uniform_add<<<GridDim, BlockDim>>>(deviceOutput, blockSum, numElements);
     cudaDeviceSynchronize();
