@@ -23,7 +23,7 @@ __global__ void reduction_v1(float * input, float * output, int len){
     //@@ Traverse the reduction tree
     //@@ Write the computed sum of the block to the output vector at the 
     //@@ correct index
-    __shared__ float shared_data[];
+    __shared__ float shared_data[BLOCK_SIZE << 1];
     int bx = blockIdx.x;
     int tx = threadIdx.x;
     int idx = bx * blockDim.x + tx;
@@ -52,7 +52,7 @@ __global__ void reduction_v2(float* input, float * output, int len){
     //@@ Traverse the reduction tree
     //@@ Write the computed sum of the block to the output vector at the 
     //@@ correct index
-    __shared__ float shared_data[];
+    __shared__ float shared_data[BLOCK_SIZE << 1];
     int tid = threadIdx.x;
     int bid = blockIdx.x;
     int idx = bid * blockDim.x + tid;
