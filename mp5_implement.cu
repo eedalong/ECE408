@@ -131,7 +131,7 @@ int main(int argc, char ** argv) {
     //wbCheck(cudaMemset(deviceOutput, 0, numElements*sizeof(float)));
     wbCheck(cudaMemset(blockSum, 0, blockNum * sizeof(float)));
     wbTime_stop(GPU, "Clearing blockSum memory.");
-
+    std::cout << "blockSum memory cleared"<<std::endl;
     wbTime_start(GPU, "Copying input memory to the GPU.");
     wbCheck(cudaMemcpy(deviceInput, hostInput, numElements*sizeof(float), cudaMemcpyHostToDevice));
     wbCheck(cudaMemcpy(deviceOutput, hostInput, numElements*sizeof(float), cudaMemcpyHostToDevice));
@@ -143,11 +143,13 @@ int main(int argc, char ** argv) {
     wbTime_start(Compute, "Performing CUDA computation");
     //@@ Modify this to complete the functionality of the scan
     //@@ on the deivce
+    std::cout << "Performing CUDA computation"<<std::endl;
     scan<<<GridDim, BlockDim>>>(deviceInput, deviceOutput, blockSum, numElements);
     cudaDeviceSynchronize();
 
     // add block sum to each block
     uniform_add<<<GridDim, BlockDim>>>(deviceOutput, blockSum, numElements);
+    cudaDeviceSynchronize();
     wbTime_stop(Compute, "Performing CUDA computation");
 
     wbTime_start(Copy, "Copying output memory to the CPU");
