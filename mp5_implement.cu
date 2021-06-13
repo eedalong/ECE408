@@ -59,7 +59,6 @@ __global__ void pscan(float * input, float * output, float* block_sum, int len) 
        
     }
 
-    __syncthreads();
 
     // clear last element to zero and save it to block_sum
     if(tid == 0){
@@ -100,13 +99,13 @@ __global__ void pscan(float * input, float * output, float* block_sum, int len) 
 __global__ void uniform_add(float * input, float * block_sum, int input_len){
     int block_idx = blockIdx.x;
     int thread_idx = threadIdx.x;
-    int base_idx = block_idx * (BLOCK_SIZE << 1);
+    int base_idx = (block_idx + 1) * (BLOCK_SIZE << 1);
     // each thread process 2 elements
     if((base_idx + 2 * thread_idx) < input_len){
-        input[base_idx + 2 * thread_idx] += block_sum[block_idx];
+        input[base_idx + 2 * thread_idx] += block_sum[block_idx - 1];
     }
     if((base_idx + 2 * thread_idx + 1) < input_len){
-        input[base_idx + 2 * thread_idx + 1] += block_sum[block_idx];
+        input[base_idx + 2 * thread_idx + 1] += block_sum[block_idx - 1];
     }
 }
 
@@ -151,6 +150,7 @@ int main(int argc, char ** argv) {
 
     //@@ Initialize the grid and block dimensions here
     dim3 DimGrid(blockNum, 1, 1);
+    
     dim3 DimBlock(BLOCK_SIZE, 1, 1);
     wbTime_start(Compute, "Performing CUDA computation");
     //@@ Modify this to complete the functionality of the scan
@@ -161,8 +161,11 @@ int main(int argc, char ** argv) {
     std::cout << "Performing deviceSum add computation"<<std::endl;
     // add block sum to each block
     // TODO Debug
-    //uniform_add<<<GridDim, BlockDim>>>(deviceOutput, deviceSum, numElements);
-    //cudaDeviceSynchronize();
+    if(blockNum > 1){
+        dim3 GridDimAdd(blockNum-1, 1, 1);
+        uniform_add<<<GridDimAdd, BlockDim>>>(deviceOutput, deviceSum, numElements);
+        cudaDeviceSynchronize();
+    }
     wbTime_stop(Compute, "Performing CUDA computation");
     std::cout << "Copying output memory to the CPU"<<std::endl;
     wbTime_start(Copy, "Copying output memory to the CPU");
