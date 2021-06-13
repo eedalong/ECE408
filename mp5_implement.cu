@@ -112,7 +112,7 @@ int main(int argc, char ** argv) {
     float * hostSum;
     float * deviceInput;
     float * deviceOutput;
-    float * deivceSum;
+    float * deviceSum;
     int numElements; // number of elements in the list
     int blockNum = 0;
 
