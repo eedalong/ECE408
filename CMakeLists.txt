@@ -60,3 +60,4 @@ CUDA_ADD_EXECUTABLE(MP4_Implement mp4_implement.cu ${wbhdr} ${wbsrc})
 
 #Add Tools
 CUDA_ADD_EXECUTABLE(MP2_Dataset tools/mp2_dataset.cpp ${wbhdr} ${wbsrc})
+CUDA_ADD_EXECUTABLE(Bank_Conflict tools/bank_conflict.cpp ${wbhdr} ${wbsrc})
