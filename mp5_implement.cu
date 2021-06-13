@@ -59,6 +59,8 @@ __global__ void pscan(float * input, float * output, float* block_sum, int len) 
        
     }
 
+    __syncthreads();
+
     // clear last element to zero and save it to block_sum
     if(tid == 0){
         block_sum[bid] = shared_data[elementsNumPerBlock - 1];
