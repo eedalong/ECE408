@@ -150,10 +150,11 @@ int main(int argc, char ** argv) {
     cudaDeviceSynchronize();
     std::cout << "Performing blockSum add computation"<<std::endl;
     // add block sum to each block
-    uniform_add<<<GridDim, BlockDim>>>(deviceOutput, blockSum, numElements);
-    cudaDeviceSynchronize();
+    // TODO Debug
+    //uniform_add<<<GridDim, BlockDim>>>(deviceOutput, blockSum, numElements);
+    //cudaDeviceSynchronize();
     wbTime_stop(Compute, "Performing CUDA computation");
-
+    std::cout << "Copying output memory to the CPU"<<std::endl;
     wbTime_start(Copy, "Copying output memory to the CPU");
     wbCheck(cudaMemcpy(hostOutput, deviceOutput, numElements*sizeof(float), cudaMemcpyDeviceToHost));
     wbTime_stop(Copy, "Copying output memory to the CPU");
