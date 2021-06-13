@@ -22,7 +22,7 @@ __global__ void TestKernel(unsigned long long* time, int stride){
 }
 
 
-int main(int argc, char** argv){
+int main(int argc, const char** argv){
     /*
     Bank_Conflict -s 2
     */
@@ -36,6 +36,7 @@ int main(int argc, char** argv){
             stride = atoi(argv[index + 1]);
         }
     }
+    std::cout << "stride set is "<<stride<<std::endl
     unsigned long long time;
     unsigned long long * dtime;
     cudaMalloc((void**) &dtime, sizeof(unsigned long long));
