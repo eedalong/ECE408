@@ -104,8 +104,9 @@ void preallocBlockSums(unsigned int maxNumElements){
         tempNumElements = ceil(tempNumElements, BLOCK_SIZE << 1);
         maxLevel += 1; 
     }
-
+    maxLevel += 1;
     // allocate memory for different level of blockSum
+    std::cout<<"maxLevel is "<<maxLevel<<std::endl;
     cudaMalloc((void***) &g_scanBlockSums, sizeof(float*) * maxLevel);
     tempNumElements = maxNumElements;
     int level = 0;
@@ -115,7 +116,8 @@ void preallocBlockSums(unsigned int maxNumElements){
         cudaMalloc((void**) &g_scanBlockSums[level], sizeof(float) * tempNumElements);
         level += 1;
     }
-    std::cout<<"maxLevel is "<<maxLevel<<std::endl;
+    // this is for the last g_scanBlockSums
+    cudaMalloc((void**) &g_scanBlockSums[level], sizeof(float) * tempNumElements);
 
 }  
 void deallocBlockSums(){
@@ -184,6 +186,7 @@ int main(int argc, char ** argv) {
     wbTime_start(Generic, "Importing data and creating memory on host");
     hostInput = (float *) wbImport(wbArg_getInputFile(args, 0), &numElements);
     hostOutput = (float*) malloc(numElements * sizeof(float));
+    std::cout<< "Begin to prealloc g_scanBlockSums"<<std::endl;
     preallocBlockSums(numElements);
     wbTime_stop(Generic, "Importing data and creating memory on host");
 
