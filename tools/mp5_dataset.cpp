@@ -30,11 +30,11 @@ int main(int argc, char** argv){
     float * output_array;
     string directory;
     while(index < argc){
-        if(strcmp(argv[index], "-size")){
+        if(strcmp(argv[index], "-size") == 0){
             index += 1;
             array_size = atoi(argv[index]);
         }
-        else if(strcmp(argv[index], "-d")){
+        else if(strcmp(argv[index], "-d") == 0){
             index += 1;
             directory = string(argv[index]);
         }
