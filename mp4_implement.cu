@@ -30,7 +30,7 @@ __global__ void reduction_v1(float * input, float * output, int len){
     // Load data into shared memory
     shared_data[tx] = input[idx];
     __syncthreads();
-    int stride = 1;
+    
     for(int stride = 1; stride <= blockDim.x ; stride <<= 1){
         /*
         Problem:
