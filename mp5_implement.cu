@@ -59,15 +59,15 @@ __global__ void pscan(float * input, float * output, float* block_sum, int len) 
        
     }
     __syncthreads();
-    for(int index = 0; index < ELEMENT_NUM_PER_BLOCK; index++){
-        printf("%f ", shared_data[index]);
-    }
-    printf("\n");
 
     // clear last element to zero and save it to block_sum
     if(tid == 0){
         block_sum[bid] = shared_data[ELEMENT_NUM_PER_BLOCK - 1];
         shared_data[ELEMENT_NUM_PER_BLOCK - 1] = 0;
+        for(int index = 0; index < ELEMENT_NUM_PER_BLOCK; index++){
+            printf("%f ", shared_data[index]);
+        }
+        printf("\n");
     }
 
     __syncthreads();
