@@ -58,7 +58,7 @@ __global__ void pscan(float * input, float * output, float* block_sum, int len) 
         offset *= 2;
        
     }
-
+    __syncthreads();
 
     // clear last element to zero and save it to block_sum
     if(tid == 0){
@@ -170,7 +170,6 @@ void scanRecursive(float* input, float* output, int elementNum, int level){
         // scanBlockSum length > ELEMENT_NUM_PER_BLOCK, which need to be processed by multiple blocks
         scanRecursive(g_scanBlockSums[level], g_scanBlockSums[level], blockNum, level + 1);
     }
-    cudaDeviceSynchronize();
     std::cout<< "add segment prefix sum to result"<<std::endl;
     // add blockSum to output.
     dim3 addGrid(blockNum-1, 1, 1);
