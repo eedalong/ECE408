@@ -5,7 +5,7 @@
 #include    <wb.h>
 #include <iostream>
 #define BLOCK_SIZE 512 //@@ You can change this
-#define ELEMENT_NUM_PER_BLOCK BLOCK_SIZE << 1
+#define ELEMENT_NUM_PER_BLOCK BLOCK_SIZE * 2
 #define wbCheck(stmt) do {                                 \
         cudaError_t err = stmt;                            \
         if (err != cudaSuccess) {                          \
@@ -68,7 +68,8 @@ __global__ void pscan(float * input, float * output, float* block_sum, int len) 
         for(int index = 0; index < ELEMENT_NUM_PER_BLOCK; index++){
             printf("%f ", shared_data[index]);
         }
-        printf("\n");
+        printf("\n\n\n\n");
+        printf("check shared_data after set %d\n\n\n\n", shared_data[ELEMENT_NUM_PER_BLOCK - 1]);
     }
 
     __syncthreads();
@@ -88,6 +89,13 @@ __global__ void pscan(float * input, float * output, float* block_sum, int len) 
     }
 
     __syncthreads();
+    if(tid == 0){
+        for(int index = 0; index < ELEMENT_NUM_PER_BLOCK; index++){
+            printf("%f ", shared_data[index]);
+        }
+        printf("\n\n\n\n");
+
+    }
     
     // here we get exclusive prefix sum, we add them with original data to get inclusive prefix sum
     if(bid_offset + 2 * tid < len){
