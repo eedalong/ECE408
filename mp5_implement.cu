@@ -4,7 +4,7 @@
 
 #include    <wb.h>
 #include <iostream>
-#define BLOCK_SIZE 1024 //@@ You can change this
+#define BLOCK_SIZE 512 //@@ You can change this
 #define ELEMENT_NUM_PER_BLOCK BLOCK_SIZE << 1
 #define wbCheck(stmt) do {                                 \
         cudaError_t err = stmt;                            \
@@ -59,6 +59,10 @@ __global__ void pscan(float * input, float * output, float* block_sum, int len) 
        
     }
     __syncthreads();
+    for(int index = 0; index < ELEMENT_NUM_PER_BLOCK; index++){
+        printf("%f ", shared_data[index]);
+    }
+    printf("\n");
 
     // clear last element to zero and save it to block_sum
     if(tid == 0){
@@ -149,6 +153,7 @@ void scanRecursive(float* input, float* output, int elementNum, int level){
     dim3 DimGrid(blockNum, 1, 1);
     dim3 DimBlock(BLOCK_SIZE, 1, 1);
     pscan<<<DimGrid, DimBlock>>>(input, output, g_scanBlockSums[level], elementNum);
+    cudaDeviceSynchronize();
     // elementNum <= ELEMENT_NUM_PER_BLOCK
     // scanBlocksSum length = 1
     if(blockNum == 1){
