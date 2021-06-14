@@ -51,7 +51,7 @@ int main(int argc, char** argv){
 
     // set input and output path
     string inputPath = directory + string("/input.raw");
-    string outputPath = directory + string("./output.raw");
+    string outputPath = directory + string("/output.raw");
 
     wbLog(TRACE, "input file is ", inputPath.c_str());
     wbLog(TRACE, "output file is ", outputPath.c_str());
