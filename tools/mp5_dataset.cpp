@@ -7,7 +7,7 @@
 
 void createArray(float* inputArray, int array_length){
     for(int index = 0; index < array_length; index++){
-        inputArray[index] = rand() % 1131;
+        inputArray[index] = rand() % 10;
     }
 }
 
