@@ -131,7 +131,9 @@ void deallocBlockSums(){
 __global__ void uniform_add(float * input, float * block_sum, int input_len){
     int block_idx = blockIdx.x;
     int thread_idx = threadIdx.x;
-    int base_idx = (block_idx + 1) * (ELEMENT_NUM_PER_BLOCK);
+
+    // blocks we process 1,2,3,4...BLOCK_NUM-1
+    int base_idx = (block_idx + 1) * ELEMENT_NUM_PER_BLOCK;
     // each thread process 2 elements
     if((base_idx + 2 * thread_idx) < input_len){
         input[base_idx + 2 * thread_idx] += block_sum[block_idx];
