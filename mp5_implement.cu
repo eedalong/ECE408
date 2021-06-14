@@ -166,7 +166,8 @@ void scanRecursive(float* input, float* output, int elementNum, int level){
     dim3 DimGrid(blockNum, 1, 1);
     dim3 DimBlock(BLOCK_SIZE, 1, 1);
     pscan<<<DimGrid, DimBlock>>>(input, output, g_scanBlockSums[level], elementNum);
-    cudaDeviceSynchronize();
+    
+    //cudaDeviceSynchronize();
     // elementNum <= ELEMENT_NUM_PER_BLOCK
     // scanBlocksSum length = 1
     if(blockNum == 1){
