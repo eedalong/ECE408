@@ -168,6 +168,7 @@ void scanRecursive(float* input, float* output, int elementNum, int level){
         // scanBlockSum length > BLOCK_SIZE * 2, which need to be processed by multiple blocks
         scanRecursive(g_scanBlockSums[level], g_scanBlockSums[level], blockNum, level + 1);
     }
+    cudaDeviceSynchronize();
     std::cout<< "add segment prefix sum to result"<<std::endl;
     // add blockSum to output.
     dim3 addGrid(blockNum-1, 1, 1);
