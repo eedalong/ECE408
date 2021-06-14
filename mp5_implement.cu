@@ -69,7 +69,7 @@ __global__ void pscan(float * input, float * output, float* block_sum, int len) 
             printf("%f ", shared_data[index]);
         }
         printf("\n\n\n\n");
-        printf("check shared_data after set %d\n\n\n\n", shared_data[ELEMENT_NUM_PER_BLOCK - 1]);
+        printf("check shared_data after set %f\n\n\n\n", shared_data[ELEMENT_NUM_PER_BLOCK - 1]);
     }
 
     __syncthreads();
