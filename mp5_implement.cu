@@ -166,7 +166,7 @@ void scanRecursive(float* input, float* output, int elementNum, int level){
     dim3 DimGrid(blockNum, 1, 1);
     dim3 DimBlock(BLOCK_SIZE, 1, 1);
     pscan<<<DimGrid, DimBlock>>>(input, output, g_scanBlockSums[level], elementNum);
-    
+
     //cudaDeviceSynchronize();
     // elementNum <= ELEMENT_NUM_PER_BLOCK
     // scanBlocksSum length = 1
@@ -178,6 +178,7 @@ void scanRecursive(float* input, float* output, int elementNum, int level){
     // scanBlocksSum length < ELEMENT_NUM_PER_BLOCK, which can be processed by one block
     else if(blockNum <= ELEMENT_NUM_PER_BLOCK){
         std::cout<< "elementNum <= ELEMENT_NUM_PER_BLOCK * ELEMENT_NUM_PER_BLOCK"<<std::endl;
+        std::cout<< "blockNum is "<<blockNum<<std::endl;
         dim3 blockSumGrid(1, 1, 1);
         //float* tempSum;
         //cudaMalloc((void**) &tempSum, sizeof(float));

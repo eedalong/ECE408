@@ -71,7 +71,6 @@ static wbBool wbSolution_correctQ(char * expectedOutputFile, wbSolution_t sol) {
                     idx = ii * expectedColumns + jj;
                     if (wbUnequalQ(expectedData[idx], solutionData[idx])) {
                         string str;
-                        printf("check a: %f \t and b: %f", expectedData[idx], solutionData[idx]);
                         if (expectedColumns == 1) {
                             
                             str = wbString("The solution did not match the expected results at row ", ii,
