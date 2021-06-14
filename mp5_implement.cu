@@ -141,7 +141,7 @@ __global__ void uniform_add(float * input, float * block_sum, int input_len){
 
 // all array here are allocated on GPU
 void scanRecursive(float* input, float* output, int elementNum, int level){
-    int blockNum = ceil(numElements, BLOCK_SIZE << 1);
+    int blockNum = ceil(elementNum, BLOCK_SIZE << 1);
     dim3 DimGrid(blockNum, 1, 1);
     dim3 DimBlock(BLOCK_SIZE, 1, 1);
     pscan<<<DimGrid, DimBlock>>>(input, output, g_scanBlockSums[level], elementNum);
@@ -155,7 +155,9 @@ void scanRecursive(float* input, float* output, int elementNum, int level){
     else if(blockNum <= BLOCK_SIZE * 2){
         
         dim3 blockSumGrid(1, 1, 1);
-        pscan<<<blockSumGrid, DimBlock>>>(g_scanBlockSums[level], g_scanBlockSums[level], blockNum);
+        float* tempSum;
+        cudaMalloc((void**) &tempSum, sizeof(float));
+        pscan<<<blockSumGrid, DimBlock>>>(g_scanBlockSums[level], g_scanBlockSums[level], tempSum, blockNum);
         
     }else{
         // elementNum > BLOCK_SIZE * 2 * BLOCK_SIZE * 2
