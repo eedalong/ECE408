@@ -208,7 +208,7 @@ int main(int argc, char ** argv) {
     wbTime_start(Compute, "Performing CUDA computation");
     //@@ Modify this to complete the functionality of the scan
     //@@ on the deivce
-    scanRecursive(deviceInput, deviceOutput, numElements);
+    scanRecursive(deviceInput, deviceOutput, numElements, 0);
 
     cudaDeviceSynchronize();
     wbTime_stop(Compute, "Performing CUDA computation");
