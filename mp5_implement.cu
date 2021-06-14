@@ -152,12 +152,13 @@ void scanRecursive(float* input, float* output, int elementNum, int level){
     // elementNum <= ELEMENT_NUM_PER_BLOCK
     // scanBlocksSum length = 1
     if(blockNum == 1){
+        std::cout<< "elementNum <= ELEMENT_NUM_PER_BLOCK"<<std::endl;
         return;
     }
     // elementNum <= ELEMENT_NUM_PER_BLOCK * ELEMENT_NUM_PER_BLOCK
     // scanBlocksSum length < ELEMENT_NUM_PER_BLOCK, which can be processed by one block
     else if(blockNum <= ELEMENT_NUM_PER_BLOCK){
-        
+        std::cout<< "elementNum <= ELEMENT_NUM_PER_BLOCK * ELEMENT_NUM_PER_BLOCK"<<std::endl;
         dim3 blockSumGrid(1, 1, 1);
         //float* tempSum;
         //cudaMalloc((void**) &tempSum, sizeof(float));
