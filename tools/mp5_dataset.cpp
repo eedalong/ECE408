@@ -57,7 +57,7 @@ int main(int argc, char** argv){
     wbLog(TRACE, "output file is ", outputPath.c_str());
 
     wbExport(inputPath.c_str(), input_array, array_size);
-    wbExport(outputPath.c_str(), output_array, 1);
+    wbExport(outputPath.c_str(), output_array, array_size);
 
     return 0;
 
