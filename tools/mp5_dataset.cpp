@@ -40,6 +40,7 @@ int main(int argc, char** argv){
         }
         index += 1;
     }
+    wbLog(TRACE, "array size is  ", array_size);
     // allocate memory
     input_array = (float *)malloc(sizeof(float) * array_size);
     output_array = (float *)malloc(sizeof(float) * array_size);
@@ -51,6 +52,9 @@ int main(int argc, char** argv){
     // set input and output path
     string inputPath = directory + string("/input.raw");
     string outputPath = directory + string("./output.raw");
+
+    wbLog(TRACE, "input file is ", inputPath.c_str());
+    wbLog(TRACE, "output file is ", outputPath.c_str());
 
     wbExport(inputPath.c_str(), input_array, array_size);
     wbExport(outputPath.c_str(), output_array, array_size);
