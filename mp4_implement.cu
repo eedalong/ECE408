@@ -5,7 +5,7 @@
 #include    <wb.h>
 
 #define BLOCK_SIZE 512 //@@ You can change this
-
+#define ELEMENT_NUM_PER_BLOCK BLOCK_SIZE << 1
 #define wbCheck(stmt) do {                                 \
         cudaError_t err = stmt;                            \
         if (err != cudaSuccess) {                          \
@@ -23,7 +23,7 @@ __global__ void reduction_v1(float * input, float * output, int len){
     //@@ Traverse the reduction tree
     //@@ Write the computed sum of the block to the output vector at the 
     //@@ correct index
-    __shared__ float shared_data[BLOCK_SIZE << 1];
+    __shared__ float shared_data[ELEMENT_NUM_PER_BLOCK];
     int bx = blockIdx.x;
     int tx = threadIdx.x;
     int idx = bx * blockDim.x + tx;
@@ -52,7 +52,7 @@ __global__ void reduction_v2(float* input, float * output, int len){
     //@@ Traverse the reduction tree
     //@@ Write the computed sum of the block to the output vector at the 
     //@@ correct index
-    __shared__ float shared_data[BLOCK_SIZE << 1];
+    __shared__ float shared_data[ELEMENT_NUM_PER_BLOCK];
     int tid = threadIdx.x;
     int bid = blockIdx.x;
     int idx = bid * blockDim.x + tid;
@@ -85,15 +85,26 @@ __global__ void reduction(float * input, float * output, int len) {
     //@@ Traverse the reduction tree
     //@@ Write the computed sum of the block to the output vector at the 
     //@@ correct index
-    __shared__ float shared_data[BLOCK_SIZE <<1];
+    __shared__ float shared_data[ELEMENT_NUM_PER_BLOCK];
     int bx = blockIdx.x;
     int tx = threadIdx.x;
-    int index = bx * blockDim.x + tx;
-    shared_data[tx] = input[index];
+    int base_idx = bx * ELEMENT_NUM_PER_BLOCK;
+    // each thread load 2 elements into shared memory
+    if(base_idx + 2 * tx < len){
+        shared_data[2 * tx] = input[base_idx + 2 * tx];
+    }else{
+        shared_data[2 * tx] = 0; 
+    }
+    if(base_idx + 2 * tx + 1 < len){
+        shared_data[2 * tx + 1] = input[base_idx + 2 * tx + 1];
+    }else{
+        shared_data[2 * tx + 1] = 0;
+    }
     __syncthreads();
-    for(unsigned int s = blockDim.x / 2; s >= 1; s >>= 1){
-        if(tx < s){
-            shared_data[tx] += shared_data[tx + s];
+    
+    for(unsigned int stride = ELEMENT_NUM_PER_BLOCK / 2; stride > 0; stride >>= 1){
+        if(tx < stride){
+            shared_data[tx] += shared_data[tx + stride];
         }
         __syncthreads();
 
@@ -117,10 +128,7 @@ int main(int argc, char ** argv) {
     wbTime_start(Generic, "Importing data and creating memory on host");
     hostInput = (float *) wbImport(wbArg_getInputFile(args, 0), &numInputElements);
 
-    numOutputElements = numInputElements / (BLOCK_SIZE<<1);
-    if (numInputElements % (BLOCK_SIZE<<1)) {
-        numOutputElements++;
-    }
+    numOutputElements = ceil(numInputElements, ELEMENT_NUM_PER_BLOCK);
     hostOutput = (float*) malloc(numOutputElements * sizeof(float));
 
     wbTime_stop(Generic, "Importing data and creating memory on host");
@@ -140,8 +148,8 @@ int main(int argc, char ** argv) {
     cudaMemcpy(deviceInput, hostInput, sizeof(float) * numInputElements, cudaMemcpyHostToDevice);
     wbTime_stop(GPU, "Copying input memory to the GPU.");
     //@@ Initialize the grid and block dimensions here
-    dim3 DimGrid(ceil(numInputElements, BLOCK_SIZE << 1), 1, 1);
-    dim3 DimBlock(BLOCK_SIZE << 1, 1, 1);
+    dim3 DimGrid(numOutputElements, 1, 1);
+    dim3 DimBlock(BLOCK_SIZE, 1, 1);
 
     wbTime_start(Compute, "Performing CUDA computation");
     //@@ Launch the GPU Kernel here
