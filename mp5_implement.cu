@@ -4,7 +4,7 @@
 
 #include    <wb.h>
 #include <iostream>
-#define BLOCK_SIZE 512 //@@ You can change this
+#define BLOCK_SIZE 1024 //@@ You can change this
 #define ELEMENT_NUM_PER_BLOCK BLOCK_SIZE * 2
 #define wbCheck(stmt) do {                                 \
         cudaError_t err = stmt;                            \
