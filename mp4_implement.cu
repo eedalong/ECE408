@@ -18,68 +18,6 @@ int ceil(int a, int b){
     return (a + b - 1) / b;
 }
 
-__global__ void reduction_v1(float * input, float * output, int len){
-     //@@ Load a segment of the input vector into shared memory
-    //@@ Traverse the reduction tree
-    //@@ Write the computed sum of the block to the output vector at the 
-    //@@ correct index
-    __shared__ float shared_data[ELEMENT_NUM_PER_BLOCK];
-    int bx = blockIdx.x;
-    int tx = threadIdx.x;
-    int idx = bx * blockDim.x + tx;
-    // Load data into shared memory
-    shared_data[tx] = input[idx];
-    __syncthreads();
-    
-    for(int stride = 1; stride <= blockDim.x ; stride <<= 1){
-        /*
-        Problem:
-        1. Highly divergenet warps are very ineffiency
-        2. % operator is very slow
-        */
-        if(tx % (stride * 2) == 0){
-            shared_data[tx] += shared_data[tx + stride];
-        }
-        __syncthreads();
-    }
-
-    if(tx == 0) output[bx] = shared_data[0];
-
-}
-
-__global__ void reduction_v2(float* input, float * output, int len){
-    //@@ Load a segment of the input vector into shared memory
-    //@@ Traverse the reduction tree
-    //@@ Write the computed sum of the block to the output vector at the 
-    //@@ correct index
-    __shared__ float shared_data[ELEMENT_NUM_PER_BLOCK];
-    int tid = threadIdx.x;
-    int bid = blockIdx.x;
-    int idx = bid * blockDim.x + tid;
-
-    // Load data into shared memory
-    shared_data[tid] = input[idx];
-    __syncthreads();
-
-    // we dont filter thread id, we filter reduction index
-    // i.e. for stride = 1, index should be 0, 2, 4, 6, 8...
-    // for stride = 2, index should be 0, 4, 8, 12...
-    // for stride = 4, index should be 0, 8, 16, 24...
-
-    /*
-    Problem: 
-        1. Interleaved memory address with bank confliction.
-    */
-    for(unsigned int s = 1; s < blockDim.x; s <<= 1){
-        int index = s * tid * 2;
-        if(index < blockDim.x){
-            shared_data[index] += shared_data[index + s];
-        }
-        __syncthreads();
-    }
-    // set result
-    if(tid == 0) output[bid] = shared_data[tid];
-}
 __global__ void reduction(float * input, float * output, int len) {
     //@@ Load a segment of the input vector into shared memory
     //@@ Traverse the reduction tree
@@ -109,6 +47,7 @@ __global__ void reduction(float * input, float * output, int len) {
         __syncthreads();
 
     }
+    __syncthreads();
     if(tx == 0) output[bx] = shared_data[0];
 }
 
@@ -128,6 +67,7 @@ int main(int argc, char ** argv) {
     wbTime_start(Generic, "Importing data and creating memory on host");
     hostInput = (float *) wbImport(wbArg_getInputFile(args, 0), &numInputElements);
 
+    // each block output one elements
     numOutputElements = ceil(numInputElements, ELEMENT_NUM_PER_BLOCK);
     hostOutput = (float*) malloc(numOutputElements * sizeof(float));
 
