@@ -48,7 +48,10 @@ __global__ void reduction(float * input, float * output, int len) {
 
     }
     __syncthreads();
-    if(tx == 0) output[bx] = shared_data[0];
+    if(tx == 0) {
+        output[bx] = shared_data[0];
+        printf("for block %d, total sum is %f", bx, output[bx]);
+    }
 }
 
 
@@ -94,7 +97,6 @@ int main(int argc, char ** argv) {
     wbTime_start(Compute, "Performing CUDA computation");
     //@@ Launch the GPU Kernel here
     reduction<<<DimGrid, DimBlock>>>(deviceInput, deviceOutput, numInputElements);
-
     cudaDeviceSynchronize();
     wbTime_stop(Compute, "Performing CUDA computation");
 
