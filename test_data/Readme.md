@@ -1,0 +1,2 @@
+# ReadMe
+These are test data folder for each lab. I only put one test case as an example in each folder to avoid this repo being too large. If you want to add more test data case you can generate your own dataset using tools in [tools/](../tools).

@@ -30,12 +30,12 @@ int main(int argc, const char** argv){
     Bank_Conflict -s 2
     */
     if(argc != 3){
-        printf("this should be used like: ./Bank_Conflict -s(stride) 2\n");
+        printf("this should be used like: ./Bank_Conflict -stride 2\n");
         return -1;
     }
     int stride = 0;
     for(int index = 0; index < argc; index++){
-        if(strcmp(argv[index], "-s") == 0){
+        if(strcmp(argv[index], "-stride") == 0){
             stride = atoi(argv[index + 1]);
         }
     }

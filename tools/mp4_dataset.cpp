@@ -21,7 +21,7 @@ int main(int argc, char** argv){
     // MP4_Dataset -d [diretory] -size [length]
     srand(time(NULL));
     if(argc != 5){
-        printf("this should be used like: MP5_Dataset -d [diretory] -size [length of input array]");
+        printf("this should be used like: MP4_Dataset -d [diretory] -size [length of input array]");
     }
     int index = 1;
     int array_size = 0;
