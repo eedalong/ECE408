@@ -107,7 +107,7 @@ void preallocBlockSums(unsigned int maxNumElements){
     maxLevel += 1;
     // allocate memory for different level of blockSum
     std::cout<<"maxLevel is "<<maxLevel<<std::endl;
-    g_scanBlockSums = (float**) malloc(sizeof(float*) * maxLeve);
+    g_scanBlockSums = (float**) malloc(sizeof(float*) * maxLevel);
     tempNumElements = maxNumElements;
     int level = 0;
     while(tempNumElements > 1){
