@@ -12,7 +12,7 @@ void createArray(float* inputArray, int array_length){
 }
 
 void reductionSum(float* inputArray, float* outputArray, int array_length){
-    for(int index = 1; index < array_length; index++){
+    for(int index = 0; index < array_length; index++){
         outputArray[0] += inputArray[index];
     }
 
