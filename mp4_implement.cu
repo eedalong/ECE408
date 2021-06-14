@@ -40,7 +40,7 @@ __global__ void reduction(float * input, float * output, int len) {
     }
     __syncthreads();
     
-    for(unsigned int stride = ELEMENT_NUM_PER_BLOCK / 2; stride > 0; stride >>= 1){
+    for(unsigned int stride = ELEMENT_NUM_PER_BLOCK / 2; stride > 0; stride /= 2){
         if(tx < stride){
             shared_data[tx] += shared_data[tx + stride];
         }
