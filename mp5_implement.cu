@@ -64,6 +64,7 @@ __global__ void pscan(float * input, float * output, float* block_sum, int len) 
     if(tid == 0){
         block_sum[bid] = shared_data[ELEMENT_NUM_PER_BLOCK - 1];
         shared_data[ELEMENT_NUM_PER_BLOCK - 1] = 0;
+        print("check bid_offset %d\n\n\n\n", bid_offset);
         for(int index = 0; index < ELEMENT_NUM_PER_BLOCK; index++){
             printf("%f ", shared_data[index]);
         }
