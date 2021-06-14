@@ -64,12 +64,14 @@ __global__ void pscan(float * input, float * output, float* block_sum, int len) 
     if(tid == 0){
         block_sum[bid] = shared_data[ELEMENT_NUM_PER_BLOCK - 1];
         shared_data[ELEMENT_NUM_PER_BLOCK - 1] = 0;
+        /*
         printf("check bid_offset %d\n\n\n\n", bid_offset);
         for(int index = 0; index < ELEMENT_NUM_PER_BLOCK; index++){
             printf("%f ", shared_data[index]);
         }
         printf("\n\n\n\n");
         printf("check shared_data after set %f\n\n\n\n", shared_data[ELEMENT_NUM_PER_BLOCK - 1]);
+        */
     }
 
     __syncthreads();
@@ -89,6 +91,7 @@ __global__ void pscan(float * input, float * output, float* block_sum, int len) 
     }
 
     __syncthreads();
+    /*
     if(tid == 0){
         for(int index = 0; index < ELEMENT_NUM_PER_BLOCK; index++){
             printf("%f ", shared_data[index]);
@@ -96,6 +99,7 @@ __global__ void pscan(float * input, float * output, float* block_sum, int len) 
         printf("\n\n\n\n");
 
     }
+    */
     
     // here we get exclusive prefix sum, we add them with original data to get inclusive prefix sum
     if(bid_offset + 2 * tid < len){
