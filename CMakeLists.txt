@@ -61,6 +61,7 @@ CUDA_ADD_EXECUTABLE(MP5_Implement mp5_implement.cu ${wbhdr} ${wbsrc})
 
 #Add Tools
 CUDA_ADD_EXECUTABLE(MP2_Dataset tools/mp2_dataset.cpp ${wbhdr} ${wbsrc})
+CUDA_ADD_EXECUTABLE(MP3_Dataset tools/mp3_dataset.cpp ${wbhdr} ${wbsrc})
 CUDA_ADD_EXECUTABLE(MP4_Dataset tools/mp4_dataset.cpp ${wbhdr} ${wbsrc})
 CUDA_ADD_EXECUTABLE(MP5_Dataset tools/mp5_dataset.cpp ${wbhdr} ${wbsrc})
 CUDA_ADD_EXECUTABLE(Bank_Conflict tools/bank_conflict.cu ${wbhdr} ${wbsrc})
