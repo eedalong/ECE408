@@ -5,7 +5,7 @@
 #include    <wb.h>
 #include <iostream>
 #define BLOCK_SIZE 1024 //@@ You can change this
-
+#define ELEMENT_NUM_PER_BLOCK BLOCK_SIZE << 1
 #define wbCheck(stmt) do {                                 \
         cudaError_t err = stmt;                            \
         if (err != cudaSuccess) {                          \
@@ -25,12 +25,11 @@ __global__ void pscan(float * input, float * output, float* block_sum, int len) 
     //@@ You may need multiple kernel calls; write your kernels before this
     //@@ function and call them from here
 
-    // for each thread, we process BLOCK_SIZE * 2 elements
-    __shared__ float shared_data[BLOCK_SIZE * 2];
+    // for each thread, we process ELEMENT_NUM_PER_BLOCK elements
+    __shared__ float shared_data[ELEMENT_NUM_PER_BLOCK];
     int bid = blockIdx.x;
     int tid = threadIdx.x;
-    int elementsNumPerBlock = BLOCK_SIZE * 2;
-    int bid_offset = bid * elementsNumPerBlock;
+    int bid_offset = bid * ELEMENT_NUM_PER_BLOCK;
     
     // each thread load 2 elements
 
@@ -49,7 +48,7 @@ __global__ void pscan(float * input, float * output, float* block_sum, int len) 
     // up-sweep phase 
 
     int offset = 1;
-    for(int d = elementsNumPerBlock / 2; d > 0; d /= 2){
+    for(int d = ELEMENT_NUM_PER_BLOCK / 2; d > 0; d /= 2){
         __syncthreads();
         if(tid < d){
             int bi = offset * 2 * (tid + 1) - 1;
@@ -63,14 +62,14 @@ __global__ void pscan(float * input, float * output, float* block_sum, int len) 
 
     // clear last element to zero and save it to block_sum
     if(tid == 0){
-        block_sum[bid] = shared_data[elementsNumPerBlock - 1];
-        shared_data[elementsNumPerBlock - 1] = 0;
+        block_sum[bid] = shared_data[ELEMENT_NUM_PER_BLOCK - 1];
+        shared_data[ELEMENT_NUM_PER_BLOCK - 1] = 0;
     }
 
     __syncthreads();
 
     // down-sweep phase
-    for(int d = 1; d < elementsNumPerBlock; d *= 2){
+    for(int d = 1; d < ELEMENT_NUM_PER_BLOCK; d *= 2){
         offset >>= 1;
         __syncthreads();
         if(tid < d){
@@ -101,7 +100,7 @@ int maxLevel = 0;
 void preallocBlockSums(unsigned int maxNumElements){
     int tempNumElements = maxNumElements;
     while(tempNumElements > 1){
-        tempNumElements = ceil(tempNumElements, BLOCK_SIZE << 1);
+        tempNumElements = ceil(tempNumElements, ELEMENT_NUM_PER_BLOCK);
         maxLevel += 1; 
     }
     maxLevel += 1;
@@ -112,7 +111,7 @@ void preallocBlockSums(unsigned int maxNumElements){
     int level = 0;
     while(tempNumElements > 1){
         // this is block num
-        tempNumElements = ceil(tempNumElements, BLOCK_SIZE << 1);
+        tempNumElements = ceil(tempNumElements, ELEMENT_NUM_PER_BLOCK);
         cudaMalloc((void**) &g_scanBlockSums[level], sizeof(float) * tempNumElements);
         level += 1;
     }
@@ -132,7 +131,7 @@ void deallocBlockSums(){
 __global__ void uniform_add(float * input, float * block_sum, int input_len){
     int block_idx = blockIdx.x;
     int thread_idx = threadIdx.x;
-    int base_idx = (block_idx + 1) * (BLOCK_SIZE << 1);
+    int base_idx = (block_idx + 1) * (ELEMENT_NUM_PER_BLOCK);
     // each thread process 2 elements
     if((base_idx + 2 * thread_idx) < input_len){
         input[base_idx + 2 * thread_idx] += block_sum[block_idx];
@@ -144,18 +143,18 @@ __global__ void uniform_add(float * input, float * block_sum, int input_len){
 
 // all array here are allocated on GPU
 void scanRecursive(float* input, float* output, int elementNum, int level){
-    int blockNum = ceil(elementNum, BLOCK_SIZE << 1);
+    int blockNum = ceil(elementNum, ELEMENT_NUM_PER_BLOCK);
     dim3 DimGrid(blockNum, 1, 1);
     dim3 DimBlock(BLOCK_SIZE, 1, 1);
     pscan<<<DimGrid, DimBlock>>>(input, output, g_scanBlockSums[level], elementNum);
-    // elementNum <= BLOCK_SIZE * 2
+    // elementNum <= ELEMENT_NUM_PER_BLOCK
     // scanBlocksSum length = 1
     if(blockNum == 1){
         return;
     }
-    // elementNum <= BLOCK_SIZE * 2 * BLOCK_SIZE * 2
-    // scanBlocksSum length < BLOCK_SIZE * 2, which can be processed by one block
-    else if(blockNum <= BLOCK_SIZE * 2){
+    // elementNum <= ELEMENT_NUM_PER_BLOCK * ELEMENT_NUM_PER_BLOCK
+    // scanBlocksSum length < ELEMENT_NUM_PER_BLOCK, which can be processed by one block
+    else if(blockNum <= ELEMENT_NUM_PER_BLOCK){
         
         dim3 blockSumGrid(1, 1, 1);
         //float* tempSum;
@@ -164,8 +163,8 @@ void scanRecursive(float* input, float* output, int elementNum, int level){
         pscan<<<blockSumGrid, DimBlock>>>(g_scanBlockSums[level], g_scanBlockSums[level], g_scanBlockSums[level + 1], blockNum);
         
     }else{
-        // elementNum > BLOCK_SIZE * 2 * BLOCK_SIZE * 2
-        // scanBlockSum length > BLOCK_SIZE * 2, which need to be processed by multiple blocks
+        // elementNum > ELEMENT_NUM_PER_BLOCK * ELEMENT_NUM_PER_BLOCK
+        // scanBlockSum length > ELEMENT_NUM_PER_BLOCK, which need to be processed by multiple blocks
         scanRecursive(g_scanBlockSums[level], g_scanBlockSums[level], blockNum, level + 1);
     }
     cudaDeviceSynchronize();
