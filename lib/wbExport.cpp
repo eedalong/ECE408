@@ -8,7 +8,7 @@ static inline void wbExportRaw_setFile(wbExportRaw_t raw, const char * path) {
             wbFile_delete(wbExportRaw_getFile(raw));
         }
         if (path != NULL) {
-            wbExportRaw_getFile(raw) = wbFile_open(path, "w");
+            wbExportRaw_getFile(raw) = wbFile_open(path, "w+");
         } else {
             wbExportRaw_getFile(raw) = NULL;
         }
