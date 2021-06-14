@@ -158,15 +158,17 @@ void scanRecursive(float* input, float* output, int elementNum, int level){
     else if(blockNum <= BLOCK_SIZE * 2){
         
         dim3 blockSumGrid(1, 1, 1);
-        float* tempSum;
-        cudaMalloc((void**) &tempSum, sizeof(float));
-        pscan<<<blockSumGrid, DimBlock>>>(g_scanBlockSums[level], g_scanBlockSums[level], tempSum, blockNum);
+        //float* tempSum;
+        //cudaMalloc((void**) &tempSum, sizeof(float));
+        std::cout<< "calculate prefix sum of g_scanBlockSums[level]"<<std::endl;
+        pscan<<<blockSumGrid, DimBlock>>>(g_scanBlockSums[level], g_scanBlockSums[level], g_scanBlockSums[level + 1], blockNum);
         
     }else{
         // elementNum > BLOCK_SIZE * 2 * BLOCK_SIZE * 2
         // scanBlockSum length > BLOCK_SIZE * 2, which need to be processed by multiple blocks
         scanRecursive(g_scanBlockSums[level], g_scanBlockSums[level], blockNum, level + 1);
     }
+    std::cout<< "add segment prefix sum to result"<<std::endl;
     // add blockSum to output.
     dim3 addGrid(blockNum-1, 1, 1);
     uniform_add<<<addGrid, DimBlock>>>(output, g_scanBlockSums[level], elementNum);
