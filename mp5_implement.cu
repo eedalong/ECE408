@@ -135,10 +135,10 @@ __global__ void uniform_add(float * input, float * block_sum, int input_len){
     int base_idx = (block_idx + 1) * (BLOCK_SIZE << 1);
     // each thread process 2 elements
     if((base_idx + 2 * thread_idx) < input_len){
-        input[base_idx + 2 * thread_idx] += block_sum[block_idx - 1];
+        input[base_idx + 2 * thread_idx] += block_sum[block_idx];
     }
     if((base_idx + 2 * thread_idx + 1) < input_len){
-        input[base_idx + 2 * thread_idx + 1] += block_sum[block_idx - 1];
+        input[base_idx + 2 * thread_idx + 1] += block_sum[block_idx];
     }
 }
 
