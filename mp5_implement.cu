@@ -4,7 +4,7 @@
 
 #include    <wb.h>
 #include <iostream>
-#define BLOCK_SIZE 256 //@@ You can change this
+#define BLOCK_SIZE 1024 //@@ You can change this
 
 #define wbCheck(stmt) do {                                 \
         cudaError_t err = stmt;                            \
@@ -38,6 +38,7 @@ __global__ void pscan(float * input, float * output, float* block_sum, int len) 
         shared_data[2 * tid] = input[bid_offset + 2 * tid];
     else
         shared_data[2 * tid] = 0;
+
     if((bid_offset + 2 * tid + 1) < len)
         shared_data[2 * tid + 1] = input[bid_offset + 2 * tid + 1];
     else
@@ -84,16 +85,45 @@ __global__ void pscan(float * input, float * output, float* block_sum, int len) 
 
     __syncthreads();
     
+    // here we get exclusive prefix sum, we add them with original data to get inclusive prefix sum
     if(bid_offset + 2 * tid < len){
-        output[bid_offset + 2 * tid] += shared_data[2 * tid];
+        output[bid_offset + 2 * tid] = input[bid_offset + 2 * tid] + shared_data[2 * tid];
     }
     if(bid_offset + 2 * tid + 1 < len){
-        output[bid_offset + 2 * tid + 1] += shared_data[2 * tid + 1];
+        output[bid_offset + 2 * tid + 1] = input[bid_offset + 2 * tid + 1] + shared_data[2 * tid + 1];
     }
-    
 
 }
 
+
+float** g_scanBlockSums;
+int maxLevel = 0;
+void preallocBlockSums(unsigned int maxNumElements){
+    int tempNumElements = maxNumElements;
+    while(tempNumElements > 1){
+        tempNumElements = ceil(tempNumElements, BLOCK_SIZE << 1);
+        maxLevel += 1; 
+    }
+
+    // allocate memory for different level of blockSum
+    cudaMalloc((void***) &g_scanBlockSums, sizeof(float*) * maxLevel);
+    tempNumElements = maxNumElements;
+    int level = 0;
+    while(tempNumElements > 1){
+        // this is block num
+        tempNumElements = ceil(tempNumElements, BLOCK_SIZE << 1);
+        cudaMalloc((void**) &g_scanBlockSums[level], sizeof(float) * tempNumElements);
+        level += 1;
+    }
+    std::cout<<"maxLevel is "<<maxLevel<<std::endl;
+
+}  
+void deallocBlockSums(){
+    for(int level=0; level < maxLevel; level++){
+        cudaFree(g_scanBlockSums[level]);
+    }
+    cudaFree(g_scanBlockSums);
+}
 
 // Grid && Block are both 1-dimensional
 __global__ void uniform_add(float * input, float * block_sum, int input_len){
@@ -109,87 +139,92 @@ __global__ void uniform_add(float * input, float * block_sum, int input_len){
     }
 }
 
+// all array here are allocated on GPU
+void scanRecursive(float* input, float* output, int elementNum, int level){
+    int blockNum = ceil(numElements, BLOCK_SIZE << 1);
+    dim3 DimGrid(blockNum, 1, 1);
+    dim3 DimBlock(BLOCK_SIZE, 1, 1);
+    pscan<<<DimGrid, DimBlock>>>(input, output, g_scanBlockSums[level], elementNum);
+    // elementNum <= BLOCK_SIZE * 2
+    // scanBlocksSum length = 1
+    if(blockNum == 1){
+        return;
+    }
+    // elementNum <= BLOCK_SIZE * 2 * BLOCK_SIZE * 2
+    // scanBlocksSum length < BLOCK_SIZE * 2, which can be processed by one block
+    else if(blockNum <= BLOCK_SIZE * 2){
+        
+        dim3 blockSumGrid(1, 1, 1);
+        pscan<<<blockSumGrid, DimBlock>>>(g_scanBlockSums[level], g_scanBlockSums[level], blockNum);
+        
+    }else{
+        // elementNum > BLOCK_SIZE * 2 * BLOCK_SIZE * 2
+        // scanBlockSum length > BLOCK_SIZE * 2, which need to be processed by multiple blocks
+        scanRecursive(g_scanBlockSums[level], g_scanBlockSums[level], blockNum, level + 1);
+    }
+    // add blockSum to output.
+    dim3 addGrid(blockNum-1, 1, 1);
+    uniform_add<<<addGrid, DimBlock>>>(output, g_scanBlockSums[level], elementNum);
+}
+
+
 
 int main(int argc, char ** argv) {
     wbArg_t args;
     float * hostInput; // The input 1D list
     float * hostOutput; // The output list
-    float * hostSum;
     float * deviceInput;
     float * deviceOutput;
-    float * deviceSum;
     int numElements; // number of elements in the list
-    int blockNum = 0;
 
     args = wbArg_read(argc, argv);
 
     wbTime_start(Generic, "Importing data and creating memory on host");
     hostInput = (float *) wbImport(wbArg_getInputFile(args, 0), &numElements);
     hostOutput = (float*) malloc(numElements * sizeof(float));
-    blockNum = ceil(numElements, BLOCK_SIZE << 1);
-    hostSum = (float*) malloc(blockNum * sizeof(float));
+    preallocBlockSums(numElements);
     wbTime_stop(Generic, "Importing data and creating memory on host");
 
+    std::cout<< "The number of input elements in the input is " << numElements<<std::endl;
     wbLog(TRACE, "The number of input elements in the input is ", numElements);
-    std::cout << "The number of input elements in the input is " <<numElements<<std::endl;
+
     wbTime_start(GPU, "Allocating GPU memory.");
     wbCheck(cudaMalloc((void**)&deviceInput, numElements*sizeof(float)));
     wbCheck(cudaMalloc((void**)&deviceOutput, numElements*sizeof(float)));
-    wbCheck(cudaMalloc((void**)&deviceSum, blockNum * sizeof(float)));
     wbTime_stop(GPU, "Allocating GPU memory.");
 
-    wbTime_start(GPU, "Clearing deviceSum memory.");
+    wbTime_start(GPU, "Clearing output memory.");
     wbCheck(cudaMemset(deviceOutput, 0, numElements*sizeof(float)));
-    wbCheck(cudaMemset(deviceSum, 0, blockNum * sizeof(float)));
-    wbTime_stop(GPU, "Clearing deviceSum memory.");
-    std::cout << "deviceSum memory cleared"<<std::endl;
+    wbTime_stop(GPU, "Clearing output memory.");
+
     wbTime_start(GPU, "Copying input memory to the GPU.");
     wbCheck(cudaMemcpy(deviceInput, hostInput, numElements*sizeof(float), cudaMemcpyHostToDevice));
-    wbCheck(cudaMemcpy(deviceOutput, hostInput, numElements*sizeof(float), cudaMemcpyHostToDevice));
     wbTime_stop(GPU, "Copying input memory to the GPU.");
 
     //@@ Initialize the grid and block dimensions here
-    dim3 DimGrid(blockNum, 1, 1);
-    
-    dim3 DimBlock(BLOCK_SIZE, 1, 1);
+
     wbTime_start(Compute, "Performing CUDA computation");
     //@@ Modify this to complete the functionality of the scan
     //@@ on the deivce
-    std::cout << "Performing CUDA computation"<<std::endl;
-    pscan<<<DimGrid, DimBlock>>>(deviceInput, deviceOutput, deviceSum, numElements);
-    cudaDeviceSynchronize();
-    std::cout << "Performing deviceSum add computation"<<std::endl;
-    // add block sum to each block
-    // TODO Debug
-    if(blockNum > 1){
-        dim3 DimGridAdd(blockNum-1, 1, 1);
-        uniform_add<<<DimGridAdd, DimBlock>>>(deviceOutput, deviceSum, numElements);
-        cudaDeviceSynchronize();
-    }
-    wbTime_stop(Compute, "Performing CUDA computation");
-    std::cout << "Copying output memory to the CPU"<<std::endl;
-    wbTime_start(Copy, "Copying output memory to the CPU");
-    cudaMemcpy(hostOutput, deviceOutput, numElements*sizeof(float), cudaMemcpyDeviceToHost);
-    cudaMemcpy(hostSum, deviceSum, blockNum * sizeof(float), cudaMemcpyDeviceToHost);
-    wbTime_stop(Copy, "Copying output memory to the CPU");
-    std::cout << "Finished Copy output memory to the CPU"<<std::endl;
+    scanRecursive(deviceInput, deviceOutput, numElements);
 
+    cudaDeviceSynchronize();
+    wbTime_stop(Compute, "Performing CUDA computation");
+
+    wbTime_start(Copy, "Copying output memory to the CPU");
+    wbCheck(cudaMemcpy(hostOutput, deviceOutput, numElements*sizeof(float), cudaMemcpyDeviceToHost));
+    wbTime_stop(Copy, "Copying output memory to the CPU");
 
     wbTime_start(GPU, "Freeing GPU Memory");
-    std::cout << "Freeing GPU Memory"<<std::endl;
     cudaFree(deviceInput);
     cudaFree(deviceOutput);
-    cudaFree(deviceSum);
     wbTime_stop(GPU, "Freeing GPU Memory");
-    for(int index = 0; index < blockNum; index++){
-        std::cout<< hostSum[index]<<" ";
-    }
-    std::cout<<std::endl;
 
     wbSolution(args, hostOutput, numElements);
 
     free(hostInput);
     free(hostOutput);
+    deallocBlockSums();
 
     return 0;
 }
