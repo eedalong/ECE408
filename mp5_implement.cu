@@ -107,7 +107,7 @@ void preallocBlockSums(unsigned int maxNumElements){
     maxLevel += 1;
     // allocate memory for different level of blockSum
     std::cout<<"maxLevel is "<<maxLevel<<std::endl;
-    cudaMalloc((void***) &g_scanBlockSums, sizeof(float*) * maxLevel);
+    g_scanBlockSums = (float**) malloc(sizeof(float*) * maxLeve);
     tempNumElements = maxNumElements;
     int level = 0;
     while(tempNumElements > 1){
@@ -117,14 +117,15 @@ void preallocBlockSums(unsigned int maxNumElements){
         level += 1;
     }
     // this is for the last g_scanBlockSums
-    cudaMalloc((void**) &g_scanBlockSums[level], sizeof(float) * tempNumElements);
+    cudaMalloc((void**) &g_scanBlockSums[level], sizeof(float));
+    std::cout<<"Finished preallocBlockSums"<<std::endl;
 
 }  
 void deallocBlockSums(){
     for(int level=0; level < maxLevel; level++){
         cudaFree(g_scanBlockSums[level]);
     }
-    cudaFree(g_scanBlockSums);
+    free(g_scanBlockSums);
 }
 
 // Grid && Block are both 1-dimensional
