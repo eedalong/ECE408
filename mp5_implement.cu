@@ -4,7 +4,7 @@
 
 #include    <wb.h>
 #include <iostream>
-#define BLOCK_SIZE 1024 //@@ You can change this
+#define BLOCK_SIZE 64 //@@ You can change this
 #define ELEMENT_NUM_PER_BLOCK BLOCK_SIZE * 2
 #define wbCheck(stmt) do {                                 \
         cudaError_t err = stmt;                            \
@@ -167,7 +167,6 @@ void scanRecursive(float* input, float* output, int elementNum, int level){
     dim3 DimBlock(BLOCK_SIZE, 1, 1);
     pscan<<<DimGrid, DimBlock>>>(input, output, g_scanBlockSums[level], elementNum);
 
-    //cudaDeviceSynchronize();
     // elementNum <= ELEMENT_NUM_PER_BLOCK
     // scanBlocksSum length = 1
     if(blockNum == 1){
@@ -180,14 +179,14 @@ void scanRecursive(float* input, float* output, int elementNum, int level){
         std::cout<< "elementNum <= ELEMENT_NUM_PER_BLOCK * ELEMENT_NUM_PER_BLOCK"<<std::endl;
         std::cout<< "blockNum is "<<blockNum<<std::endl;
         dim3 blockSumGrid(1, 1, 1);
-        //float* tempSum;
-        //cudaMalloc((void**) &tempSum, sizeof(float));
         std::cout<< "calculate prefix sum of g_scanBlockSums[level]"<<std::endl;
         pscan<<<blockSumGrid, DimBlock>>>(g_scanBlockSums[level], g_scanBlockSums[level], g_scanBlockSums[level + 1], blockNum);
         
     }else{
         // elementNum > ELEMENT_NUM_PER_BLOCK * ELEMENT_NUM_PER_BLOCK
         // scanBlockSum length > ELEMENT_NUM_PER_BLOCK, which need to be processed by multiple blocks
+        std::cout<< "elementNum > ELEMENT_NUM_PER_BLOCK * ELEMENT_NUM_PER_BLOCK"<<std::endl;
+        std::cout<< "blockNum is "<<blockNum<<std::endl;
         scanRecursive(g_scanBlockSums[level], g_scanBlockSums[level], blockNum, level + 1);
     }
     std::cout<< "add segment prefix sum to result"<<std::endl;
