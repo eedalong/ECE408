@@ -1,0 +1,29 @@
+# Atomic的操作
+
+## GPU的存储层级
+![](../imgs/atomic_operation_note1.png)
+
+## Atomic Operation List
+
+    __syncthreads();
+    int atomicAdd(int *address, int val);
+    int atomicSub(int *address, int val);
+    int atomicExch(int *address, int val);
+    int atomicMin(int *address, int val);
+    int atomicMax(int *address, int val);
+    unsigned int atomicInc(int *address, int val);
+    unsigned int atomicDec(int *address, int val);
+    int atomicCAS(int *address, int compare, int val;
+
+Also `atomicAnd()`, `atomicOr()`, `atomicXor()`…
+
+`int *address` can be in shared memory or global memory.
+
+## Atomic Operation Latency
+- Atomic operation on DRAM ------> global to all blocks
+- Atomic operation on L2 Cache  ------> global to all blocks
+- Atomic operation on Shared Memory/L1 Cache -----> private to each thread block
+
+
+
+
