@@ -38,12 +38,13 @@ void convNd(float* imageData, float* mask_data, float* outputImage, int imageHei
 
 int main(int argc, char** argv){
     // MP6_Dataset -d [directory] -image_height [image height] -image_width [image width] -mask_width [mask width]
-    if(argc != 9){
-        printf("use example: MP6_Dataset -d [directory] -image_height [image height] -image_width [image width] -channel [imageChannels]\n");
+    if(argc != 7){
+        printf("use example: MP6_Dataset -d [directory] -image_height [image height] -image_width [image width]\n");
         exit(-1);
     }
     srand(time(NULL));
-    int imageHeight, imageWidth, imageChannels;
+    int imageHeight, imageWidth;
+    int imageChannels = 3;
     std::string directory;
     int arg_index = 0;
     while (/* condition */ arg_index < argc)
@@ -60,10 +61,6 @@ int main(int argc, char** argv){
         if(strcmp(argv[arg_index], "-image_width") == 0){
             arg_index += 1;
             imageWidth = atoi(argv[arg_index]);
-        }
-        if(strcmp(argv[arg_index], "-channel") == 0){
-            arg_index += 1;
-            imageChannels = atoi(argv[arg_index]);
         }
         arg_index += 1;
     }
