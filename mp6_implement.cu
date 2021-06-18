@@ -50,7 +50,7 @@ __global__ void conv2d(float* inputImage, float* outputImage, const float* mask,
     if(tx < TILE_SIZE && ty < TILE_SIZE){
         for(size_t i = 0; i < Mask_width; i++){
             for(size_t j = 0; j < Mask_width; j++){
-                output += mask[i][j] * input_tile[i+ty][j+tx];
+                output += mask[i* Mask_width + j] * input_tile[i+ty][j+tx];
             }
         }
     }
