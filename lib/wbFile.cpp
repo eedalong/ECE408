@@ -132,6 +132,7 @@ char * wbFile_read(wbFile_t file, size_t size, size_t count) {
 
     res = fread(buffer, size, count, handle);
     if (res != count) {
+        printf("ERROR: data read size mismatch");
         wbLog(ERROR, "Failed to read data from ", wbFile_getFileName(file));
         wbDelete(buffer);
         return NULL;
