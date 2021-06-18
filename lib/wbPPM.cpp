@@ -81,11 +81,13 @@ wbImage_t wbPPM_import(const char * filename) {
     }
 
     header = wbFile_readLine(file);
-    printf("check header length: %d and content: %s", strlen(header), header);
     if (header == NULL) {
         printf("Could not read from %s\n", filename);
         goto cleanup;
-    } else if (strcmp(header, "P6") != 0) {
+    } else if (strlen(header) == 2 && strcmp(header, "P6") != 0) {
+        printf("Could find magic number for %s\n", filename);
+        goto cleanup;
+    }else if (strlen(header) == 3 && strcmp(header, "P6\n") != 0) {
         printf("Could find magic number for %s\n", filename);
         goto cleanup;
     }

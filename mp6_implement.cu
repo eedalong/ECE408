@@ -1,4 +1,5 @@
 #include    <wb.h>
+#include    <iostream>
 
 #define wbCheck(stmt) do {                                 \
         cudaError_t err = stmt;                            \
@@ -123,7 +124,8 @@ int main(int argc, char* argv[]) {
     wbTime_start(Compute, "Doing the computation on the GPU");
     dim3 DimGrid(ceil(imageHeight, TILE_SIZE), ceil(imageWidth, TILE_SIZE));
     dim3 DimBlock(BLOCK_SIZE, BLOCK_SIZE, 1);
-
+    
+    std::cout <<"begin to do GPU computation"<<std::endl;
     //@@ INSERT CODE HERE
     for(int current_channel = 0; current_channel < imageChannels; current_channel ++){
         conv2d<<<DimGrid, DimBlock>>>(deviceInputImageData, deviceOutputImageData, deviceMaskData, current_channel, imageHeight, imageWidth, imageChannels);
