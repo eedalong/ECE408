@@ -83,8 +83,12 @@ int main(int argc, char* argv[]) {
 
     inputImageFile = wbArg_getInputFile(arg, 0);
     inputMaskFile = wbArg_getInputFile(arg, 1);
+    std::cout <<"check inputImageFile "<<inputImageFile<<" "<<std::endl;
+    std::cout <<"check inputMaskFile "<<inputMaskFile<<" "<<std::endl;
 
     inputImage = wbPPM_import(inputImageFile);
+    std::cout <<"load inputImage completed"<<std::endl;
+
     hostMaskData = (float *) wbImport(inputMaskFile, &maskRows, &maskColumns);
 
     assert(maskRows == 5); /* mask height is fixed to 5 in this mp */
@@ -100,7 +104,7 @@ int main(int argc, char* argv[]) {
 
     hostInputImageData = wbImage_getData(inputImage);
     hostOutputImageData = wbImage_getData(outputImage);
-    
+
     std::cout <<"everything ready"<<std::endl;
 
     wbTime_start(GPU, "Doing GPU Computation (memory + compute)");
