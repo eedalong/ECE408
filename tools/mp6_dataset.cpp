@@ -91,8 +91,8 @@ int main(int argc, char** argv){
     std::string input_mask = directory + string("/input1.csv");
     std::string output_file = directory + string("/output.ppm");
 
-    wbExport(input_file.c_str(), inputImage);
-    wbExport(output_file.c_str(), outputImage);
+    wbPPM_export(input_file.c_str(), inputImage);
+    wbPPM_export(output_file.c_str(), outputImage);
     wbExport(input_mask.c_str(), maskData, Mask_width, Mask_width);
 
 }
