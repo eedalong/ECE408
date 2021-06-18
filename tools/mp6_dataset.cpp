@@ -74,8 +74,8 @@ int main(int argc, char** argv){
     wbImage_t inputImage = wbImage_new(imageWidth, imageHeight, imageChannels);
     wbImage_t outputImage = wbImage_new(imageWidth, imageHeight, imageChannels);
     
-    float* inputImageData = (float*) malloc(sizeof(float) * imageHeight * imageWidth * imageChannels);
-    float* outputImageData = (float*) malloc(sizeof(float) * imageHeight * imageWidth * imageChannels);
+    float* inputImageData = wbImage_getData(inputImage);
+    float* outputImageData = wbImage_getData(outputImage);
     float* maskData = (float*) malloc(sizeof(float) * Mask_width * Mask_width);
 
     // generate random tensor
@@ -83,9 +83,6 @@ int main(int argc, char** argv){
     generate_tensor(maskData, Mask_width, Mask_width, 1);
 
     convNd(inputImageData, maskData, outputImageData, imageHeight, imageWidth, imageChannels);
-
-    wbImage_setData(inputImage, inputImageData);
-    wbImage_setData(outputImage, outputImageData);
 
     std::string input_file = directory + string("/input0.ppm");
     std::string input_mask = directory + string("/input1.csv");

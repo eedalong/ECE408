@@ -90,14 +90,18 @@ int main(int argc, char* argv[]) {
     assert(maskRows == 5); /* mask height is fixed to 5 in this mp */
     assert(maskColumns == 5); /* mask width is fixed to 5 in this mp */
 
+    std::cout <<"load data file completed"<<std::endl;
     imageWidth = wbImage_getWidth(inputImage);
     imageHeight = wbImage_getHeight(inputImage);
     imageChannels = wbImage_getChannels(inputImage);
 
     outputImage = wbImage_new(imageWidth, imageHeight, imageChannels);
 
+
     hostInputImageData = wbImage_getData(inputImage);
     hostOutputImageData = wbImage_getData(outputImage);
+    
+    std::cout <<"everything ready"<<std::endl;
 
     wbTime_start(GPU, "Doing GPU Computation (memory + compute)");
 
