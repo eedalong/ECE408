@@ -136,6 +136,7 @@ char * wbFile_read(wbFile_t file, size_t size, size_t count) {
         wbDelete(buffer);
         return NULL;
     }
+    printf("check data read %lld\n", res);
 
     return buffer;
 }
