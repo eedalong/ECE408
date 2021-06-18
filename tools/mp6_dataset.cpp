@@ -9,10 +9,11 @@
 #define Mask_radius Mask_width/2
 
 void generate_tensor(float* imageData, int imageHeight, int imageWidth, int imageChannels){
+    int index = 0;
     for(int row = 0; row < imageHeight; row ++){
         for(int col = 0; col < imageWidth; col ++){
             for(int channel = 0; channel < imageChannels; channel ++){
-                imageData[(row * imageWidth + col) * imageChannels + channel] = (rand()%255) / 255.0;
+                imageData[index++] = (rand()%255) / 255.0;
             }
         }
     }
