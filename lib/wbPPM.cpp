@@ -1,7 +1,7 @@
 
 #include	<wb.h>
 #include	<math.h>
-
+#include    <iostream>
 
 
 static inline float _min(float x, float y) {
@@ -96,10 +96,13 @@ wbImage_t wbPPM_import(const char * filename) {
     channels = 3;
     line = nextLine(file);
     parseDimensions(line, &width, &height);
+    printf("Parsed image width and image height: %d, %d\n", width, height);
 
     // the line now contains the depth information
     line = nextLine(file);
     parseDepth(line, &depth);
+    printf("Parsed depth: %d\n", depth);
+
 
     // the rest of the lines contain the data in binary format
     charData = (unsigned char *) wbFile_read(file, width * channels * sizeof(unsigned char), height);
