@@ -2,9 +2,9 @@
 ## Objective
 
 The lab's objective is to implement a tiled image convolution using both shared and constant memory as discussed in class.
-Like what's discussed in class, we will have a constant 5x5 convolution mask, but will have arbitrarily sized image (We will assume the image dimensions are greater than 5x5 in this Lab). 
+Like what's discussed in class, we will have a `constant 5x5 convolution mask`, but will have `arbitrarily sized image` (We will assume the image dimensions are greater than 5x5 in this Lab). 
 
-To use the constant memory for the convolution mask, you can first transfer the mask data  to the device. 
+To use the constant memory for the convolution mask, you can first transfer the mask data to the device. 
 Assume you decided to name the pointer to the device array for the mask M.
 As described in Lecture 3-5, you can use `const float * __restrict__ M` as one of the parameters during your kernel launch.
 This informs the compiler that the contents of the mask array are constants and will only be accessed through pointer variable `M`.
