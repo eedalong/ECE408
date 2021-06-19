@@ -80,6 +80,7 @@ void convNd(wbImage_t inputImage, float* mask_data, wbImage_t& outImage){
                     }
                 }
                 printf("(%d, %d, %d): %f\n", row, col, channel, output);
+                exit(-1);
                 imageSetPixel(outImage, row, col, channel, output);
             }
         }
@@ -144,6 +145,11 @@ int main(int argc, char** argv){
         }
         std::cout<<endl;
     }
+    
+
+
+    convNd(inputImage, maskData, outputImage);
+
     std::cout<<"check outputImage "<<std::endl;
     for(int row = 0; row < 5; row ++){
         for(int col = 0; col < 5; col ++){
@@ -151,9 +157,6 @@ int main(int argc, char** argv){
         }
         std::cout<<endl;
     }
-
-
-    convNd(inputImage, maskData, outputImage);
 
 
     std::string input_file = directory + string("/input0.ppm");
