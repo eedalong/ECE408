@@ -23,7 +23,7 @@ void initialize_image(wbImage_t image){
     for(int row = 0; row < wbImage_getHeight(image); row ++){
         for(int col = 0; col < wbImage_getWidth(image); col ++){
             for(int channel = 0; channel < wbImage_getChannels(image); channel ++){
-                wbImage_setPixel(image, row, col, channel, rand()%255 / 255.0);
+                imageSetPixel(image, row, col, channel, rand()%255 / 255.0);
             }
         }
     }
@@ -56,12 +56,12 @@ void convNd(wbImage_t inputImage, float* mask_data, wbImage_t outImage){
                 for(int i = -Mask_radius; i <= Mask_radius; i++){
                     for(int j = -Mask_radius; j <= Mask_radius; j++){
                         if(row + i >= 0 && row + i < wbImage_getHeight(inputImage) && col + j >= 0 && col + j < wbImage_getWidth(inputImage)){
-                            output += mask_data[(i + Mask_radius) * Mask_width + (j + Mask_radius)] * wbImage_getPixel(inputImage, row, col, channel);
+                            output += mask_data[(i + Mask_radius) * Mask_width + (j + Mask_radius)] * imageGetPixel(inputImage, row, col, channel);
 
                         }
                     }
                 }
-                wbImage_setPixel(outImage, row, col, channel, output);
+                imageSetPixel(outImage, row, col, channel, output);
             }
         }
     }
@@ -114,7 +114,7 @@ int main(int argc, char** argv){
     std::cout<<"check inputImage "<<std::endl;
     for(int row = 0; row < 5; row ++){
         for(int col = 0; col < 5; col ++){
-            std::cout<<wbImage_getPixel(inputImage, row, col, 0)<<", ";
+            std::cout<<imageGetPixel(inputImage, row, col, 0)<<", ";
         }
         std::cout<<endl;
     }
@@ -128,7 +128,7 @@ int main(int argc, char** argv){
     std::cout<<"check outputImage "<<std::endl;
     for(int row = 0; row < 5; row ++){
         for(int col = 0; col < 5; col ++){
-            std::cout<<wbImage_getPixel(outputImage, row, col, 0)<<", ";
+            std::cout<<imageGetPixel(outputImage, row, col, 0)<<", ";
         }
         std::cout<<endl;
     }
