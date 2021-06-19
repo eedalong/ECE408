@@ -8,6 +8,24 @@
 #define Mask_width  5
 #define Mask_radius Mask_width/2
 
+void imageSetPixel(wbImage_t img, int x, int y, int c, float val) {
+    float * data = wbImage_getData(img);
+    int channels = wbImage_getChannels(img);
+    int pitch = wbImage_getPitch(img);
+
+    data[y * pitch + x * channels + c] = val;
+
+    return ;
+}
+
+float imageGetPixel(wbImage_t img, int x, int y, int c) {
+    float * data = wbImage_getData(img);
+    int channels = wbImage_getChannels(img);
+    int pitch = wbImage_getPitch(img);
+
+    return data[y * pitch + x * channels + c];
+}
+
 void generate_image(float* imageData, int imageHeight, int imageWidth, int imageChannels){
     int index = 0;
     for(int row = 0; row < imageHeight; row ++){
