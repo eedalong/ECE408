@@ -131,13 +131,15 @@ char * wbFile_read(wbFile_t file, size_t size, size_t count) {
     buffer = wbNewArray(char, size*count);
 
     res = fread(buffer, size, count, handle);
+    printf("check data read %llud, needs to read %llud \n", res, count);
+    printf("res == count: %d\n", res == count);
     if (res != count) {
         printf("ERROR: data read size mismatch");
         wbLog(ERROR, "Failed to read data from ", wbFile_getFileName(file));
         wbDelete(buffer);
         return NULL;
     }
-    printf("check data read %llud\n, needs to read %llud", res, count);
+    printf("check data read %llud, needs to read %llud \n", res, count);
 
     return buffer;
 }
