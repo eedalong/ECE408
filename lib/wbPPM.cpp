@@ -76,11 +76,9 @@ wbImage_t wbPPM_import(const char * filename) {
 
     file = wbFile_open(filename, "rb");
     if (file == NULL) {
-        printf("Could not open %s\n", filename);
         goto cleanup;
     }
 
-    printf("start to read header \n");
     header = wbFile_readLine(file);
     if (header == NULL) {
         printf("Could not read from %s\n", filename);
@@ -97,20 +95,15 @@ wbImage_t wbPPM_import(const char * filename) {
     channels = 3;
     line = nextLine(file);
     parseDimensions(line, &width, &height);
-    printf("Parsed image width and image height: %d, %d\n", width, height);
 
     // the line now contains the depth information
     line = nextLine(file);
     parseDepth(line, &depth);
-    printf("Parsed depth: %d\n", depth);
 
 
     // the rest of the lines contain the data in binary format
-    printf("needs to read width * channels * height: %d\n", width * channels * height);
 
     charData = (unsigned char *) wbFile_read(file, width * channels * sizeof(unsigned char), height);
-    printf("check charData == NULL: %d\n", charData == NULL);
-    printf("read whole file data\n");
     img = wbImage_new(width, height, channels);
 
     imgData = wbImage_getData(img);
@@ -178,7 +171,6 @@ void wbPPM_export(const char * filename, wbImage_t img) {
         }
     }
 
-    printf("data size written to file: %d", width * channels * height);
     wbFile_write(file, charData, width * channels * sizeof(unsigned char), height);
 
     wbDelete(charData);

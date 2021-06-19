@@ -123,7 +123,6 @@ char * wbFile_read(wbFile_t file, size_t size, size_t count) {
     size_t res;
     char * buffer;
     FILE * handle;
-    printf("check input file name %s\n", wbFile_getFileName(file));
     if (file == NULL) {
         return NULL;
     }
@@ -141,8 +140,6 @@ char * wbFile_read(wbFile_t file, size_t size, size_t count) {
         res = count;
         memcpy(buffer, wbFile_getData(file) + wbFile_getDataOffset(file), count);
     }
-    printf("check data read %llud, needs to read %llud \n", res, count);
-    printf("res == count: %d\n", res == count);
     if (res != count) {
         wbLog(ERROR, "Failed to read data from ", wbFile_getFileName(file));
         wbDelete(buffer);
@@ -243,7 +240,6 @@ char * wbFile_readLine(wbFile_t file) {
     const char * tmp;
 
     if (wbFile_getData(file) == NULL) {
-        printf("get and set data, then close file handler for file %s\n", wbFile_getFileName(file));
         wbFile_setData(file, wbFile_read(file));
         fclose(wbFile_getFileHandle(file));
         wbFile_setFileHandle(file, NULL);
