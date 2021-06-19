@@ -69,7 +69,7 @@ void convNd(wbImage_t inputImage, float* mask_data, wbImage_t outImage){
 
     for(int channel = 0; channel < wbImage_getChannels(inputImage); channel ++){
         for(int row = 0; row < wbImage_getHeight(inputImage); row ++){
-            for(int col = 0; col < wbImage_getWidth(inputImage), col++){
+            for(int col = 0; col < wbImage_getWidth(inputImage);col++){
                 float output = 0;
                 for(int i = -Mask_radius; i <= Mask_radius; i++){
                     for(int j = -Mask_radius; j <= Mask_radius; j++){
