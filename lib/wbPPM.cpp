@@ -108,7 +108,7 @@ wbImage_t wbPPM_import(const char * filename) {
     printf("needs to read width * channels * height: %d\n", width * channels * height);
 
     charData = (unsigned char *) wbFile_read(file, width * channels * sizeof(unsigned char), height);
-
+    printf("check charData == NULL: %d\n", charData == NULL);
     printf("read whole file data\n");
     img = wbImage_new(width, height, channels);
 
