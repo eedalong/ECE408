@@ -132,14 +132,14 @@ char * wbFile_read(wbFile_t file, size_t size, size_t count) {
         res = fread(buffer, size, count, handle);
     }else{
         int currentOffset = wbFile_getDataOffset(file);
-        if(count + currentOffset >= wbFile_getLength(file)){
+        if(count * size + currentOffset >= wbFile_getLength(file)){
             wbLog(ERROR, "Failed to read data from ", wbFile_getFileName(file));
             wbDelete(buffer);
             return NULL;
         }
-        res = count;
-        wbFile_setDataOffset(file, currentOffset + count);
-        memcpy(buffer, wbFile_getData(file) + wbFile_getDataOffset(file), count);
+        
+        wbFile_setDataOffset(file, currentOffset + count * size);
+        memcpy(buffer, wbFile_getData(file) + wbFile_getDataOffset(file), count * size);
     }
     if (res != count) {
         wbLog(ERROR, "Failed to read data from ", wbFile_getFileName(file));
