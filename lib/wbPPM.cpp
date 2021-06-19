@@ -171,7 +171,7 @@ void wbPPM_export(const char * filename, wbImage_t img) {
         }
     }
 
-    wbFile_write(file, charData, width * channels * sizeof(unsigned char), height);
+    wbFile_write(file, charData, sizeof(unsigned char), width * channels * height);
 
     wbDelete(charData);
     wbFile_delete(file);
