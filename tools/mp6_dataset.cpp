@@ -8,7 +8,7 @@
 #define Mask_width  5
 #define Mask_radius Mask_width/2
 
-void generate_tensor(float* imageData, int imageHeight, int imageWidth, int imageChannels){
+void generate_image(float* imageData, int imageHeight, int imageWidth, int imageChannels){
     int index = 0;
     for(int row = 0; row < imageHeight; row ++){
         for(int col = 0; col < imageWidth; col ++){
@@ -17,6 +17,24 @@ void generate_tensor(float* imageData, int imageHeight, int imageWidth, int imag
             }
         }
     }
+}
+
+void generate_mask(float* maskData){
+    /*
+    0.,0.,0.077,0.,0.
+    0.,0.077,0.077,0.077,0.
+    0.077,0.077,0.077,0.077,0.077
+    0.,0.077,0.077,0.077,0.
+    0.,0.,0.077,0.,0.
+    */
+   generate_image(maskData, Mask_width, Mask_width, 1);
+   float sum = 0.0f;
+   for(int index = 0; index < Mask_width * Mask_width; index++){
+       sum += maskData[index];
+   }
+   for(int index = 0; index < Mask_width * Mask_width; index++){
+       maskData[index] /= sum;
+   }
 }
 
 void convNd(float* imageData, float* mask_data, float* outputImage, int imageHeight, int imageWidth, int imageChannels){
@@ -77,8 +95,8 @@ int main(int argc, char** argv){
     float* maskData = (float*) malloc(sizeof(float) * Mask_width * Mask_width);
 
     // generate random tensor
-    generate_tensor(inputImageData, imageHeight, imageWidth, imageChannels);
-    generate_tensor(maskData, Mask_width, Mask_width, 1);
+    generate_image(inputImageData, imageHeight, imageWidth, imageChannels);
+    generate_mask(maskData);
 
     convNd(inputImageData, maskData, outputImageData, imageHeight, imageWidth, imageChannels);
 
