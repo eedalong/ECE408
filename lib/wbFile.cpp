@@ -122,7 +122,7 @@ char * wbFile_read(wbFile_t file, size_t size, size_t count) {
     size_t res;
     char * buffer;
     FILE * handle;
-
+    printf("check input file name %s\n", wbFile_getFileName(file));
     if (file == NULL) {
         return NULL;
     }

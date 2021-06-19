@@ -86,6 +86,7 @@ int main(int argc, char* argv[]) {
     std::cout <<"check inputImageFile "<<inputImageFile<<" "<<std::endl;
     std::cout <<"check inputMaskFile "<<inputMaskFile<<" "<<std::endl;
 
+    std::cout <<"load inputImage started"<<std::endl;
     inputImage = wbPPM_import(inputImageFile);
     std::cout <<"load inputImage completed"<<std::endl;
 
