@@ -156,7 +156,7 @@ int main(int argc, char* argv[]) {
     std::cout<<"check mask "<<std::endl;
     for(int row = 0; row < 5; row ++){
         for(int col = 0; col < 5; col ++){
-            std::cout<<hostMaskData[i * Mask_width + j]<<", ";
+            std::cout<<hostMaskData[row * Mask_width + col]<<", ";
         }
         std::cout<<endl;
     }
