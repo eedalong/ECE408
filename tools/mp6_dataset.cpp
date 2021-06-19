@@ -46,7 +46,7 @@ void convNd(float* imageData, float* mask_data, float* outputImage, int imageHei
                 for(int i = -Mask_radius; i <= Mask_radius; i++){
                     for(int j = -Mask_radius; j <= Mask_radius; j++){
                         if(row + i >= 0 && row + i < imageHeight && col + j >= 0 && col + j < imageWidth){
-                            output += mask_data[(i + Mask_radius) * Mask_width + (j + Mask_radius)] * imageData[(row * imageWidth + col) * imageChannels + channel];
+                            output += mask_data[(i + Mask_radius) * Mask_width + (j + Mask_radius)] * imageData[((row + i) * imageWidth + (col + j)) * imageChannels + channel];
                         }
                     }
                 }
