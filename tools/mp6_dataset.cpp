@@ -100,6 +100,20 @@ int main(int argc, char** argv){
     // generate random tensor
     generate_image(inputImageData, imageHeight, imageWidth, imageChannels);
     generate_mask(maskData);
+    std::cout<<"check inputImage "<<std::endl;
+    for(int row = 0; row < 5; row ++){
+        for(int col = 0; col < 5; col ++){
+            std::cout<<inputImageData[(row * imageWidth + col) * imageChannels + 0]<<", ";
+        }
+        std::cout<<endl;
+    }
+    std::cout<<"check mask "<<std::endl;
+    for(int row = 0; row < 5; row ++){
+        for(int col = 0; col < 5; col ++){
+            std::cout<<maskData[row * Mask_width + col]<<", ";
+        }
+        std::cout<<endl;
+    }
 
     convNd(inputImageData, maskData, outputImageData, imageHeight, imageWidth, imageChannels);
 
