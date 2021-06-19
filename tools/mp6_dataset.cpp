@@ -83,7 +83,7 @@ int main(int argc, char** argv){
     convNd(inputImageData, maskData, outputImageData, imageHeight, imageWidth, imageChannels);
 
     std::string input_file = directory + string("/input0.ppm");
-    std::string input_mask = directory + string("/input1.csv");
+    std::string input_mask = directory + string("/input1.raw");
     std::string output_file = directory + string("/output.ppm");
 
     wbPPM_export(input_file.c_str(), inputImage);

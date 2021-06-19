@@ -243,7 +243,7 @@ char * wbFile_readLine(wbFile_t file) {
     const char * tmp;
 
     if (wbFile_getData(file) == NULL) {
-        printf("get and set data, then close file handler\n");
+        printf("get and set data, then close file handler for file %s\n", wbFile_getFileName(file));
         wbFile_setData(file, wbFile_read(file));
         fclose(wbFile_getFileHandle(file));
         wbFile_setFileHandle(file, NULL);
