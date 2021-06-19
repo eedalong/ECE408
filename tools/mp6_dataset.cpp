@@ -65,7 +65,7 @@ void generate_mask(float* maskData){
    }
 }
 
-void convNd(wbImage_t inputImage, float* mask_data, wbImage_t outImage){
+void convNd(wbImage_t inputImage, float* mask_data, wbImage_t& outImage){
 
     for(int channel = 0; channel < wbImage_getChannels(inputImage); channel ++){
         for(int row = 0; row < wbImage_getHeight(inputImage); row ++){
@@ -79,6 +79,7 @@ void convNd(wbImage_t inputImage, float* mask_data, wbImage_t outImage){
                         }
                     }
                 }
+                printf("(%d, %d, %d): %f\n", row, col, channel, output);
                 imageSetPixel(outImage, row, col, channel, output);
             }
         }
