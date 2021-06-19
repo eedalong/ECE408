@@ -80,6 +80,7 @@ wbImage_t wbPPM_import(const char * filename) {
         goto cleanup;
     }
 
+    printf("start to read header \n");
     header = wbFile_readLine(file);
     if (header == NULL) {
         printf("Could not read from %s\n", filename);
