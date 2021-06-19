@@ -8,22 +8,22 @@
 #define Mask_width  5
 #define Mask_radius Mask_width/2
 
-static inline void imageSetPixel(wbImage_t img, int x, int y, int c, float val) {
+static inline void imageSetPixel(wbImage_t img, int row, int col, int c, float val) {
     float * data = wbImage_getData(img);
     int channels = wbImage_getChannels(img);
     int pitch = wbImage_getPitch(img);
 
-    data[y * pitch + x * channels + c] = val;
+    data[(row * wbImage_getWidth(img) + col) * channels + c] = val;
 
     return ;
 }
 
-static inline float imageGetPixel(wbImage_t img, int x, int y, int c) {
+static inline float imageGetPixel(wbImage_t img, int row, int col, int c) {
     float * data = wbImage_getData(img);
     int channels = wbImage_getChannels(img);
     int pitch = wbImage_getPitch(img);
 
-    return data[y * pitch + x * channels + c];
+    return data[(row * wbImage_getWidth(img) + col) * channels + c];
 }
 
 void generate_image(float* imageData, int imageHeight, int imageWidth, int imageChannels){
@@ -74,7 +74,7 @@ void convNd(wbImage_t inputImage, float* mask_data, wbImage_t& outImage){
                 for(int i = -Mask_radius; i <= Mask_radius; i++){
                     for(int j = -Mask_radius; j <= Mask_radius; j++){
                         if(row + i >= 0 && row + i < wbImage_getHeight(inputImage) && col + j >= 0 && col + j < wbImage_getWidth(inputImage)){
-                            output += mask_data[(i + Mask_radius) * Mask_width + (j + Mask_radius)] * imageGetPixel(inputImage, col, row, channel);
+                            output += mask_data[(i + Mask_radius) * Mask_width + (j + Mask_radius)] * imageGetPixel(inputImage, row, col, channel);
 
                         }
                     }
