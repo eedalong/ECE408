@@ -17,6 +17,7 @@ void generate_image(float* imageData, int imageHeight, int imageWidth, int image
             }
         }
     }
+    
 }
 
 void generate_mask(float* maskData){
@@ -54,6 +55,7 @@ void convNd(float* imageData, float* mask_data, float* outputImage, int imageHei
         }
     }
 }
+
 
 int main(int argc, char** argv){
     // MP6_Dataset -d [directory] -image_height [image height] -image_width [image width] -mask_width [mask width]
@@ -93,6 +95,7 @@ int main(int argc, char** argv){
     float* inputImageData = wbImage_getData(inputImage);
     float* outputImageData = wbImage_getData(outputImage);
     float* maskData = (float*) malloc(sizeof(float) * Mask_width * Mask_width);
+
 
     // generate random tensor
     generate_image(inputImageData, imageHeight, imageWidth, imageChannels);

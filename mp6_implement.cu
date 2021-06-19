@@ -83,19 +83,14 @@ int main(int argc, char* argv[]) {
 
     inputImageFile = wbArg_getInputFile(arg, 0);
     inputMaskFile = wbArg_getInputFile(arg, 1);
-    std::cout <<"check inputImageFile "<<inputImageFile<<" "<<std::endl;
-    std::cout <<"check inputMaskFile "<<inputMaskFile<<" "<<std::endl;
 
-    std::cout <<"load inputImage started"<<std::endl;
     inputImage = wbPPM_import(inputImageFile);
-    std::cout <<"load inputImage completed"<<std::endl;
 
     hostMaskData = (float *) wbImport(inputMaskFile, &maskRows, &maskColumns);
 
     assert(maskRows == 5); /* mask height is fixed to 5 in this mp */
     assert(maskColumns == 5); /* mask width is fixed to 5 in this mp */
 
-    std::cout <<"load data file completed"<<std::endl;
     imageWidth = wbImage_getWidth(inputImage);
     imageHeight = wbImage_getHeight(inputImage);
     imageChannels = wbImage_getChannels(inputImage);
@@ -106,7 +101,6 @@ int main(int argc, char* argv[]) {
     hostInputImageData = wbImage_getData(inputImage);
     hostOutputImageData = wbImage_getData(outputImage);
 
-    std::cout <<"everything ready"<<std::endl;
 
     wbTime_start(GPU, "Doing GPU Computation (memory + compute)");
 
@@ -150,6 +144,22 @@ int main(int argc, char* argv[]) {
     wbTime_stop(Copy, "Copying data from the GPU");
 
     wbTime_stop(GPU, "Doing GPU Computation (memory + compute)");
+    
+    // check inputImageData for channel 0
+    std::cout<<"check input image channel 0"<<std::endl;
+    for(int row = 0; row < 5; row ++){
+        for(int col = 0; col < 5; col ++){
+            std::cout<<hostInputImageData[(row * imageWidth + col) * imageChannels + 0]<<", ";
+        }
+        std::cout<<endl;
+    }
+    std::cout<<"check mask "<<std::endl;
+    for(int row = 0; row < 5; row ++){
+        for(int col = 0; col < 5; col ++){
+            std::cout<<hostMaskData[i * Mask_width + j]<<", ";
+        }
+        std::cout<<endl;
+    }
 
     wbSolution(arg, outputImage);
 
