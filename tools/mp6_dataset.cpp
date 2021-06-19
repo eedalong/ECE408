@@ -19,6 +19,15 @@ void generate_image(float* imageData, int imageHeight, int imageWidth, int image
     }
     
 }
+void initialize_image(wbImage_t image){
+    for(int row = 0; row < wbImage_getHeight(image); row ++){
+        for(int col = 0; col < wbImage_getWidth(image); col ++){
+            for(int channel = 0; channel < wbImage_getChannels(image); channel ++){
+                wbImage_setPixel(image, row, col, channel, rand()%255 / 255.0);
+            }
+        }
+    }
+}
 
 void generate_mask(float* maskData){
     /*
@@ -38,19 +47,21 @@ void generate_mask(float* maskData){
    }
 }
 
-void convNd(float* imageData, float* mask_data, float* outputImage, int imageHeight, int imageWidth, int imageChannels){
-    for(int row = 0; row < imageHeight; row++){
-        for(int col = 0; col < imageWidth; col++){
-            for(int channel = 0; channel < imageChannels; channel++){
+void convNd(wbImage_t inputImage, float* mask_data, wbImage_t outImage){
+
+    for(int channel = 0; channel < wbImage_getChannels(inputImage); channel ++){
+        for(int row = 0; row < wbImage_getHeight(inputImage); row ++){
+            for(int col = 0; col < wbImage_getWidth(inputImage), col++){
                 float output = 0;
                 for(int i = -Mask_radius; i <= Mask_radius; i++){
                     for(int j = -Mask_radius; j <= Mask_radius; j++){
-                        if(row + i >= 0 && row + i < imageHeight && col + j >= 0 && col + j < imageWidth){
-                            output += mask_data[(i + Mask_radius) * Mask_width + (j + Mask_radius)] * imageData[((row + i) * imageWidth + (col + j)) * imageChannels + channel];
+                        if(row + i >= 0 && row + i < wbImage_getHeight(inputImage) && col + j >= 0 && col + j < wbImage_getWidth(inputImage)){
+                            output += mask_data[(i + Mask_radius) * Mask_width + (j + Mask_radius)] * wbImage_getPixel(inputImage, row, col, channel);
+
                         }
                     }
                 }
-                outputImage[(row * imageWidth + col) * imageChannels + channel] = output;
+                wbImage_setPixel(outImage, row, col, channel, output);
             }
         }
     }
@@ -98,12 +109,12 @@ int main(int argc, char** argv){
 
 
     // generate random tensor
-    generate_image(inputImageData, imageHeight, imageWidth, imageChannels);
+    initialize_image(inputImage);
     generate_mask(maskData);
     std::cout<<"check inputImage "<<std::endl;
     for(int row = 0; row < 5; row ++){
         for(int col = 0; col < 5; col ++){
-            std::cout<<inputImageData[(row * imageWidth + col) * imageChannels + 0]<<", ";
+            std::cout<<wbImage_getPixel(inputImage, row, col, 0)<<", ";
         }
         std::cout<<endl;
     }
@@ -114,8 +125,17 @@ int main(int argc, char** argv){
         }
         std::cout<<endl;
     }
+    std::cout<<"check outputImage "<<std::endl;
+    for(int row = 0; row < 5; row ++){
+        for(int col = 0; col < 5; col ++){
+            std::cout<<wbImage_getPixel(outputImage, row, col, 0)<<", ";
+        }
+        std::cout<<endl;
+    }
 
-    convNd(inputImageData, maskData, outputImageData, imageHeight, imageWidth, imageChannels);
+
+    convNd(inputImage, maskData, outputImage);
+
 
     std::string input_file = directory + string("/input0.ppm");
     std::string input_mask = directory + string("/input1.raw");

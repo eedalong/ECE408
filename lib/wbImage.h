@@ -27,11 +27,29 @@ typedef struct st_wbImage_t {
 
 
 typedef void (*wbImage_onSameFunction_t)(string str);
+void wbImage_setPixel(wbImage_t img, int x, int y, int c, float val) {
+    float * data = wbImage_getData(img);
+    int channels = wbImage_getChannels(img);
+    int pitch = wbImage_getPitch(img);
 
+    data[y * pitch + x * channels + c] = val;
+
+    return ;
+}
+
+float wbImage_getPixel(wbImage_t img, int x, int y, int c) {
+    float * data = wbImage_getData(img);
+    int channels = wbImage_getChannels(img);
+    int pitch = wbImage_getPitch(img);
+
+    return data[y * pitch + x * channels + c];
+}
 wbImage_t wbImage_new(int width, int height, int channels);
 wbImage_t wbImage_new(int width, int height);
 void wbImage_delete(wbImage_t img);
 wbBool wbImage_sameQ(wbImage_t a, wbImage_t b, wbImage_onSameFunction_t onUnSame);
 wbBool wbImage_sameQ(wbImage_t a, wbImage_t b);
+
+
 
 #endif /* __IMAGE_H__ */

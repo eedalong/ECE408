@@ -38,23 +38,7 @@ void wbImage_delete(wbImage_t img) {
     }
 }
 
-static inline void wbImage_setPixel(wbImage_t img, int x, int y, int c, float val) {
-    float * data = wbImage_getData(img);
-    int channels = wbImage_getChannels(img);
-    int pitch = wbImage_getPitch(img);
 
-    data[y * pitch + x * channels + c] = val;
-
-    return ;
-}
-
-static inline float wbImage_getPixel(wbImage_t img, int x, int y, int c) {
-    float * data = wbImage_getData(img);
-    int channels = wbImage_getChannels(img);
-    int pitch = wbImage_getPitch(img);
-
-    return data[y * pitch + x * channels + c];
-}
 
 wbBool wbImage_sameQ(wbImage_t a, wbImage_t b, wbImage_onSameFunction_t onUnSame) {
     if (a == NULL || b == NULL) {
