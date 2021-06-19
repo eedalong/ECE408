@@ -74,14 +74,14 @@ void convNd(wbImage_t inputImage, float* mask_data, wbImage_t& outImage){
                 for(int i = -Mask_radius; i <= Mask_radius; i++){
                     for(int j = -Mask_radius; j <= Mask_radius; j++){
                         if(row + i >= 0 && row + i < wbImage_getHeight(inputImage) && col + j >= 0 && col + j < wbImage_getWidth(inputImage)){
-                            output += mask_data[(i + Mask_radius) * Mask_width + (j + Mask_radius)] * imageGetPixel(inputImage, row, col, channel);
+                            output += mask_data[(i + Mask_radius) * Mask_width + (j + Mask_radius)] * imageGetPixel(inputImage, col, row, channel);
 
                         }
                     }
                 }
                 printf("(%d, %d, %d): %f\n", row, col, channel, output);
                 exit(-1);
-                imageSetPixel(outImage, row, col, channel, output);
+                imageSetPixel(outImage, col, row, channel, output);
             }
         }
     }

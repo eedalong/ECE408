@@ -1,39 +1,29 @@
 import numpy as np
-inputA = open("test_data/mp02/7/input0.raw")
-inputB = open("test_data/mp02/7/input1.raw")
-output = open("test_data/mp02/7/output.raw")
+'''
+0.705882, 0.184314, 0.592157, 0.0509804, 0.498039,                                                                                                                  
+0.584314, 0.537255, 0.117647, 0.764706, 0.141176,                                                                                                                   
+0.352941, 0.223529, 0.721569, 0.247059, 0.611765,                                                                                                                   
+0.686275, 0.101961, 0.694118, 0.498039, 0.345098,                                                                                                                   
+0.360784, 0.0862745, 0, 0.203922, 0.141176,                                                                                                                         
+check mask                                                                                                                                                          
+0.0371581, 0.0734245, 0.0395363, 0.0270511, 0.00237812,                                                                                                             
+0.00713436, 0.0416171, 0.0389417, 0.00891795, 0.0389417,                                                                                                            
+0.0472652, 0.0749108, 0.0698573, 0.0133769, 0.062723,                                                                                                               
+0.00564804, 0.0752081, 0.0719382, 0.0546968, 0.0163496,                                                                                                             
+0.03478, 0.0680737, 0.0267539, 0.0157551, 0.0475624,                                                                                                                
+(0, 0, 0): 0.267539                    
+'''
 
-inputA_array = []
-inputB_array = []
-output_array = []
-next(inputA)
-next(inputB)
-next(output)
-for line in inputA:
-    line = line[:-1].split()
-    data = [float(item) for item in line]
-    inputA_array.append(data)
+a = np.array([
+    [0.705882, 0.184314, 0.592157],
+    [0.584314, 0.537255, 0.117647],
+    [0.352941, 0.223529, 0.721569]
+])
 
-for line in inputB:
-    line = line[:-1].split()
-    data = [float(item) for item in line]
-    inputB_array.append(data)
-    
-for line in output:
-    line = line[:-1].split()
-    data = [float(item) for item in line]
-    output_array.append(data)
+b = np.array([
+    [0.0698573, 0.0133769, 0.062723],
+    [0.0719382, 0.0546968, 0.0163496],
+    [0.0267539, 0.0157551, 0.0475624]
+])
 
-inputA_array  = np.array(inputA_array, dtype = np.float)
-inputB_array = np.array(inputB_array, dtype = np.float)
-output_array = np.array(output_array, dtype = np.float)
-
-res = np.dot(inputA_array, inputB_array)
-print(inputA_array.shape, inputB_array.shape)
-res_0_1 = 0
-for index in range(inputA_array[0].shape[0]):
-    res_0_1 += inputA_array[0][index] * inputB_array[index][1]
-
-print(res_0_1)
-
-print(res)
+print(np.sum(a * b))
