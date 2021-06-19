@@ -8,7 +8,7 @@
 #define Mask_width  5
 #define Mask_radius Mask_width/2
 
-void imageSetPixel(wbImage_t img, int x, int y, int c, float val) {
+static inline void imageSetPixel(wbImage_t img, int x, int y, int c, float val) {
     float * data = wbImage_getData(img);
     int channels = wbImage_getChannels(img);
     int pitch = wbImage_getPitch(img);
@@ -18,7 +18,7 @@ void imageSetPixel(wbImage_t img, int x, int y, int c, float val) {
     return ;
 }
 
-float imageGetPixel(wbImage_t img, int x, int y, int c) {
+static inline float imageGetPixel(wbImage_t img, int x, int y, int c) {
     float * data = wbImage_getData(img);
     int channels = wbImage_getChannels(img);
     int pitch = wbImage_getPitch(img);

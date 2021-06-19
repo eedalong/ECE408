@@ -27,23 +27,6 @@ typedef struct st_wbImage_t {
 
 
 typedef void (*wbImage_onSameFunction_t)(string str);
-void imageSetPixel(wbImage_t img, int x, int y, int c, float val) {
-    float * data = wbImage_getData(img);
-    int channels = wbImage_getChannels(img);
-    int pitch = wbImage_getPitch(img);
-
-    data[y * pitch + x * channels + c] = val;
-
-    return ;
-}
-
-float imageGetPixel(wbImage_t img, int x, int y, int c) {
-    float * data = wbImage_getData(img);
-    int channels = wbImage_getChannels(img);
-    int pitch = wbImage_getPitch(img);
-
-    return data[y * pitch + x * channels + c];
-}
 wbImage_t wbImage_new(int width, int height, int channels);
 wbImage_t wbImage_new(int width, int height);
 void wbImage_delete(wbImage_t img);
