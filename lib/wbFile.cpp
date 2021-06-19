@@ -131,6 +131,7 @@ char * wbFile_read(wbFile_t file, size_t size, size_t count) {
         handle = wbFile_getFileHandle(file);
         res = fread(buffer, size, count, handle);
     }else{
+        printf("check read count: %d, total file length %d \n", count * size, int(wbFile_getLength(file)));
         int currentOffset = wbFile_getDataOffset(file);
         if(count * size + currentOffset >= wbFile_getLength(file)){
             wbLog(ERROR, "Failed to read data from ", wbFile_getFileName(file));

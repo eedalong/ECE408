@@ -103,7 +103,7 @@ wbImage_t wbPPM_import(const char * filename) {
 
     // the rest of the lines contain the data in binary format
 
-    charData = (unsigned char *) wbFile_read(file, width * channels * sizeof(unsigned char), height);
+    charData = (unsigned char *) wbFile_read(file, sizeof(unsigned char), width * channels * height);
     img = wbImage_new(width, height, channels);
 
     imgData = wbImage_getData(img);
