@@ -79,8 +79,7 @@ void convNd(wbImage_t inputImage, float* mask_data, wbImage_t& outImage){
                         }
                     }
                 }
-                printf("(%d, %d, %d): %f\n", row, col, channel, output);
-                exit(-1);
+                
                 imageSetPixel(outImage, col, row, channel, output);
             }
         }
