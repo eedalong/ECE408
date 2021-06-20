@@ -12,7 +12,7 @@
 #define Mask_width  5
 #define Mask_radius Mask_width/2
 
-#define TILE_SIZE 16
+#define TILE_SIZE 28
 #define BLOCK_SIZE TILE_SIZE + 4
 
 
