@@ -84,7 +84,8 @@ def readMask(dir_path = "../build"):
 
 image = readImage()
 mask = readMask()
-conv2d = torch.nn.Conv2d(1, 1, 5, stride=[1, 1], padding=2, bias=False, padding_mode='zeros')
+conv2d = torch.nn.Conv2d(1, 1, 5, stride=1, padding=2, bias=False, padding_mode='zeros')
+print(f"conv2d shape {conv2d.weight.shape}")
 conv2d.weight.data = mask
 print("check conv2d: ", conv2d)
 
