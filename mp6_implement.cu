@@ -169,7 +169,9 @@ int main(int argc, char* argv[]) {
         std::cout<<endl;
     }
     wbPPM_export("res_bkp.ppm", outputImage);
-    wbSolution(arg, outputImage);
+    wbImage_t resultImage = wbPPM_import("res_bkp.ppm");
+    
+    wbSolution(arg, resultImage);
 
     cudaFree(deviceInputImageData);
     cudaFree(deviceOutputImageData);
