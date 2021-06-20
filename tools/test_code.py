@@ -65,7 +65,7 @@ def readPPM(file_path):
     print(f"check image {image[0][0][:5][:5]}")
     return torch.from_numpy(image)
 
-def readImage(dir_path = "../build")->torch.Tensor:
+def readInput(dir_path = "../build")->torch.Tensor:
     file_path = os.path.join(dir_path, "input0.ppm")
     return readPPM(file_path)
     
@@ -85,16 +85,16 @@ def readMask(dir_path = "../build"):
 
 def readExpectation(dir_path = "../build"):
     file_path = os.path.join(dir_path, "output.ppm")
-    expect = readImage(file_path)
+    expect = readPPM(file_path)
     return expect
 
 def readOutput(dir_path = "../build"):
     file_path = os.path.join(dir_path, "res.ppm")
-    expect = readImage(file_path)
+    expect = readPPM(file_path)
     return expect
 
 
-image = readImage()
+image = readInput()
 mask = readMask()
 output = readOutput()
 expectation = readExpectation()
