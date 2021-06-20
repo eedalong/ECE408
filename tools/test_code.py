@@ -3,7 +3,7 @@ import numpy as np
 
 
 def readPPM(file_path):
-    inputFile = open("../test_data/mp06/0/input0.ppm")
+    inputFile = open("../test_data/mp06/0/input0.ppm", encoding=None)
     firstLine = inputFile.readline()
     print(firstLine)
     secondLine = inputFile.readline()
