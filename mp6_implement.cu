@@ -52,8 +52,9 @@ __global__ void conv2d(float* inputImage, float* outputImage, const float* mask,
     
 
 
-    float output = 0.0f;
-    if(tx < TILE_SIZE && ty < TILE_SIZE){
+    float *output = malloc();
+    
+    if(row_out < imageHeight && col_out < imageWidth){
         for(size_t i = 0; i < Mask_width; i++){
             for(size_t j = 0; j < Mask_width; j++){
                 output += mask[i* Mask_width + j] * input_tile[i+ty][j+tx];
