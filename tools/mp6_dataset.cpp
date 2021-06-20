@@ -80,7 +80,7 @@ void convNd(wbImage_t inputImage, float* mask_data, wbImage_t& outImage){
                     }
                 }
                 
-                imageSetPixel(outImage, col, row, channel, output);
+                imageSetPixel(outImage, row, col, channel, output);
             }
         }
     }
