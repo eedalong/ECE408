@@ -68,6 +68,7 @@ __global__ void conv2d(float* inputImage, float* outputImage, const float* mask,
             }
             printf("\n");
         }
+        printf("check output %f\n", output);
        
     }
     __syncthreads();
