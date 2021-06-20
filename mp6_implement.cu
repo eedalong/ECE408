@@ -168,8 +168,8 @@ int main(int argc, char* argv[]) {
         }
         std::cout<<endl;
     }
-    wbPPM_export("res.ppm", outputImage);
-    //wbSolution(arg, outputImage);
+    wbPPM_export("res_bkp.ppm", outputImage);
+    wbSolution(arg, outputImage);
 
     cudaFree(deviceInputImageData);
     cudaFree(deviceOutputImageData);
