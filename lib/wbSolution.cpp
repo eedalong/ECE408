@@ -19,7 +19,7 @@ static wbBool wbSolution_correctQ(char * expectedOutputFile, wbSolution_t sol) {
         return wbFalse;
     } else if (wbString_sameQ(wbSolution_getType(sol), "image")) {
         wbImage_t solutionImage = NULL;
-        wbImage_t expectedImage = wbImport(expectedOutputFile);
+        wbImage_t expectedImage = wbPPM_import(expectedOutputFile);
         if (expectedImage == NULL) {
             _solution_correctQ = "Failed to open expected output file.";
             res = wbFalse;
