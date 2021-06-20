@@ -72,11 +72,11 @@ def readMask(dir_path = "../build"):
     inputFile = open(file_path, 'r')
     firstLine = inputFile.readline()
     shape = firstLine.split()
-    shape = [1] + [int(item) for item in shape]
+    shape = [1, 1] + [int(item) for item in shape]
     mask = np.zeros(shape)
     for index in range(shape[1]):
         data = [float(item) for item in inputFile.readline().split()]
-        mask[0][index] = np.array(data)
+        mask[0][0][index] = np.array(data)
     print("check mask \n", mask)
     return torch.from_numpy(mask)
 
