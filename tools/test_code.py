@@ -108,6 +108,6 @@ conv2d = torch.nn.Conv2d(1, 1, 5, stride=1, padding=2, bias=False, padding_mode=
 print(f"conv2d shape {conv2d.weight.shape}")
 conv2d.weight.data = mask
 res = conv2d(image)
-print("result and expectation macthes: ", all(output == expectation))
+print("result and expectation macthes: ", torch.equal(output, expectation))
 
 
