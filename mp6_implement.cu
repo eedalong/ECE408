@@ -12,8 +12,9 @@
 #define Mask_width  5
 #define Mask_radius Mask_width/2
 
-#define BLOCK_SIZE 32
-#define TILE_SIZE 28
+#define TILE_SIZE 16
+#define BLOCK_SIZE TILE_SIZE + 4
+
 
 int ceil(int a, int b){
     return (a + b - 1) / b;
@@ -30,7 +31,7 @@ int ceil(int a, int b){
 */
 
 __global__ void conv2d(float* inputImage, float* outputImage, const float* mask, int current_channel, int imageHeight, int imageWidth, int imageChannel){
-    __shared__ float input_tile[TILE_SIZE + Mask_radius][TILE_SIZE + Mask_radius];
+    __shared__ float input_tile[TILE_SIZE + Mask_width - 1][TILE_SIZE + Mask_width - 1];
     int ty = threadIdx.y; int tx = threadIdx.x;
     int by = blockIdx.y;  int bx = blockIdx.x;
     
@@ -125,7 +126,7 @@ int main(int argc, char* argv[]) {
 
 
     wbTime_start(Compute, "Doing the computation on the GPU");
-    dim3 DimGrid(ceil(imageHeight, TILE_SIZE), ceil(imageWidth, TILE_SIZE));
+    dim3 DimGrid(ceil(imageWidth, TILE_SIZE), ceil(imageHeight, TILE_SIZE));
     dim3 DimBlock(BLOCK_SIZE, BLOCK_SIZE, 1);
     
     std::cout <<"begin to do GPU computation"<<std::endl;
