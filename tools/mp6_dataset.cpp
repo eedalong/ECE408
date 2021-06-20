@@ -61,7 +61,7 @@ void generate_mask(float* maskData){
        sum += maskData[index];
    }
    for(int index = 0; index < Mask_width * Mask_width; index++){
-       maskData[index] /= sum;
+       maskData[index] = 1.0f/25;
    }
 }
 
