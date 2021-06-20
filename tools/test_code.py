@@ -30,11 +30,12 @@ def readPPM(file_path):
     print("total size is ", total_size)
     depth, position = getLine(data, position)
     data = data[position: -1]
+    print(f"check data[0:10]:\t{data[:10]}")
     image = np.zeros(shape)
     for row in range(shape[2]):
         for col in range(shape[3]):
             for channel in range(3):
-                image[0][channel][row][col] = ord(data[(row * shape[3] + col) * 3 + channel]) / 255.0
+                image[0][channel][row][col] = int(data[(row * shape[3] + col) * 3 + channel]) / 255.0
     
     print(image[0])
 
