@@ -74,7 +74,7 @@ def readMask(dir_path = "../build"):
     shape = firstLine.split()
     shape = [1, 1] + [int(item) for item in shape]
     mask = np.zeros(shape)
-    for index in range(shape[1]):
+    for index in range(shape[2]):
         data = [float(item) for item in inputFile.readline().split()]
         mask[0][0][index] = np.array(data)
     print("check mask \n", mask[0][0])
