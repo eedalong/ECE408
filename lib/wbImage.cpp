@@ -120,7 +120,7 @@ wbBool wbImage_sameQ(wbImage_t a, wbImage_t b,
           }
           //std::cout<<"( "<<ii<<", "<<jj<<", "<<kk<<" ) = "<<x<<" vs "<<y<<std::endl;
           if (wbUnequalQ(x, y)) {
-            std::cout<<"unequal_1:\t"<<"( "<<ii<<", "<<jj<<", "<<kk<<" ) = "<<x<<" vs "<<y<<std::endl;
+            //std::cout<<"unequal_1:\t"<<"( "<<ii<<", "<<jj<<", "<<kk<<" ) = "<<x<<" vs "<<y<<std::endl;
             
 
             if (onUnSame != NULL) {
