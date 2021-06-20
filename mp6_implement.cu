@@ -49,6 +49,7 @@ __global__ void conv2d(float* inputImage, float* outputImage, const float* mask,
     }
     __syncthreads();
     
+    
 
 
     float output = 0.0f;
@@ -67,7 +68,7 @@ __global__ void conv2d(float* inputImage, float* outputImage, const float* mask,
             }
             printf("\n");
         }
-        printf("check output: %f\n", output);
+       
     }
     __syncthreads();
     if(row_out < imageHeight && col_out < imageWidth){
