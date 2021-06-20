@@ -1,29 +1,34 @@
 import numpy as np
-'''
-0.705882, 0.184314, 0.592157, 0.0509804, 0.498039,                                                                                                                  
-0.584314, 0.537255, 0.117647, 0.764706, 0.141176,                                                                                                                   
-0.352941, 0.223529, 0.721569, 0.247059, 0.611765,                                                                                                                   
-0.686275, 0.101961, 0.694118, 0.498039, 0.345098,                                                                                                                   
-0.360784, 0.0862745, 0, 0.203922, 0.141176,                                                                                                                         
-check mask                                                                                                                                                          
-0.0371581, 0.0734245, 0.0395363, 0.0270511, 0.00237812,                                                                                                             
-0.00713436, 0.0416171, 0.0389417, 0.00891795, 0.0389417,                                                                                                            
-0.0472652, 0.0749108, 0.0698573, 0.0133769, 0.062723,                                                                                                               
-0.00564804, 0.0752081, 0.0719382, 0.0546968, 0.0163496,                                                                                                             
-0.03478, 0.0680737, 0.0267539, 0.0157551, 0.0475624,                                                                                                                
-(0, 0, 0): 0.267539                    
-'''
+#import torch 
 
-a = np.array([
-    [0.164706, 0.196078, 0.729412],
-    [0.262745, 0.458824, 0.490196],
-    [0.345098, 0.803922, 0.854902]
-])
 
-b = np.array([
-    [0.0460792, 0.0460792, 0.0254648],
-    [0.0650768, 0.00202102, 0.0796281],
-    [0.0230396, 0.0513339, 0.0137429]
-])
+def readPPM(file_path):
+    inputFile = open("../test_data/mp06/0/input0.ppm")
+    firstLine = inputFile.readline()
+    print(firstLine)
+    secondLine = inputFile.readline()
+    print(secondLine)
+    shape = inputFile.readline()[:-1]
+    # N, C, H, W 
+    shape = shape.split()
+    print(shape[0], shape[1], "")
+    shape = [1, 3] + [int(item) for item in shape]
+    print("shape is ", shape)
+    total_size = 1
+    for dim in shape:
+        total_size *= dim
+    print("total size is ", total_size)
+    depth = inputFile.readline()
+    print(depth)
+    position = inputFile.tell()
+    data = inputFile.read(total_size)
+    image = np.zeros(shape)
+    for row in range(shape[2]):
+        for col in range(shape[3]):
+            for channel in range(3):
+                image[0][channel][row][col] = ord(data[(row * shape[3] + col) * 3 + channel]) / 255.0
+    
+    print(image[0])
 
-print(np.sum(a * b))
+
+readPPM("")
