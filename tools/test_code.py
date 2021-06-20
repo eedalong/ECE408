@@ -1,14 +1,23 @@
 import numpy as np
 #import torch 
 
-
+def getLine(data, offset):
+    current_offset = offset
+    while current_offset < len(data) and data[current_offset] != '\n':
+        current_offset += 1
+    
+    return data[offset:current_offset], current_offset + 1
 def readPPM(file_path):
-    inputFile = open("../test_data/mp06/0/input0.ppm", encoding=None)
-    firstLine = inputFile.readline()
+    inputFile = open("../test_data/mp06/0/input0.ppm", 'rb')
+    data = inputFile.read()
+    firstLine, position = getLine(data, 0)
     print(firstLine)
-    secondLine = inputFile.readline()
+    
+    secondLine, position = getLine(data, position)
     print(secondLine)
-    shape = inputFile.readline()[:-1]
+    shape, position = getLine(data, position)
+    print(shape)
+    
     # N, C, H, W 
     shape = shape.split()
     print(shape[0], shape[1], "")
@@ -18,10 +27,8 @@ def readPPM(file_path):
     for dim in shape:
         total_size *= dim
     print("total size is ", total_size)
-    depth = inputFile.readline()
-    print(depth)
-    position = inputFile.tell()
-    data = inputFile.read(total_size)
+    depth, position = getLine(data, position)
+    data = data[position: -1]
     image = np.zeros(shape)
     for row in range(shape[2]):
         for col in range(shape[3]):
