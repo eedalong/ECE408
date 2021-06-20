@@ -3,7 +3,7 @@ import numpy as np
 
 def getLine(data, offset):
     current_offset = offset
-    while current_offset < len(data) and data[current_offset] != '\n':
+    while current_offset < len(data) and data[current_offset] != b'\n':
         current_offset += 1
     
     return data[offset:current_offset], current_offset + 1
@@ -19,6 +19,7 @@ def readPPM(file_path):
     print(shape)
     
     # N, C, H, W 
+    shape = shape.decode()
     shape = shape.split()
     print(shape[0], shape[1], "")
     shape = [1, 3] + [int(item) for item in shape]
