@@ -77,7 +77,7 @@ def readMask(dir_path = "../build"):
     for index in range(shape[1]):
         data = [float(item) for item in inputFile.readline().split()]
         mask[0][0][index] = np.array(data)
-    print("check mask \n", mask)
+    print("check mask \n", mask[0][0])
     return torch.from_numpy(mask)
 
 
@@ -87,10 +87,10 @@ mask = readMask()
 conv2d = torch.nn.Conv2d(1, 1, 5, stride=1, padding=2, bias=False, padding_mode='zeros')
 print(f"conv2d shape {conv2d.weight.shape}")
 conv2d.weight.data = mask
-print("check conv2d: ", conv2d)
 
-inputImage = image[:][0][:][:]
+
+
 print("check inputImage shape: ", inputImage.shape)
-res = conv2d(image[:][0][:][:])
+res = conv2d(image)
 print(res)
 
