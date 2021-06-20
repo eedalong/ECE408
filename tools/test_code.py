@@ -1,5 +1,6 @@
 import numpy as np
-#import torch 
+import os 
+import torch 
 '''
 0.827451, 0.894118, 0.368627, 0.67451, 0.0784314,                                                                                                                   
 0.929412, 0.835294, 0.513726, 0.027451, 0.65098,                                                                                                                    
@@ -26,8 +27,10 @@ def getLine(data, offset):
         current_offset += 1
     
     return data[offset:current_offset], current_offset + 1
-def readPPM(file_path):
-    inputFile = open("../build/input0.ppm", 'rb')
+
+def readImage(dir_path = "../build")->torch.Tensor:
+    file_path = os.path.join(dir_path, "input0.ppm")
+    inputFile = open(file_path, 'rb')
     data = inputFile.read()
     firstLine, position = getLine(data, 0)
     print(firstLine)
@@ -61,7 +64,26 @@ def readPPM(file_path):
             for channel in range(3):
                 image[0][channel][row][col] = int(data[(row * shape[3] + col) * 3 + channel]) / 255.0
     
-    print(image[0][0])
+    return torch.from_numpy(image)
+
+def readMask(dir_path = "../build"):
+    file_path = os.path.join(dir_path, "input1.raw")
+    inputFile = open(file_path, 'r')
+    firstLine = inputFile.readline()
+    shape = firstLine.split()
+    shape = [1] + [int(item) for item in shape]
+    mask = np.zeros(shape)
+    for index in range(shape[1]):
+        data = [float(item) for item in inputFile.readline().split()]
+        mask[0][index] = np.array(data)
+    return torch.from_numpy(mask)
 
 
-readPPM("")
+
+image = readImage()
+mask = readMask()
+conv2d = torch.nn.Conv2d(1, 1, 5, stride=1, padding=2, bias=False, padding_mode='zeros')
+conv2d.weight.data = mask
+res = conv2d(image[:][0][:][:])
+print(res)
+
