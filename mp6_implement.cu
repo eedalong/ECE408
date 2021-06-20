@@ -52,7 +52,7 @@ __global__ void conv2d(float* inputImage, float* outputImage, const float* mask,
     
 
 
-    float *output = malloc();
+    float output = 0;
     
     if(row_out < imageHeight && col_out < imageWidth){
         for(size_t i = 0; i < Mask_width; i++){
