@@ -61,7 +61,7 @@ def readPPM(file_path):
             for channel in range(3):
                 image[0][channel][row][col] = int(data[(row * shape[3] + col) * 3 + channel]) / 255.0
     
-    print(np.transpose(image[0][0]))
+    print(image[0][0])
 
 
 readPPM("")
