@@ -48,7 +48,8 @@ __global__ void conv2d(float* inputImage, float* outputImage, const float* mask,
         input_tile[ty][tx] = 0.0f;
     }
     __syncthreads();
-    if(col_out % TILE_SIZE == 0 && tx < TILE_SIZE && ty < TILE_SIZE){
+    if(tx == 0 && ty == 0){
+        printf("check (%d, %d)\n", row_out, col_out);
         for(size_t i = 0; i < Mask_width; i++){
             for(size_t j = 0; j < Mask_width; j++){
                 printf("%f, ", input_tile[i+ty][j+tx]);
@@ -56,6 +57,7 @@ __global__ void conv2d(float* inputImage, float* outputImage, const float* mask,
             printf("\n");
         }
     }
+    __syncthreads();
 
     float output = 0.0f;
     if(tx < TILE_SIZE && ty < TILE_SIZE){
