@@ -27,7 +27,7 @@ def getLine(data, offset):
     
     return data[offset:current_offset], current_offset + 1
 def readPPM(file_path):
-    inputFile = open("../test_data/mp06/0/input0.ppm", 'rb')
+    inputFile = open("../build/input0.ppm", 'rb')
     data = inputFile.read()
     firstLine, position = getLine(data, 0)
     print(firstLine)
@@ -51,12 +51,13 @@ def readPPM(file_path):
     data = data[position: -1]
     print(f"check data[0:10]:\t{data[:10]}")
     image = np.zeros(shape)
+    assert len(data) == total_size, "data length not equal to total size"
     for row in range(shape[2]):
         for col in range(shape[3]):
             for channel in range(3):
                 image[0][channel][row][col] = int(data[(row * shape[3] + col) * 3 + channel]) / 255.0
     
-    print(np.transpose(image[0]))
+    print(np.transpose(image[0][0]))
 
 
 readPPM("")
