@@ -30,7 +30,7 @@ int ceil(int a, int b){
 */
 
 __global__ void conv2d(float* inputImage, float* outputImage, const float* mask, int current_channel, int imageHeight, int imageWidth, int imageChannel){
-    __shared__ float input_tile[TILE_SIZE + Mask_width - 1][TILE_SIZE + Mask_width - 1];
+    __shared__ float input_tile[TILE_SIZE + Mask_radius][TILE_SIZE + Mask_radius];
     int ty = threadIdx.y; int tx = threadIdx.x;
     int by = blockIdx.y;  int bx = blockIdx.x;
     
@@ -170,7 +170,7 @@ int main(int argc, char* argv[]) {
     }
     wbPPM_export("res_bkp.ppm", outputImage);
     wbImage_t resultImage = wbPPM_import("res_bkp.ppm");
-    
+
     wbSolution(arg, resultImage);
 
     cudaFree(deviceInputImageData);
