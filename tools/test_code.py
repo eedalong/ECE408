@@ -59,7 +59,7 @@ def readImage(dir_path = "../build")->torch.Tensor:
         
     print(f"check data[0:10]:\t{data[:10]}")
     image = np.zeros(shape)
-    assert len(data) == total_size, f"data length {len(data)} not equal to total size {total_size})"
+    #assert len(data) == total_size, f"data length {len(data)} not equal to total size {total_size})"
     for row in range(shape[2]):
         for col in range(shape[3]):
             for channel in range(channel_num):
