@@ -62,18 +62,18 @@ static inline float wbImage_getPixel(wbImage_t img, int x, int y, int c) {
 wbBool wbImage_sameQ(wbImage_t a, wbImage_t b,
                      wbImage_onSameFunction_t onUnSame) {
   
-  std::cout<<"check output image"<<std::endl;
+  std::cout<<"check solution image"<<std::endl;
   for(int row = 0; row < 5; row++){
       for(int col = 0; col < 5; col++){
-          std::cout<<wbImage_getPixel(a, row, col, 0)<<", ";
+          std::cout<<wbImage_getPixel(a, col, row, 0)<<", ";
       }
       std::cout<<std::endl;
   }
 
-  std::cout<<"check result image"<<std::endl;
+  std::cout<<"check expected image"<<std::endl;
   for(int row = 0; row < 5; row++){
       for(int col = 0; col < 5; col++){
-          std::cout<<wbImage_getPixel(b, row, col, 0)<<", ";
+          std::cout<<wbImage_getPixel(b, col, row, 0)<<", ";
       }
       std::cout<<std::endl;
   }
