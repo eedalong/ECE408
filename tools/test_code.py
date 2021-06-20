@@ -48,7 +48,11 @@ def readPPM(file_path):
         total_size *= dim
     print("total size is ", total_size)
     depth, position = getLine(data, position)
-    data = data[position: -1]
+    if data[-1] == ord('\n'):
+        data = data[position: -1]
+    else:
+        data = data[position: ]
+        
     print(f"check data[0:10]:\t{data[:10]}")
     image = np.zeros(shape)
     assert len(data) == total_size, f"data length {len(data)} not equal to total size {total_size})"
