@@ -161,6 +161,14 @@ int main(int argc, char* argv[]) {
         std::cout<<endl;
     }
 
+    std::cout<<"check output "<<std::endl;
+    for(int row = 0; row < 5; row ++){
+        for(int col = 0; col < 5; col ++){
+            std::cout<<hostOutputImageData[(row * imageWidth + col) * imageChannels + 0]<<", ";
+        }
+        std::cout<<endl;
+    }
+
     wbSolution(arg, outputImage);
 
     cudaFree(deviceInputImageData);
