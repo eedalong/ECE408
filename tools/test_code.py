@@ -114,6 +114,7 @@ def readMask(dir_path = "../build"):
     print("check mask \n", mask[0][0])
     return torch.from_numpy(mask)
 
+
 def readExpectation(dir_path = "../build"):
     file_path = os.path.join(dir_path, "output.ppm")
     expect = readPPM(file_path)
@@ -133,11 +134,6 @@ conv2d = torch.nn.Conv2d(1, 1, 5, stride=1, padding=2, bias=False, padding_mode=
 print(f"conv2d shape {conv2d.weight.shape}")
 conv2d.weight.data = mask
 res = conv2d(image)
-
-print(res[0][0][0:5][0:5])
-print("++" * 30)
-print(output[0][0][0:5][0:5])
-print("++" * 30)
-print(expectation[0][0][0:5][0:5])
+print(output == expectation)
 
 
