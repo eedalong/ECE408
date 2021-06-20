@@ -120,8 +120,8 @@ wbBool wbImage_sameQ(wbImage_t a, wbImage_t b,
           }
           //std::cout<<"( "<<ii<<", "<<jj<<", "<<kk<<" ) = "<<x<<" vs "<<y<<std::endl;
           if (wbUnequalQ(x, y)) {
-            std::cout<<"( "<<ii<<", "<<jj<<", "<<kk<<" ) = "<<x<<" vs "<<y<<std::endl;
-            std::cout<<"( "<<ii<<", "<<jj<<", "<<kk<<" ) = "<<wbImage_getPixel(a, jj, ii, channels)<<" vs "<<wbImage_getPixel(b, jj, ii, channels)<<std::endl;
+            
+            std::cout<<"unequal:\t"<<"( "<<ii<<", "<<jj<<", "<<kk<<" ) = "<<wbImage_getPixel(a, jj, ii, channels)<<" vs "<<wbImage_getPixel(b, jj, ii, channels)<<std::endl;
             
 
             if (onUnSame != NULL) {
