@@ -54,6 +54,7 @@ __global__ void conv2d(float* inputImage, float* outputImage, const float* mask,
                 printf("%f, ", input_tile[i+ty][j+tx]);
             }
             printf("\n");
+        }
     }
 
     float output = 0.0f;
