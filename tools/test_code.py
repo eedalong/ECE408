@@ -88,9 +88,6 @@ conv2d = torch.nn.Conv2d(1, 1, 5, stride=1, padding=2, bias=False, padding_mode=
 print(f"conv2d shape {conv2d.weight.shape}")
 conv2d.weight.data = mask
 
-
-
-print("check inputImage shape: ", inputImage.shape)
 res = conv2d(image)
 print(res)
 
