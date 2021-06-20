@@ -3,7 +3,7 @@ import numpy as np
 
 def getLine(data, offset):
     current_offset = offset
-    while current_offset < len(data) and data[current_offset] != b'\n':
+    while current_offset < len(data) and data[current_offset] != ord('\n'):
         current_offset += 1
     
     return data[offset:current_offset], current_offset + 1
