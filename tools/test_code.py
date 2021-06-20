@@ -2,24 +2,23 @@ import numpy as np
 import os 
 import torch 
 '''
-check inputImage                                                                                                                                                    
-0.772549, 0.666667, 0.933333, 0.243137, 0.780392,                                                                                                                   
-0.227451, 0.192157, 0.192157, 0.556863, 0.505882,                                                                                                                   
-0.886275, 0.839216, 0.423529, 0.286275, 0.392157,                                                                                                                   
-0.752941, 0.133333, 0.941176, 0.760784, 0.352941,                                                                                                                   
-0.745098, 0.333333, 0.678431, 0.764706, 0.266667,                                                                                                                   
+0.741176, 0.74902, 0.52549, 0.282353, 0.0823529,                                                                                                                    
+0.376471, 0.933333, 0.729412, 0.721569, 0.94902,                                                                                                                    
+0.886275, 0.701961, 0.121569, 0.101961, 0.45098,                                                                                                                    
+0.47451, 0.807843, 0.25098, 0.12549, 0.317647,                                                                                                                      
+0.588235, 0.6, 0.105882, 0.270588, 0.780392,                                                                                                                        
 check mask                                                                                                                                                          
-0.0528709, 0.0594088, 0.0144969, 0.0267197, 0.0295623,                                                                                                              
-0.0355316, 0.0372371, 0.0690733, 0.0719159, 0.0611143,                                                                                                              
-0.0494599, 0.0719159, 0.0582717, 0.0571347, 0.0687891,                                                                                                              
-0.0133599, 0.00938033, 0.0252985, 0.0275725, 0.00852757,                                                                                                            
-0.0227402, 0.0133599, 0.0426379, 0.0722001, 0.00142126,                                                                                                             
+0.0114654, 0.0347546, 0.0354712, 0.00214977, 0.0906485,                                                                                                             
+0.00143318, 0.0530276, 0.0146901, 0.0533859, 0.0118237,                                                                                                             
+0.0748836, 0.027947, 0.0537442, 0.0641347, 0.00967395,                                                                                                              
+0.0637764, 0.0447868, 0, 0.0114654, 0.0892153,                                                                                                                      
+0.0730921, 0.0494446, 0.00501612, 0.0566105, 0.0673594,                                                                                                             
 check outputImage                                                                                                                                                   
-0.258984, 0.288038, 0.314156, 0.374602, 0.379852,                                                                                                                   
-0.260108, 0.362079, 0.430922, 0.479349, 0.491968,                                                                                                                   
-0.308136, 0.440931, 0.560244, 0.527713, 0.559303,                                                                                                                   
-0.320995, 0.390854, 0.495568, 0.45771, 0.496076,                                                                                                                    
-0.284003, 0.430685, 0.44912, 0.445971, 0.511511,
+0.221104, 0.248094, 0.418581, 0.414895, 0.345892,                                                                                                                   
+0.228149, 0.296501, 0.447234, 0.469453, 0.38529,                                                                                                                    
+0.309048, 0.323117, 0.512451, 0.536325, 0.487769,                                                                                                                   
+0.330894, 0.416483, 0.569247, 0.51843, 0.499735,                                                                                                                    
+0.329266, 0.299235, 0.43253, 0.442911, 0.354963, 
 '''
 def getLine(data, offset):
     current_offset = offset
@@ -28,8 +27,7 @@ def getLine(data, offset):
     
     return data[offset:current_offset], current_offset + 1
 
-def readImage(dir_path = "../build")->torch.Tensor:
-    file_path = os.path.join(dir_path, "input0.ppm")
+def readPPM(file_path):
     inputFile = open(file_path, 'rb')
     data = inputFile.read()
     firstLine, position = getLine(data, 0)
@@ -67,6 +65,11 @@ def readImage(dir_path = "../build")->torch.Tensor:
     print(f"check image {image[0][0][:5][:5]}")
     return torch.from_numpy(image)
 
+def readImage(dir_path = "../build")->torch.Tensor:
+    file_path = os.path.join(dir_path, "input0.ppm")
+    return readPPM(file_path)
+    
+
 def readMask(dir_path = "../build"):
     file_path = os.path.join(dir_path, "input1.raw")
     inputFile = open(file_path, 'r')
@@ -80,6 +83,15 @@ def readMask(dir_path = "../build"):
     print("check mask \n", mask[0][0])
     return torch.from_numpy(mask)
 
+def readExpectation(dir_path = "../build"):
+    file_path = os.path.join(dir_path, "output.ppm")
+    expect = readImage(file_path)
+    return expect
+
+def readOutput(dir_path = "../build"):
+    file_path = os.path.join(dir_path, "res.ppm")
+    expect = readImage(file_path)
+    return expect
 
 
 image = readImage()
@@ -87,7 +99,7 @@ mask = readMask()
 conv2d = torch.nn.Conv2d(1, 1, 5, stride=1, padding=2, bias=False, padding_mode='zeros')
 print(f"conv2d shape {conv2d.weight.shape}")
 conv2d.weight.data = mask
-
 res = conv2d(image)
-print(res[0][0][:5][:5])
+print(res)
+
 
