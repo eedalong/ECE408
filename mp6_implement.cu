@@ -61,8 +61,8 @@ __global__ void conv2d(float* inputImage, float* outputImage, const float* mask,
             }
         }
     }
-    /*
-    if(tx == 0 && ty == 0 && by == 1 && bx == 0){
+    
+    if(tx == 11 && ty == 11 && by == 1 && bx == 0){
         output = 0;
         printf("check (%d, %d)\n", row_out, col_out);
         for(size_t i = 0; i < Mask_width; i++){
@@ -74,7 +74,7 @@ __global__ void conv2d(float* inputImage, float* outputImage, const float* mask,
         }
         printf("check output %f\n", output);
        
-    }*/
+    }
 
     __syncthreads();
     if(row_out < imageHeight && col_out < imageWidth){
