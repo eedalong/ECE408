@@ -27,11 +27,12 @@ typedef struct st_wbImage_t {
 
 
 typedef void (*wbImage_onSameFunction_t)(string str);
-
 wbImage_t wbImage_new(int width, int height, int channels);
 wbImage_t wbImage_new(int width, int height);
 void wbImage_delete(wbImage_t img);
 wbBool wbImage_sameQ(wbImage_t a, wbImage_t b, wbImage_onSameFunction_t onUnSame);
 wbBool wbImage_sameQ(wbImage_t a, wbImage_t b);
+
+
 
 #endif /* __IMAGE_H__ */

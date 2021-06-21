@@ -8,4 +8,9 @@ Memory copy from cpu to gpu use DMA to fully utilize the bandwidth of the I/O bu
 
 ![](../imgs/data_transfer_note1.png)
 
-You can use the [memory_transfer_test](../tools/memory_transfer.cu) code to test the bandwidth difference between pageable memory and page-locked memory. But you should not over-allocate pinned memory. Doing so can reduce overall system performance because it reduces the amount of physical memory available to the operating system and other programs and may cause severe performance degradation because of frequent memory swapping.
+But you should not over-allocate pinned memory. Doing so can reduce overall system performance because it reduces the amount of physical memory available to the operating system and other programs and may cause severe performance degradation because of frequent memory swapping.
+
+You can use the [memory_transfer_test](../tools/memory_transfer.cu) code to test the bandwidth difference between pageable memory and page-locked memory. Here is benchmark result on my machine:
+
+
+![](../imgs/data_transfer_note3.png)
