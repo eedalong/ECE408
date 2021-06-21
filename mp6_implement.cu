@@ -42,6 +42,7 @@ __global__ void conv2d(float* inputImage, float* outputImage, int current_channe
     int row_in = row_out - Mask_radius;
     int col_in = col_out - Mask_radius;
 
+
     // load data
     if(row_in >= 0 && row_in < imageHeight && col_in >= 0 && col_in < imageWidth){
         input_tile[ty][tx] = inputImage[(row_in * imageWidth + col_in) * imageChannel + current_channel];
@@ -60,6 +61,8 @@ __global__ void conv2d(float* inputImage, float* outputImage, int current_channe
         }
     }
     if(by == 0 && bx == 1 && ty == 0 && tx == 0){
+        printf("check row and col (%d, %d)", row_in, col_in);
+        
         for(size_t i = 0; i < Mask_width; i++){
             for(size_t j = 0; j < Mask_width; j++){
                 printf("[(%d, %d):%f] ", i + ty, j + tx, input_tile[i+ty][j+tx]);
@@ -160,14 +163,16 @@ int main(int argc, char* argv[]) {
 
     wbTime_stop(GPU, "Doing GPU Computation (memory + compute)");
     
-    // check inputImageData for channel 0
-    std::cout<<"check input image channel 0"<<std::endl;
-    for(int row = 0; row < 5; row ++){
-        for(int col = 0; col < 5; col ++){
-            std::cout<<hostInputImageData[(row * imageWidth + col) * imageChannels + 0]<<", ";
+    
+    // checkout data around N * 
+    for(size_t i = 0; i < Mask_width; i++){
+        for(size_t j = 0; j < Mask_width; j++){
+            printf("[(%d, %d):%f] ", i + ty, j + tx, input_tile[i+ty][j+tx]);
         }
-        std::cout<<endl;
+        printf("\n");
     }
+
+    
     std::cout<<"check mask "<<std::endl;
     for(int row = 0; row < 5; row ++){
         for(int col = 0; col < 5; col ++){
