@@ -137,7 +137,7 @@ int main(int argc, char* argv[]) {
     std::cout <<"begin to do GPU computation"<<std::endl;
     //@@ INSERT CODE HERE
     for(int current_channel = 0; current_channel < imageChannels; current_channel ++){
-        conv2d<<<DimGrid, DimBlock>>>(deviceInputImageData, deviceOutputImageData, deviceMaskData, current_channel, imageHeight, imageWidth, imageChannels);
+        conv2d<<<DimGrid, DimBlock>>>(deviceInputImageData, deviceOutputImageData, current_channel, imageHeight, imageWidth, imageChannels);
     }
     cudaDeviceSynchronize();
     wbTime_stop(Compute, "Doing the computation on the GPU");
