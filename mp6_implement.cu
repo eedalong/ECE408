@@ -63,25 +63,6 @@ __global__ void conv2d(float* inputImage, float* outputImage, int current_channe
             }
         }
     }
-    __syncthreads();
-    if(tx == 0){
-        printf("check row and col (%d, %d)\n", row_in, col_in);
-        //printf("check original data: %f\n", inputImage[(row_in * imageWidth + col_in) * imageChannel + current_channel]);
-        //printf("check input_tile[ty][tx]: %f \n", input_tile[ty][tx]);
-        printf("check ty and tx: (%d, %d) \n", ty, tx);
-        printf("check output: %f \n", output);
-        
-        /*
-        for(row_index = 0; row_index < Mask_width; row_index++){
-            for(col_index = 0; col_index < Mask_width; col_index++){
-
-                printf("[%d, %d]->[(%d, %d):%f] ", row_index, col_index, row_index + ty, col_index + tx, input_tile[row_index+ty][col_index+tx]);
-            }
-            printf("\n");
-        }
-        printf("check input_tile[ty][tx] again: %f \n", input_tile[ty][tx]);
-        */
-    }
     // set output
     if(row_out < imageHeight && col_out < imageWidth){
         outputImage[(row_out * imageWidth + col_out) * imageChannel + current_channel] = output;
