@@ -41,6 +41,7 @@ __global__ void conv2d(float* inputImage, float* outputImage, int current_channe
     
     int row_in = row_out - Mask_radius;
     int col_in = col_out - Mask_radius;
+
     int row_index = 0;
     int col_index = 0;
 
@@ -62,7 +63,8 @@ __global__ void conv2d(float* inputImage, float* outputImage, int current_channe
             }
         }
     }
-    if(by == 0 && bx == 1 && ty == Mask_width && tx == 0){
+    __syncthreads();
+    if(by == 0 && bx == 1 && ty == 7 && tx == 0){
         printf("check row and col (%d, %d)\n", row_in, col_in);
         printf("check original data: %f\n", inputImage[(row_in * imageWidth + col_in) * imageChannel + current_channel]);
         printf("check input_tile[ty][tx]: %f \n", input_tile[ty][tx]);
