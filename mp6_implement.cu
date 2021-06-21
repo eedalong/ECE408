@@ -162,17 +162,7 @@ int main(int argc, char* argv[]) {
     wbTime_stop(Copy, "Copying data from the GPU");
 
     wbTime_stop(GPU, "Doing GPU Computation (memory + compute)");
-    
-    
-    // checkout data around N * 
-    for(size_t i = 0; i < Mask_width; i++){
-        for(size_t j = 0; j < Mask_width; j++){
-            printf("[(%d, %d):%f] ", i + ty, j + tx, input_tile[i+ty][j+tx]);
-        }
-        printf("\n");
-    }
-
-    
+        
     std::cout<<"check mask "<<std::endl;
     for(int row = 0; row < 5; row ++){
         for(int col = 0; col < 5; col ++){
