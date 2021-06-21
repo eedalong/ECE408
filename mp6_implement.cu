@@ -60,8 +60,8 @@ __global__ void conv2d(float* inputImage, float* outputImage, int current_channe
             }
         }
     }
-    if(by == 0 && bx == 1 && ty == 0 && tx == 0){
-        printf("check row and col (%d, %d)", row_in, col_in);
+    if(by == 0 && bx == 1 && ty == Mask_width && tx == 0){
+        printf("check row and col (%d, %d)\n", row_in, col_in);
         
         for(size_t i = 0; i < Mask_width; i++){
             for(size_t j = 0; j < Mask_width; j++){
