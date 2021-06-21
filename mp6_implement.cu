@@ -44,7 +44,7 @@ __global__ void conv2d(float* inputImage, float* outputImage, int current_channe
 
 
     // load data
-    if(row_in >= 0 && row_in < imageHeight && col_in >= 0 && col_in < imageWidth){
+    if((row_in >= 0) && (row_in < imageHeight) && (col_in >= 0) && (col_in < imageWidth)){
        
         input_tile[ty][tx] = inputImage[(row_in * imageWidth + col_in) * imageChannel + current_channel];
         if(by == 0 && bx == 1 && ty == Mask_width && tx == 0){
@@ -56,10 +56,10 @@ __global__ void conv2d(float* inputImage, float* outputImage, int current_channe
     __syncthreads();
 
     // compute
-    float output = 0;
+    float output = 0.0f;
     if(tx < TILE_SIZE && ty < TILE_SIZE){
-        for(size_t i = 0; i < Mask_width; i++){
-            for(size_t j = 0; j < Mask_width; j++){
+        for(int i = 0; i < Mask_width; i++){
+            for(int j = 0; j < Mask_width; j++){
                 output += deviceKernel[i][j] * input_tile[i+ty][j+tx];
             }
         }
@@ -75,9 +75,9 @@ __global__ void conv2d(float* inputImage, float* outputImage, int current_channe
             }
             printf("\n");
         }
+        printf("check input_tile[ty][tx] again: %f \n", input_tile[ty][tx]);
 
     }
-    __syncthreads();
     // set output
     if(row_out < imageHeight && col_out < imageWidth){
         outputImage[(row_out * imageWidth + col_out) * imageChannel + current_channel] = output;
@@ -150,7 +150,7 @@ int main(int argc, char* argv[]) {
 
 
     wbTime_start(Compute, "Doing the computation on the GPU");
-    dim3 DimGrid(ceil(imageWidth, TILE_SIZE), ceil(imageHeight, TILE_SIZE));
+    dim3 DimGrid(ceil(imageWidth, TILE_SIZE), ceil(imageHeight, TILE_SIZE), 1);
     dim3 DimBlock(BLOCK_SIZE, BLOCK_SIZE, 1);
     
     std::cout <<"begin to do GPU computation"<<std::endl;
