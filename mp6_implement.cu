@@ -12,7 +12,7 @@
 #define Mask_width  5
 #define Mask_radius Mask_width/2
 
-#define TILE_SIZE 28
+#define TILE_SIZE 16
 #define BLOCK_SIZE TILE_SIZE + Mask_width - 1
 __constant__ float deviceKernel[Mask_width][Mask_width];
 
