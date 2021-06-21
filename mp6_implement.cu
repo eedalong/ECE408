@@ -14,6 +14,7 @@
 
 #define TILE_SIZE 28
 #define BLOCK_SIZE TILE_SIZE + Mask_width - 1
+__constant__ float deviceKernel[MASK_SIZE][MASK_SIZE][MASK_SIZE];
 
 
 int ceil(int a, int b){
@@ -30,7 +31,7 @@ int ceil(int a, int b){
  V ty
 */
 
-__global__ void conv2d(float* inputImage, float* outputImage, const float* mask, int current_channel, int imageHeight, int imageWidth, int imageChannel){
+__global__ void conv2d(float* inputImage, float* outputImage, int current_channel, int imageHeight, int imageWidth, int imageChannel){
     __shared__ float input_tile[TILE_SIZE + Mask_width - 1][TILE_SIZE + Mask_width - 1];
     int ty = threadIdx.y; int tx = threadIdx.x;
     int by = blockIdx.y;  int bx = blockIdx.x;
@@ -54,7 +55,7 @@ __global__ void conv2d(float* inputImage, float* outputImage, const float* mask,
     if(tx < TILE_SIZE && ty < TILE_SIZE){
         for(size_t i = 0; i < Mask_width; i++){
             for(size_t j = 0; j < Mask_width; j++){
-                output += mask[i* Mask_width + j] * input_tile[i+ty][j+tx];
+                output += deviceKernel[i][j] * input_tile[i+ty][j+tx];
             }
         }
     }
@@ -81,7 +82,6 @@ int main(int argc, char* argv[]) {
     float * hostMaskData;
     float * deviceInputImageData;
     float * deviceOutputImageData;
-    float * deviceMaskData;
 
     arg = wbArg_read(argc, argv); /* parse the input arguments */
 
@@ -111,7 +111,6 @@ int main(int argc, char* argv[]) {
     wbTime_start(GPU, "Doing GPU memory allocation");
     cudaMalloc((void **) &deviceInputImageData, imageWidth * imageHeight * imageChannels * sizeof(float));
     cudaMalloc((void **) &deviceOutputImageData, imageWidth * imageHeight * imageChannels * sizeof(float));
-    cudaMalloc((void **) &deviceMaskData, maskRows * maskColumns * sizeof(float));
     wbTime_stop(GPU, "Doing GPU memory allocation");
 
 
@@ -120,10 +119,13 @@ int main(int argc, char* argv[]) {
                hostInputImageData,
                imageWidth * imageHeight * imageChannels * sizeof(float),
                cudaMemcpyHostToDevice);
-    cudaMemcpy(deviceMaskData,
-               hostMaskData,
-               maskRows * maskColumns * sizeof(float),
-               cudaMemcpyHostToDevice);
+    // use constant memory for deviceKernel
+    cudaMemcpyToSymbol(deviceKernel,
+                       hostMaskData,
+                       Mask_width * Mask_width * sizeof(float),
+                       0,
+                       cudaMemcpyHostToDevice
+                      );
      
     wbTime_stop(Copy, "Copying data to the GPU");
 
