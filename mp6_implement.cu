@@ -14,7 +14,7 @@
 
 #define TILE_SIZE 28
 #define BLOCK_SIZE TILE_SIZE + Mask_width - 1
-__constant__ float deviceKernel[MASK_SIZE][MASK_SIZE][MASK_SIZE];
+__constant__ float deviceKernel[Mask_width][Mask_width];
 
 
 int ceil(int a, int b){
@@ -181,7 +181,6 @@ int main(int argc, char* argv[]) {
 
     cudaFree(deviceInputImageData);
     cudaFree(deviceOutputImageData);
-    cudaFree(deviceMaskData);
 
     free(hostMaskData);
     wbImage_delete(outputImage);
