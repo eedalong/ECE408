@@ -54,9 +54,9 @@ __global__ void conv2d(float* inputImage, float* outputImage, int current_channe
     // compute
     float output = 0.0f;
     if(tx < TILE_SIZE && ty < TILE_SIZE){
-        for(int i = 0; i < Mask_width; i++){
-            for(int j = 0; j < Mask_width; j++){
-                output += deviceKernel[i][j] * input_tile[i+ty][j+tx];
+        for(int temp_i = 0; temp_i < Mask_width; temp_i++){
+            for(int temp_j = 0; temp_j < Mask_width; temp_j ++){
+                output += deviceKernel[temp_i][temp_j] * input_tile[temp_i+ty][temp_j+tx];
             }
         }
     }
