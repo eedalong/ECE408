@@ -71,7 +71,7 @@ __global__ void conv2d(float* inputImage, float* outputImage, int current_channe
         
         for(size_t i = 0; i < Mask_width; i++){
             for(size_t j = 0; j < Mask_width; j++){
-                printf("[(%d, %d):%f] ", i + ty, j + tx, input_tile[i+ty][j+tx]);
+                printf("[(%d, %d):%f] ", i + ty, j + tx, input_tile[ty][tx]);
             }
             printf("\n");
         }
