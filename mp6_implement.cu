@@ -13,7 +13,7 @@
 #define Mask_radius Mask_width/2
 
 #define TILE_SIZE 28
-#define BLOCK_SIZE TILE_SIZE + 4
+#define BLOCK_SIZE TILE_SIZE + Mask_width - 1
 
 
 int ceil(int a, int b){
@@ -61,6 +61,7 @@ __global__ void conv2d(float* inputImage, float* outputImage, const float* mask,
             }
         }
     }
+    /*
     if(tx == 0 && ty == 0 && by == 1 && bx == 0){
         output = 0;
         printf("check (%d, %d)\n", row_out, col_out);
@@ -73,7 +74,8 @@ __global__ void conv2d(float* inputImage, float* outputImage, const float* mask,
         }
         printf("check output %f\n", output);
        
-    }
+    }*/
+
     __syncthreads();
     if(row_out < imageHeight && col_out < imageWidth){
         outputImage[(row_out * imageWidth + col_out) * imageChannel + current_channel] = output;
