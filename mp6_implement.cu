@@ -45,7 +45,11 @@ __global__ void conv2d(float* inputImage, float* outputImage, int current_channe
 
     // load data
     if(row_in >= 0 && row_in < imageHeight && col_in >= 0 && col_in < imageWidth){
+       
         input_tile[ty][tx] = inputImage[(row_in * imageWidth + col_in) * imageChannel + current_channel];
+        if(by == 0 && bx == 1 && ty == Mask_width && tx == 0){
+            printf("set value!, input_tile %f \n", input_tile[ty][tx]);
+        }
     }else{
         input_tile[ty][tx] = 0.0f;
     }
@@ -63,6 +67,7 @@ __global__ void conv2d(float* inputImage, float* outputImage, int current_channe
     if(by == 0 && bx == 1 && ty == Mask_width && tx == 0){
         printf("check row and col (%d, %d)\n", row_in, col_in);
         printf("check original data: %f\n", inputImage[(row_in * imageWidth + col_in) * imageChannel + current_channel]);
+        printf("check input_tile[ty][tx]: %f \n", input_tile[ty][tx]);
         
         for(size_t i = 0; i < Mask_width; i++){
             for(size_t j = 0; j < Mask_width; j++){
