@@ -77,6 +77,7 @@ __global__ void conv2d(float* inputImage, float* outputImage, int current_channe
         }
 
     }
+    __syncthreads();
     // set output
     if(row_out < imageHeight && col_out < imageWidth){
         outputImage[(row_out * imageWidth + col_out) * imageChannel + current_channel] = output;
