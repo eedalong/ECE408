@@ -41,6 +41,8 @@ __global__ void conv2d(float* inputImage, float* outputImage, int current_channe
     
     int row_in = row_out - Mask_radius;
     int col_in = col_out - Mask_radius;
+    int row_index = 0;
+    int col_index = 0;
 
 
     // load data
@@ -54,9 +56,9 @@ __global__ void conv2d(float* inputImage, float* outputImage, int current_channe
     // compute
     float output = 0.0f;
     if(tx < TILE_SIZE && ty < TILE_SIZE){
-        for(int i__ = 0; i__ < Mask_width; i__++){
-            for(int j__ = 0; j__ < Mask_width; j__++){
-                output += deviceKernel[i__][j__] * input_tile[i__+ty][j__+tx];
+        for(row_index = 0; row_index < Mask_width; row_index++){
+            for(col_index = 0; col_index < Mask_width; col_index++){
+                output += deviceKernel[row_index][col_index] * input_tile[row_index+ty][col_index+tx];
             }
         }
     }
@@ -65,11 +67,12 @@ __global__ void conv2d(float* inputImage, float* outputImage, int current_channe
         printf("check original data: %f\n", inputImage[(row_in * imageWidth + col_in) * imageChannel + current_channel]);
         printf("check input_tile[ty][tx]: %f \n", input_tile[ty][tx]);
         printf("check ty and tx: (%d, %d) \n", ty, tx);
+        printf("check output: %f \n", output);
         
-        for(int i__ = 0; i__ < Mask_width; i__++){
-            for(int j__ = 0; j__ < Mask_width; j__++){
+        for(row_index = 0; row_index < Mask_width; row_index++){
+            for(col_index = 0; col_index < Mask_width; col_index++){
 
-                printf("[%d, %d]->[(%d, %d):%f] ", i__, j__, i__ + ty, j__ + tx, input_tile[i__+ty][j__+tx]);
+                printf("[%d, %d]->[(%d, %d):%f] ", row_index, col_index, row_index + ty, col_index + tx, input_tile[row_index+ty][col_index+tx]);
             }
             printf("\n");
         }
