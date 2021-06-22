@@ -21,26 +21,36 @@ int ceil(int a, int b){
     return (a + b - 1) / b;
 }
 
-__global__ void pscan(int * inputHist, float * output) {
+__global__ void pscan(float * input, float * output, float* block_sum, int len) {
+    //@@ Modify the body of this function to complete the functionality of
+    //@@ the scan on the device
+    //@@ You may need multiple kernel calls; write your kernels before this
+    //@@ function and call them from here
 
-    /*
+    // for each thread, we process ELEMENT_NUM_PER_BLOCK elements
+    __shared__ float shared_data[ELEMENT_NUM_PER_BLOCK];
+    int bid = blockIdx.x;
+    int tid = threadIdx.x;
+    int bid_offset = bid * ELEMENT_NUM_PER_BLOCK;
     
-    */
-    __shared__ int shared_data[HISTOGRAM_LENGTH];
-    __shared__ float total_sum = 0;
+    // each thread load 2 elements
 
-    int tid = threadIdx.x;    
+    if((bid_offset + 2 * tid) < len)
+        shared_data[2 * tid] = input[bid_offset + 2 * tid];
+    else
+        shared_data[2 * tid] = 0;
 
-    // each thread load 1 element
-    if(tid < HISTOGRAM_LENGTH){
-        shared_data[tid] = inputHist[tid];
-    }
+    if((bid_offset + 2 * tid + 1) < len)
+        shared_data[2 * tid + 1] = input[bid_offset + 2 * tid + 1];
+    else
+        shared_data[2 * tid + 1] = 0;
+
     __syncthreads();
 
     // up-sweep phase 
 
     int offset = 1;
-    for(int d = HISTOGRAM_LENGTH / 2; d > 0; d /= 2){
+    for(int d = ELEMENT_NUM_PER_BLOCK / 2; d > 0; d /= 2){
         __syncthreads();
         if(tid < d){
             int bi = offset * 2 * (tid + 1) - 1;
@@ -54,14 +64,14 @@ __global__ void pscan(int * inputHist, float * output) {
 
     // clear last element to zero and save it to block_sum
     if(tid == 0){
-        total_sum = shared_data[HISTOGRAM_LENGTH - 1];
-        shared_data[HISTOGRAM_LENGTH - 1] = 0;
+        block_sum[bid] = shared_data[ELEMENT_NUM_PER_BLOCK - 1];
+        shared_data[ELEMENT_NUM_PER_BLOCK - 1] = 0;
     }
 
     __syncthreads();
 
     // down-sweep phase
-    for(int d = 1; d < HISTOGRAM_LENGTH / 2; d *= 2){
+    for(int d = 1; d < ELEMENT_NUM_PER_BLOCK; d *= 2){
         offset >>= 1;
         __syncthreads();
         if(tid < d){
@@ -77,9 +87,13 @@ __global__ void pscan(int * inputHist, float * output) {
     __syncthreads();
     
     // here we get exclusive prefix sum, we add them with original data to get inclusive prefix sum
-    if(tid < HISTOGRAM_LENGTH){
-        output[tid] = (inputHist[tid] + shared_data[tid]) / total_sum;
+    if(bid_offset + 2 * tid < len){
+        output[bid_offset + 2 * tid] = input[bid_offset + 2 * tid] + shared_data[2 * tid];
     }
+    if(bid_offset + 2 * tid + 1 < len){
+        output[bid_offset + 2 * tid + 1] = input[bid_offset + 2 * tid + 1] + shared_data[2 * tid + 1];
+    }
+
 }
 
 
