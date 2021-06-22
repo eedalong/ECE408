@@ -131,10 +131,10 @@ __global__ void cast_and_convert(float* inputImage, unsigned char* outputImage, 
     // cast data type
     if(row < height && col < width){
         float res = 0.0;
-        res += 0.21 * (unsigned char)inputImage[(row * height + col) * CHANNEL];
-        res += 0.71 * (unsigned char)inputImage[(row * height + col) * CHANNEL + 1];
-        res += 0.07 * (unsigned char)inputImage[(row * height + col) * CHANNEL + 2];
-        outputImage[row * width + col] = res;
+        res += 0.21 * (unsigned char)(255 * inputImage[(row * height + col) * CHANNEL]);
+        res += 0.71 * (unsigned char)(255 * inputImage[(row * height + col) * CHANNEL + 1]);
+        res += 0.07 * (unsigned char)(255 * inputImage[(row * height + col) * CHANNEL + 2]);
+        outputImage[row * width + col] = (unsigned char)res;
     }
 
 }
