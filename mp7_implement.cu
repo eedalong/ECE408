@@ -189,9 +189,26 @@ int main(int argc, char ** argv) {
     // 0. do GPU computation
     dim3 DimGrid1(ceil(imageWidth, BLOCK_WIDTH), ceil(imageHeight, BLOCK_WIDTH), 1);
     dim3 DimBlock1(BLOCK_WIDTH, BLOCK_WIDTH, 1);
+    std::cout<<"check input "<<std::endl;
+    for(int row = 0; row < 5; row ++){
+        for(int col = 0; col < 5; col ++){
+            std::cout<<hostInputImageData[(row * imageWidth + col) * imageChannels + 0]<<", ";
+        }
+        std::cout<<endl;
+    }
 
     // 1. cast float to unsigned char
     cast_and_convert<<<DimGrid1, DimBlock1>>>(deviceInputImageData, deviceInputImageDataGray, imageHeight, imageWidth);
+    cudaDeviceSynchronize();
+    unsigned char* hostInputImageDataGray = (unsigned char*) malloc(imageHeight * imageWidth * sizeof(unsigned char*));
+    cudaMemcpy(hostInputImageDataGray, deviceInputImageDataGray, mageHeight * imageWidth * sizeof(unsigned char*), cudaMemcpyDeviceToHost);
+    std::cout<<"check input "<<std::endl;
+    for(int row = 0; row < 5; row ++){
+        for(int col = 0; col < 5; col ++){
+            std::cout<<hostInputImageDataGray[(row * imageWidth + col)]<<", ";
+        }
+        std::cout<<endl;
+    }
 
     // 2. calculate hist 
     dim3 DimGrid2(ceil(imageHeight * imageWidth, BLOCK_WIDTH * BLOCK_WIDTH), 1, 1);
