@@ -63,7 +63,7 @@ __global__ void conv2d(float* inputImage, float* outputImage, int current_channe
             }
         }
     }
-    printf("check output(%d, %d, %d):%f\n", row_in, col_in, channel, output);
+    printf("check output(%d, %d, %d):%f\n", row_in, col_in, current_channel, output);
     __syncthreads();
 
     // set output
