@@ -134,11 +134,13 @@ __global__ void cast_and_convert(float* inputImage, unsigned char* outputImage, 
         res += 0.21 * (unsigned char)(255 * inputImage[(row * width + col) * CHANNEL]);
         res += 0.71 * (unsigned char)(255 * inputImage[(row * width + col) * CHANNEL + 1]);
         res += 0.07 * (unsigned char)(255 * inputImage[(row * width + col) * CHANNEL + 2]);
-        outputImage[row * width + col] = (unsigned char)res;
-        if(tx == 0 && ty == 0){
-            
-            printf("check result %f\n", outputImage[row * width + col]);
+        if(row == 0 && col == 0){
+            printf("(r, g, b): (%f, %f, %f)\n ", inputImage[(row * width + col) * CHANNEL], inputImage[(row * width + col) * CHANNEL + 1], inputImage[(row * width + col) * CHANNEL + 2]);
+            printf("check result %d\n", (unsigned char)res);
         }
+    
+        outputImage[row * width + col] = (unsigned char)res;
+        
     }
     
 
