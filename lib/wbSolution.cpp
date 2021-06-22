@@ -186,6 +186,11 @@ wbBool wbSolution(wbArg_t arg, void * data, int rows) {
 }
 
 wbBool wbSolution(wbArg_t arg, wbImage_t img) {
-    return wbSolution(arg, img, wbImage_getHeight(img), wbImage_getWidth(img));
+    wbPPM_export("res_bkp.ppm", img);
+    wbImage_t resultImage = wbPPM_import("res_bkp.ppm");
+    wbBool res = wbSolution(arg, resultImage, wbImage_getHeight(resultImage), wbImage_getWidth(resultImage));
+    wbImage_delete(resultImage);
+    return res;
+
 }
 
