@@ -87,8 +87,8 @@ __global__ void histogram_equalization(float * deviceInputImage, float* deviceOu
     int channel = blockIdx.z;
 
     if(row < height && col < width){
-        int val = (unsigned char)deviceInputImage[(row * width + col) * CHANNEL + channel];
-        deviceOutputImage[(row * width + col) * CHANNEL + channel] = (unsigned char)(255.0*(cdf[val] - cdf[0])/(cdf[HISTOGRAM_LENGTH - 1] - cdf[0])) / 255.0;
+        int val = (unsigned char)(255 * deviceInputImage[(row * width + col) * CHANNEL + channel]);
+        deviceOutputImage[(row * width + col) * CHANNEL + channel] = (unsigned char)(255.0*(cdf[val] - cdf[0])/(cdf[HISTOGRAM_LENGTH - 1] - cdf[0]));
     }
 }
 
