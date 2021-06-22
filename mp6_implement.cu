@@ -56,8 +56,6 @@ __global__ void conv2d(float* inputImage, float* outputImage, int current_channe
 
     // compute
     float output = 0.0f;
-    printf("check output %f\n", output);
-    __syncthreads();
     if(tx < TILE_SIZE && ty < TILE_SIZE){
         for(row_index = 0; row_index < Mask_width; row_index++){
             for(col_index = 0; col_index < Mask_width; col_index++){
@@ -65,7 +63,7 @@ __global__ void conv2d(float* inputImage, float* outputImage, int current_channe
             }
         }
     }
-    printf("check output %f\n", output);
+    printf("check output(%d, %d, %d):%f\n", row_in, col_in, channel, output);
     __syncthreads();
 
     // set output
