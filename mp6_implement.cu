@@ -63,7 +63,7 @@ __global__ void conv2d(float* inputImage, float* outputImage, int current_channe
             }
         }
     }
-    if(current_channe == 0 && row_in > 0 && col_in == 14){
+    if(current_channel == 0 && row_in > 0 && col_in == 14){
         for(row_index = 0; row_index < Mask_width; row_index++){
             for(col_index = 0; col_index < Mask_width; col_index++){
                 printf("[(%d, %d, 0): %f] ", row_index+ty, col_index+tx, input_tile[row_index+ty][col_index+tx]);
