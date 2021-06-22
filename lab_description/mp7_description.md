@@ -35,17 +35,17 @@ For images that represent the full color space, we expect an image's histogram t
 This means that we expect the bin values in the histogram to be `256/pixel_count`.
 This algorithm adjust an image's histogram so that all bins have equal probability.
 
-![image](/mp/11/imgs/image.png "thumbnail")
+![image](mp7_images/image.png "thumbnail")
 
 We first need to convert the image to gray scale by computing it's luminosity values.
 These represent the brightness of the image and would allow us to simplify the histogram computation.
 
-![Gray](/mp/11/imgs/gray.png "thumbnail")
+![Gray](mp7_images/gray.png "thumbnail")
 
 The histogram computes the number of pixels having a specific brightness value.
 Dividing by the number of pixels (width * height) gives us the probability of a luminosity value to occur in an image.
 
-![OrigProb](/mp/11/imgs/orig_prob.png "thumbnail")
+![OrigProb](mp7_images/orig_prob.png "thumbnail")
 
 
 A color balanced image is expected to have a uniform distribution of the luminosity values.
@@ -53,21 +53,21 @@ A color balanced image is expected to have a uniform distribution of the luminos
 This means that if we compute the Cumulative Distribution Function (CDF) we expect a linear curve for a color equalized image.
 For images that are not color equalized, we expect the curve to be non-linear.
 
-![origcdf](/mp/11/imgs/orig_cdf.png "thumbnail")
+![origcdf](mp7_images/orig_cdf.png "thumbnail")
 
 The algorithm equalizes the curve by computing a transformation function to map the original CDF to the desired CDF (the desired CDF being an almost linear function).
 
-![newcdf](/mp/11/imgs/new_cdf.png "thumbnail")
+![newcdf](mp7_images/new_cdf.png "thumbnail")
 
 The computed transformation is applied to the original image to produce the equalized image.
 
-![newimg](/mp/11/imgs/new_img.png "thumbnail")
+![newimg](mp7_images/new_img.png "thumbnail")
 
 
 Note that the CDF of the histogram of the new image has been transformed into an almost
 	linear curve.
 
-![compare](/mp/11/imgs/compare.png "thumbnail")
+![compare](mp7_images/compare.png "thumbnail")
 
 ## Implementation Steps
 
