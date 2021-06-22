@@ -44,8 +44,9 @@ __global__ void cal_cdf(unsigned int * inputHist, unsigned int * cdf) {
 
     // clear last element to zero and save it to block_sum
     if(tid == 0){
-        shared_data[HISTOGRAM_LENGTH - 1] = 0;
         printf("check total sum: %d \n", shared_data[HISTOGRAM_LENGTH - 1]);
+        shared_data[HISTOGRAM_LENGTH - 1] = 0;
+        
     }
 
     __syncthreads();
