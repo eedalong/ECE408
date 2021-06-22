@@ -195,11 +195,13 @@ int main(int argc, char ** argv) {
 
     // 2. calculate hist 
     dim3 DimGrid2(ceil(imageHeight * imageWidth, BLOCK_WIDTH * BLOCK_WIDTH), 1, 1);
-    dim3 DimBlock2(BLOCK_WIDTH * BLOCK_WIDTH, 1, 1)
+    dim3 DimBlock2(BLOCK_WIDTH * BLOCK_WIDTH, 1, 1);
     hist<<<DimGrid2, DimBlock2>>>(deviceInputImageDataGray, deviceHist);
 
     // 3. calculate cdf
-    cal_cdf<<<HISTOGRAM_LENGTH>>>(deviceHist, deviceCDF);
+    dim3 DimGrid4(1, 1, 1);
+    dim3 DimBlock4(HISTOGRAM_LENGTH, 1, 1);
+    cal_cdf<<<DimGrid4, DimBlock4>>>(deviceHist, deviceCDF);
 
     // 4. histogram equalization
 
