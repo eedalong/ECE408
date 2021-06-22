@@ -12,12 +12,12 @@ int ceil(int a, int b){
 //@@ insert code here
 
 // pscan
-__global__ void cal_cdf(int * inputHist, int * cdf) {
+__global__ void cal_cdf(unsigned int * inputHist, unsigned int * cdf) {
 
     /*
         calculate cdf 
     */
-    __shared__ int shared_data[HISTOGRAM_LENGTH];
+    __shared__ unsigned int shared_data[HISTOGRAM_LENGTH];
 
     int tid = threadIdx.x;    
 
@@ -70,7 +70,7 @@ __global__ void cal_cdf(int * inputHist, int * cdf) {
     }
 }
 
-__global__ void histogram_equalization(float * deviceInputImage, float* deviceOutputImage, int* cdf, int width, int height){
+__global__ void histogram_equalization(float * deviceInputImage, float* deviceOutputImage, unsigned int* cdf, int width, int height){
     
     //
     int by = blockIdx.y;
@@ -104,7 +104,7 @@ __global__ void hist(unsigned char* inputImage, int length, int* hist_output){
     int pixel = threadIdx.x + blockIdx.x * blockDim.x;
     int stride = blockDim.x * gridDim.x;
     while(pixel < length){
-        atmicAdd(&(hist[inputImage[pixel]]), 1);
+        atomicAdd(&(hist[inputImage[pixel]]), 1);
         pixel += stride;
     }
     __syncthreads();
@@ -152,7 +152,7 @@ int main(int argc, char ** argv) {
 
     //@@ Insert more code here
 
-    float * deviceInputImageData
+    float * deviceInputImageData;
     unsigned char * deviceInputImageDataGray;
     float * deviceOutputImageData; 
     unsigned int *  deviceHist;
@@ -181,7 +181,7 @@ int main(int argc, char ** argv) {
     cudaMalloc((void **)&deviceInputImageDataGray, sizeof(unsigned char) * imageHeight * imageWidth);
     cudaMalloc((void **)&deviceOutputImageData, sizeof(float) * imageHeight * imageWidth * imageChannels);
     cudaMalloc((void **)&deviceHist, sizeof(unsigned int) * HISTOGRAM_LENGTH);
-    cudaMalloc((void **)&cdf, sizeof(unsigned int) * HISTOGRAM_LENGTH);
+    cudaMalloc((void **)&deviceCDF, sizeof(unsigned int) * HISTOGRAM_LENGTH);
 
     // -1. copy memory to GPU
     cudaMemcpy(deviceInputImageData, hostInputImageData, sizeof(float) * imageHeight * imageWidth * imageChannels, cudaMemcpyHostToDevice);
@@ -191,7 +191,7 @@ int main(int argc, char ** argv) {
     dim3 DimBlock1(BLOCK_WIDTH, BLOCK_WIDTH, 1);
 
     // 1. cast float to unsigned char
-    cast_and_convert<<<DimGrid1, DimBlock1>>>(deviceInputImageData, deviceInputImageDataGray);
+    cast_and_convert<<<DimGrid1, DimBlock1>>>(deviceInputImageData, deviceInputImageDataGray, imageHeight, imageWidth);
 
     // 2. calculate hist 
     dim3 DimGrid2(ceil(imageHeight * imageWidth, BLOCK_WIDTH * BLOCK_WIDTH), 1, 1);
@@ -208,7 +208,7 @@ int main(int argc, char ** argv) {
     histogram_equalization<<<DimGrid3, DimBlock3>>>(deviceInputImageData, deviceOutputImageData, deviceCDF, imageHeight, imageWidth);
 
     // 5. memcpy output to host
-    cudaMemcpy(hostOutputImageData, deviceOutputImageData, sizeof(float) * imageWidth * imageHeight * imageChannels);
+    cudaMemcpy(hostOutputImageData, deviceOutputImageData, sizeof(float) * imageWidth * imageHeight * imageChannels, cudaMemcpyDeviceToHost);
 
     // 6. validate the solution
     wbSolution(args, outputImage);
@@ -219,7 +219,7 @@ int main(int argc, char ** argv) {
     cudaFree(deviceCDF);
     cudaFree(deviceHist);
     cudaFree(deviceInputImageData);
-    cudaFree(deviceInputImageDataFloat);
+    cudaFree(deviceInputImageDataGray);
     cudaFree(deviceOutputImageData);
    
     // 9. delete image, free cpu memory
