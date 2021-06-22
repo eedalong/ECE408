@@ -62,22 +62,10 @@ __global__ void conv2d(float* inputImage, float* outputImage, int current_channe
                 output += deviceKernel[row_index][col_index] * input_tile[row_index+ty][col_index+tx];
             }
         }
-    }
-    if(current_channel == 0 && row_in > 0 && col_in == 14){
-        for(row_index = 0; row_index < Mask_width; row_index++){
-            for(col_index = 0; col_index < Mask_width; col_index++){
-                printf("[(%d, %d, 0): %f] ", row_index+ty, col_index+tx, input_tile[row_index+ty][col_index+tx]);
-                output += deviceKernel[row_index][col_index] * input_tile[row_index+ty][col_index+tx];
-            }
-            printf("\n");
+        // set output
+        if(row_out < imageHeight && col_out < imageWidth){
+            outputImage[(row_out * imageWidth + col_out) * imageChannel + current_channel] = output;
         }
-        printf("check output(%d, %d, %d):%f\n", row_in, col_in, current_channel, output);
-    }
-    __syncthreads();
-
-    // set output
-    if(row_out < imageHeight && col_out < imageWidth){
-        outputImage[(row_out * imageWidth + col_out) * imageChannel + current_channel] = output;
     }
 }
 
