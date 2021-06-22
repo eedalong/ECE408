@@ -59,7 +59,7 @@ CUDA_ADD_EXECUTABLE(MP3_Implement mp3_implement.cu ${wbhdr} ${wbsrc})
 CUDA_ADD_EXECUTABLE(MP4_Implement mp4_implement.cu ${wbhdr} ${wbsrc})
 CUDA_ADD_EXECUTABLE(MP5_Implement mp5_implement.cu ${wbhdr} ${wbsrc})
 CUDA_ADD_EXECUTABLE(MP6_Implement mp6_implement.cu ${wbhdr} ${wbsrc})
-
+CUDA_ADD_EXECUTABLE(MP7_Implement mp7_implement.cu ${wbhdr} ${wbsrc})
 #Add Tools
 CUDA_ADD_EXECUTABLE(MP2_Dataset tools/mp2_dataset.cpp ${wbhdr} ${wbsrc})
 CUDA_ADD_EXECUTABLE(MP3_Dataset tools/mp3_dataset.cpp ${wbhdr} ${wbsrc})
