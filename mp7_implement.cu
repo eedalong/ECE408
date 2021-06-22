@@ -196,7 +196,7 @@ int main(int argc, char ** argv) {
     // 2. calculate hist 
     dim3 DimGrid2(ceil(imageHeight * imageWidth, BLOCK_WIDTH * BLOCK_WIDTH), 1, 1);
     dim3 DimBlock2(BLOCK_WIDTH * BLOCK_WIDTH, 1, 1);
-    hist<<<DimGrid2, DimBlock2>>>(deviceInputImageDataGray, deviceHist);
+    hist<<<DimGrid2, DimBlock2>>>(deviceInputImageDataGray, imageWidth * imageHeight, deviceHist);
 
     // 3. calculate cdf
     dim3 DimGrid4(1, 1, 1);
