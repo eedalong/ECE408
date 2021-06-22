@@ -109,10 +109,13 @@ __global__ void hist(unsigned char* inputImage, int length, unsigned int* hist_o
         pixel += stride;
     }
     __syncthreads();
+    if(blockIdx.x == 0 && threadIdx.x == 0){
+        printf("check hist %d \n", int(hist[0]));
+    }
 
     // copy output to global memory
     if(threadIdx.x < 256){
-        atomicAdd(&(hist_output[threadIdx.x]), 1);
+        atomicAdd(&(hist_output[threadIdx.x]), hist[threadIdx.x]);
     }
 }
 
@@ -211,7 +214,7 @@ int main(int argc, char ** argv) {
     cudaDeviceSynchronize();
     unsigned char* hostInputImageDataGray = (unsigned char*) malloc(imageHeight * imageWidth * sizeof(unsigned char*));
     cudaMemcpy(hostInputImageDataGray, deviceInputImageDataGray, imageHeight * imageWidth * sizeof(unsigned char), cudaMemcpyDeviceToHost);
-    std::cout<<"check input "<<std::endl;
+    std::cout<<"check gray image "<<std::endl;
     for(int row = 0; row < 5; row ++){
         for(int col = 0; col < 5; col ++){
             std::cout<<(int)hostInputImageDataGray[(row * imageWidth + col)]<<", ";
@@ -228,6 +231,7 @@ int main(int argc, char ** argv) {
     cudaDeviceSynchronize();
     unsigned int* hostHist = (unsigned int *) malloc(sizeof(unsigned int) * HISTOGRAM_LENGTH);
     cudaMemcpy(hostHist, deviceHist, sizeof(unsigned int) * HISTOGRAM_LENGTH, cudaMemcpyDeviceToHost);
+    std::cout<<"check image hist "<<std::endl;
     for(int index = 0; index < HISTOGRAM_LENGTH; index++){
         printf("%d, ", hostHist[index]);
     }
