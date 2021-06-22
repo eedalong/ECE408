@@ -52,7 +52,7 @@ __global__ void cal_cdf(unsigned int * inputHist, unsigned int * cdf) {
     __syncthreads();
 
     // down-sweep phase
-    for(int d = 1; d < HISTOGRAM_LENGTH / 2; d *= 2){
+    for(int d = 1; d < HISTOGRAM_LENGTH; d *= 2){
         offset >>= 1;
         __syncthreads();
         if(tid < d){
@@ -241,6 +241,15 @@ int main(int argc, char ** argv) {
     dim3 DimGrid4(1, 1, 1);
     dim3 DimBlock4(HISTOGRAM_LENGTH, 1, 1);
     cal_cdf<<<DimGrid4, DimBlock4>>>(deviceHist, deviceCDF);
+
+    //TODO This is for debugging
+    cudaDeviceSynchronize();
+    unsigned int * hostCDF = (unsigned int *) malloc(sizeof(unsigned int) * HISTOGRAM_LENGTH);
+    cudaMemcpy(hostCDF, deviceCDF, sizeof(unsigned int) * HISTOGRAM_LENGTH, cudaMemcpyDeviceToHost);
+    std::cout<<"check hist CDF "<<std::endl;
+    for(int index = 0; index < HISTOGRAM_LENGTH; index++){
+        printf("%d, ", hostCDF[index]);
+    }
 
     // 4. histogram equalization
 
