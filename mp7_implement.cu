@@ -12,7 +12,7 @@ int ceil(int a, int b){
 //@@ insert code here
 
 // pscan
-__global__ void cal_cdf(int * inputHist，int * cdf) {
+__global__ void cal_cdf(int * inputHist, int * cdf) {
 
     /*
         calculate cdf 
@@ -205,7 +205,7 @@ int main(int argc, char ** argv) {
 
     dim3 DimGrid3(ceil(imageWidth, BLOCK_WIDTH), ceil(imageHeight, BLOCK_WIDTH), 3);
     dim3 DimBlock3(BLOCK_WIDTH, BLOCK_WIDTH, 1);
-    histogram_equalization<<<DimGrid3, DimBlock3>>>(deviceInputImageDataFloat, deviceOutputImageData, deviceCDF, imageHeight, imageWidth);
+    histogram_equalization<<<DimGrid3, DimBlock3>>>(deviceInputImageData, deviceOutputImageData, deviceCDF, imageHeight, imageWidth);
 
     // 5. memcpy output to host
     cudaMemcpy(hostOutputImageData, deviceOutputImageData, sizeof(float) * imageWidth * imageHeight * imageChannels);
