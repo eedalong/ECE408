@@ -45,6 +45,7 @@ __global__ void cal_cdf(unsigned int * inputHist, unsigned int * cdf) {
     // clear last element to zero and save it to block_sum
     if(tid == 0){
         shared_data[HISTOGRAM_LENGTH - 1] = 0;
+        printf("check total sum: %d \n", shared_data[HISTOGRAM_LENGTH - 1]);
     }
 
     __syncthreads();
@@ -206,6 +207,7 @@ int main(int argc, char ** argv) {
 
     // 1. cast float to unsigned char
     cast_and_convert<<<DimGrid1, DimBlock1>>>(deviceInputImageData, deviceInputImageDataGray, imageHeight, imageWidth);
+    // TODO: This is for debugging
     cudaDeviceSynchronize();
     unsigned char* hostInputImageDataGray = (unsigned char*) malloc(imageHeight * imageWidth * sizeof(unsigned char*));
     cudaMemcpy(hostInputImageDataGray, deviceInputImageDataGray, imageHeight * imageWidth * sizeof(unsigned char), cudaMemcpyDeviceToHost);
@@ -221,6 +223,14 @@ int main(int argc, char ** argv) {
     dim3 DimGrid2(ceil(imageHeight * imageWidth, BLOCK_WIDTH * BLOCK_WIDTH), 1, 1);
     dim3 DimBlock2(BLOCK_WIDTH * BLOCK_WIDTH, 1, 1);
     hist<<<DimGrid2, DimBlock2>>>(deviceInputImageDataGray, imageWidth * imageHeight, deviceHist);
+
+    // this is for debugging
+    cudaDeviceSynchronize();
+    unsigned int* hostHist = (unsigned int *) malloc(sizeof(unsigned int) * HISTOGRAM_LENGTH);
+    cudaMemcpy(hostHist, deviceHist, sizeof(unsigned int) * HISTOGRAM_LENGTH, cudaMemcpyDeviceToHost);
+    for(int index = 0; index < HISTOGRAM_LENGTH; index++){
+        printf("%d, ", hostHist[index]);
+    }
 
     // 3. calculate cdf
     dim3 DimGrid4(1, 1, 1);
@@ -257,3 +267,5 @@ int main(int argc, char ** argv) {
     return 0;
 }
 
+
+// 0.537255, 0.698039, 0.807843
