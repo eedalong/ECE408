@@ -212,7 +212,7 @@ int main(int argc, char ** argv) {
     std::cout<<"check input "<<std::endl;
     for(int row = 0; row < 5; row ++){
         for(int col = 0; col < 5; col ++){
-            std::cout<<hostInputImageDataGray[(row * imageWidth + col)]<<", ";
+            std::cout<<(int)hostInputImageDataGray[(row * imageWidth + col)]<<", ";
         }
         std::cout<<endl;
     }
