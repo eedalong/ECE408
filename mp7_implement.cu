@@ -92,7 +92,7 @@ __global__ void histogram_equalization(float * deviceInputImage, float* deviceOu
 
 
 // calculate hist
-__global__ void hist(unsigned char* inputImage, int length, int* hist_output){
+__global__ void hist(unsigned char* inputImage, int length, unsigned int* hist_output){
     __shared__ unsigned int hist[HISTOGRAM_LENGTH];
     // init 
     if(threadIdx.x < HISTOGRAM_LENGTH){
