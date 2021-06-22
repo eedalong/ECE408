@@ -11,9 +11,8 @@ int ceil(int a, int b){
 }
 //@@ insert code here
 
-__constant__ int cdf[HISTOGRAM_LENGTH];
 // pscan
-__global__ void cal_cdf(int * inputHist) {
+__global__ void cal_cdf(int * inputHist，int * cdf) {
 
     /*
         calculate cdf 
@@ -71,7 +70,7 @@ __global__ void cal_cdf(int * inputHist) {
     }
 }
 
-__global__ void histogram_equalization(unsigned char* deviceInputImage, float* deviceOutputImage, int width, int height){
+__global__ void histogram_equalization(float * deviceInputImage, float* deviceOutputImage, int* cdf, int width, int height){
     
     //
     int by = blockIdx.y;
@@ -86,7 +85,7 @@ __global__ void histogram_equalization(unsigned char* deviceInputImage, float* d
     int channel = blockIdx.z;
 
     if(row < height && col < width){
-        int val = deviceInputImage[(row * width + col) * CHANNEL + channel];
+        int val = (unsigned char)deviceInputImage[(row * width + col) * CHANNEL + channel];
         deviceOutputImage[(row * width + col) * CHANNEL + channel] = (unsigned char)(255.0*(cdf[val] - cdf[0])/(cdf[HISTOGRAM_LENGTH - 1] - cdf[0])) / 255.0;
     }
 }
@@ -153,53 +152,80 @@ int main(int argc, char ** argv) {
 
     //@@ Insert more code here
 
-    float * deviceInputImageDataFloat
-    unsigned char * deviceInputImageData;
-    unsigned char * deviceOutputImageData; 
-    unsigned int * deviceHist;
+    float * deviceInputImageData
+    unsigned char * deviceInputImageDataGray;
+    float * deviceOutputImageData; 
+    unsigned int *  deviceHist;
+    unsigned int *  deviceCDF;
 
     args = wbArg_read(argc, argv); /* parse the input arguments */
 
     inputImageFile = wbArg_getInputFile(args, 0);
 
     wbTime_start(Generic, "Importing data and creating memory on host");
-    inputImage = wbImport(inputImageFile);
+    inputImage = wbPPM_import(inputImageFile);
     imageWidth = wbImage_getWidth(inputImage);
     imageHeight = wbImage_getHeight(inputImage);
     imageChannels = wbImage_getChannels(inputImage);
     outputImage = wbImage_new(imageWidth, imageHeight, imageChannels);
+
+    // -3. initialize hostInputImageData and hostOutputImageData
     hostInputImageData = wbImage_getData(inputImage);
     hostOutputImageData = wbImage_getData(outputImage);
     wbTime_stop(Generic, "Importing data and creating memory on host");
 
     //@@ insert code here
     
-    cudaMalloc((void **)&deviceInputImageDataFloat, sizeof(unsigned float) * imageHeight * imageWidth * imageChannels);
-    cudaMalloc((void **)&deviceInputImageData, sizeof(unsigned char) * imageHeight * imageWidth);
-    cudaMalloc((void **)&deviceOutputImageData, sizeof(unsigned char) * imageHeight * imageWidth * imageChannels);
-    cudaMalloc((void**)&deviceHist, sizeof(unsigned int) * HISTOGRAM_LENGTH);
+    // -2. allocate memmory on GPU
+    cudaMalloc((void **)&deviceInputImageData, sizeof(float) * imageHeight * imageWidth * imageChannels);
+    cudaMalloc((void **)&deviceInputImageDataGray, sizeof(unsigned char) * imageHeight * imageWidth);
+    cudaMalloc((void **)&deviceOutputImageData, sizeof(float) * imageHeight * imageWidth * imageChannels);
+    cudaMalloc((void **)&deviceHist, sizeof(unsigned int) * HISTOGRAM_LENGTH);
+    cudaMalloc((void **)&cdf, sizeof(unsigned int) * HISTOGRAM_LENGTH);
 
-    // do GPU computation
-    dim3 DimGrid(ceil(imageWidth, BLOCK_WIDTH), ceil(imageHeight, BLOCK_WIDTH), 1);
-    dim3 DimBlock(BLOCK_WIDTH, BLOCK_WIDTH, 1);
+    // -1. copy memory to GPU
+    cudaMemcpy(deviceInputImageData, hostInputImageData, sizeof(float) * imageHeight * imageWidth * imageChannels, cudaMemcpyHostToDevice);
+
+    // 0. do GPU computation
+    dim3 DimGrid1(ceil(imageWidth, BLOCK_WIDTH), ceil(imageHeight, BLOCK_WIDTH), 1);
+    dim3 DimBlock1(BLOCK_WIDTH, BLOCK_WIDTH, 1);
 
     // 1. cast float to unsigned char
-    cast_and_convert<<<DimGrid, DimBlock>>>(deviceInputImageDataFloat, deviceInputImageData);
+    cast_and_convert<<<DimGrid1, DimBlock1>>>(deviceInputImageData, deviceInputImageDataGray);
 
     // 2. calculate hist 
-    dim3 DimGrid(ceil(imageHeight * imageWidth, BLOCK_WIDTH * BLOCK_WIDTH), 1, 1);
-    dim3 DimBlock(BLOCK_WIDTH * BLOCK_WIDTH, 1, 1)
-    hist<<<DimGrid, DimBlock>>>(deviceInputImageData, deviceHist);
+    dim3 DimGrid2(ceil(imageHeight * imageWidth, BLOCK_WIDTH * BLOCK_WIDTH), 1, 1);
+    dim3 DimBlock2(BLOCK_WIDTH * BLOCK_WIDTH, 1, 1)
+    hist<<<DimGrid2, DimBlock2>>>(deviceInputImageDataGray, deviceHist);
 
+    // 3. calculate cdf
+    cal_cdf<<<HISTOGRAM_LENGTH>>>(deviceHist, deviceCDF);
 
-    // cuda memcpy
-    cudaMemcpy(deviceInputImageDataFloat, hostInputImageData, sizeof(unsigned float) * imageHeight * imageWidth * imageChannels);
+    // 4. histogram equalization
 
+    dim3 DimGrid3(ceil(imageWidth, BLOCK_WIDTH), ceil(imageHeight, BLOCK_WIDTH), 3);
+    dim3 DimBlock3(BLOCK_WIDTH, BLOCK_WIDTH, 1);
+    histogram_equalization<<<DimGrid3, DimBlock3>>>(deviceInputImageDataFloat, deviceOutputImageData, deviceCDF, imageHeight, imageWidth);
 
+    // 5. memcpy output to host
+    cudaMemcpy(hostOutputImageData, deviceOutputImageData, sizeof(float) * imageWidth * imageHeight * imageChannels);
 
+    // 6. validate the solution
     wbSolution(args, outputImage);
 
     //@@ insert code here
+
+    // 7. free GPU memory
+    cudaFree(deviceCDF);
+    cudaFree(deviceHist);
+    cudaFree(deviceInputImageData);
+    cudaFree(deviceInputImageDataFloat);
+    cudaFree(deviceOutputImageData);
+   
+    // 9. delete image, free cpu memory
+    wbImage_delete(inputImage);
+    wbImage_delete(outputImage);
+    
 
     return 0;
 }
