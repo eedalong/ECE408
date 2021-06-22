@@ -201,7 +201,7 @@ int main(int argc, char ** argv) {
     cast_and_convert<<<DimGrid1, DimBlock1>>>(deviceInputImageData, deviceInputImageDataGray, imageHeight, imageWidth);
     cudaDeviceSynchronize();
     unsigned char* hostInputImageDataGray = (unsigned char*) malloc(imageHeight * imageWidth * sizeof(unsigned char*));
-    cudaMemcpy(hostInputImageDataGray, deviceInputImageDataGray, mageHeight * imageWidth * sizeof(unsigned char*), cudaMemcpyDeviceToHost);
+    cudaMemcpy(hostInputImageDataGray, deviceInputImageDataGray, imageHeight * imageWidth * sizeof(unsigned char*), cudaMemcpyDeviceToHost);
     std::cout<<"check input "<<std::endl;
     for(int row = 0; row < 5; row ++){
         for(int col = 0; col < 5; col ++){
