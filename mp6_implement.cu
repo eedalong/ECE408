@@ -62,10 +62,10 @@ __global__ void conv2d(float* inputImage, float* outputImage, int current_channe
                 output += deviceKernel[row_index][col_index] * input_tile[row_index+ty][col_index+tx];
             }
         }
-    }
-    // set output
-    if(row_out < imageHeight && col_out < imageWidth){
-        outputImage[(row_out * imageWidth + col_out) * imageChannel + current_channel] = output;
+        // set output
+        if(row_out < imageHeight && col_out < imageWidth){
+            outputImage[(row_out * imageWidth + col_out) * imageChannel + current_channel] = output;
+        }
     }
 }
 
@@ -170,10 +170,8 @@ int main(int argc, char* argv[]) {
         }
         std::cout<<endl;
     }
-    wbPPM_export("res_bkp.ppm", outputImage);
-    wbImage_t resultImage = wbPPM_import("res_bkp.ppm");
-
-    wbSolution(arg, resultImage);
+    
+    wbSolution(arg, outputImage);
 
     cudaFree(deviceInputImageData);
     cudaFree(deviceOutputImageData);

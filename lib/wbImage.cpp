@@ -118,18 +118,15 @@ wbBool wbImage_sameQ(wbImage_t a, wbImage_t b,
             x = *aData++;
             y = *bData++;
           }
-          //std::cout<<"( "<<ii<<", "<<jj<<", "<<kk<<" ) = "<<x<<" vs "<<y<<std::endl;
           if (wbUnequalQ(x, y)) {
-            std::cout<<"unequal_1:\t"<<"( "<<ii<<", "<<jj<<", "<<kk<<" ) = "<<x<<" vs "<<y<<std::endl;
             
-
             if (onUnSame != NULL) {
               string str = wbString("Image pixels do not match at position (",
                                     wbString(ii, ", ", jj, ", ", kk, "). [ "),
                                     wbString(x, ", ", y, "]"));
               onUnSame(str);
             }
-            //return wbFalse;
+            return wbFalse;
           }
         }
       }
