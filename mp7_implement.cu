@@ -209,6 +209,7 @@ int main(int argc, char ** argv) {
     dim3 DimBlock3(BLOCK_WIDTH, BLOCK_WIDTH, 1);
     histogram_equalization<<<DimGrid3, DimBlock3>>>(deviceInputImageData, deviceOutputImageData, deviceCDF, imageHeight, imageWidth);
 
+    cudaDeviceSynchronize();
     // 5. memcpy output to host
     cudaMemcpy(hostOutputImageData, deviceOutputImageData, sizeof(float) * imageWidth * imageHeight * imageChannels, cudaMemcpyDeviceToHost);
 
