@@ -67,7 +67,10 @@ unsigned char clamp(unsigned char val, unsigned char min, unsigned char max){
 }
 
 unsigned char correct_color(unsigned char val){
-    return clamp((unsigned char)(255*(globalCDF[val] - globalCDF[0])/(1 - globalCDF[0])), 0, 255);
+
+    std::cout<<"val = "<<val<<" globalCDF[val] = "<<globalCDF[val] <<" globalCDF[0]"<<globalCDF[0]<<std::endl;
+
+    return (unsigned char)(255*(globalCDF[val] - globalCDF[0])/(1 - globalCDF[0]));
 }
 
 void calCDF(int height, int width){
@@ -83,7 +86,8 @@ void adjust(wbImage_t inputImage, wbImage_t outputImage){
             for(int channel = 0; channel < wbImage_getChannels(inputImage); channel++){
                 unsigned char pixel_value = (unsigned char)(255 * imageGetPixel(inputImage, row, col, channel));
                 unsigned char corrected_value = correct_color(pixel_value);
-                std::cout<<"original value: "<<int(pixel_value) << " corrected value" << int(corrected_value)<<std::endl;
+                std::cout<<"original value: "<<int(pixel_value) << " corrected value " << int(corrected_value)<<std::endl;
+                exit(-1);
                 imageSetPixel(outputImage, row, col, channel, corrected_value / 255.0);
             }
         }
