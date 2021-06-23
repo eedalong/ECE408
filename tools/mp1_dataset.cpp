@@ -48,9 +48,9 @@ int main(int argc, char** argv){
 
     // void wbExport(const char * file, wbReal_t * data, int rows);
     
-    std::string inputFile1 = directory + string("/input0.ppm");
-    std::string inputFile2 = directory + string("/input1.ppm");
-    std::string outputFile = directory + string("/output.ppm");
+    std::string inputFile1 = directory + string("/input0.raw");
+    std::string inputFile2 = directory + string("/input1.raw");
+    std::string outputFile = directory + string("/output.raw");
 
     wbExport(inputFile1.c_str(), inputVec1, vectorLength);
     wbExport(inputFile2.c_str(), inputVec2, vectorLength);
