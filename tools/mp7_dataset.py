@@ -71,6 +71,7 @@ for channel in range(inputImage.shape[0]):
             outputImage[channel][row][col] = int(255*(globalCDF[inputImage[channel][row][col]] - globalCDF[0])/(1 - globalCDF[0]))
             
 outputImage = np.clip(outputImage, 0, 255)
+outputImage = outputImage.astype(np.ubyte)
 
 expectImage = readPPM("../build/output.ppm")
 

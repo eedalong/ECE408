@@ -83,6 +83,7 @@ void adjust(wbImage_t inputImage, wbImage_t outputImage){
             for(int channel = 0; channel < wbImage_getChannels(inputImage); channel++){
                 unsigned char pixel_value = (unsigned char)(255 * imageGetPixel(inputImage, row, col, channel));
                 unsigned char corrected_value = correct_color(pixel_value);
+                std::cout<<"original value: "<<pixel_value << " corrected value" << corrected_value<<std::endl;
                 imageSetPixel(outputImage, row, col, channel, corrected_value / 255.0);
             }
         }
