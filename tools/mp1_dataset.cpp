@@ -7,7 +7,6 @@
 
 void initVec(float* input, int length){
     for(int index = 0; index < length; index++){
-        std::cout<< "check rand "<<rand() % 255<<std::endl;
         input[index] = rand() % 255;
     }
 }
