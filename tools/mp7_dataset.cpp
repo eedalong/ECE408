@@ -68,7 +68,7 @@ unsigned char clamp(unsigned char val, unsigned char min, unsigned char max){
 
 unsigned char correct_color(unsigned char val){
 
-    std::cout<<"val = "<<val<<" globalCDF[val] = "<<globalCDF[val] <<" globalCDF[0]"<<globalCDF[0]<<std::endl;
+    std::cout<<"val = "<<int(val)<<" globalCDF[val] = "<<globalCDF[val] <<" globalCDF[0]"<<globalCDF[0]<<std::endl;
 
     return (unsigned char)(255*(globalCDF[val] - globalCDF[0])/(1 - globalCDF[0]));
 }
@@ -139,6 +139,11 @@ int main(int argc, char** argv){
     // histogram equalization
     cast_and_convert_and_hist(inputImage);
     calCDF(wbImage_getHeight(inputImage), wbImage_getWidth(inputImage));
+    std::cout<<"check globalCDF"<<std::endl;
+    for(int index = 0; index < HISTOGRAM_LENGTH; index++){
+        std::cout<< globalCDF[index]<<", ";
+    }
+    std::cout<<std::endl;
     adjust(inputImage, outputImage);
 
     // export image
