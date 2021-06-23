@@ -74,7 +74,7 @@ outputImage = np.clip(outputImage, 0, 255)
 outputImage = outputImage.astype(np.ubyte)
 
 expectImage = readPPM("../build/output.ppm")
-
+expectImage = 255 * expectImage
 print(outputImage[0][:5][:5])
 print(expectImage[0][:5][:5])
 
