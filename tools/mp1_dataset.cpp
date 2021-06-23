@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <string>
+#include <time.h>
 
 void initVec(float* input, int length){
     for(int index = 0; index < length; index++){
@@ -22,6 +23,7 @@ int main(int argc, char** argv){
         std::cout<< "this should be used like: "<<"MP1_Dataset -d [directory] -vectorLength [vector length]"<<std::endl;
         exit(-1);
     }
+    srand(time(NULL))
     int argIndex = 0;
     int vectorLength = 0;
     std:;string directory;
@@ -45,12 +47,22 @@ int main(int argc, char** argv){
     initVec(inputVec2, vectorLength);
     vecAdd(inputVec1, inputVec2, outputVec, vectorLength);
 
+    std::cout<<"check inputVec 1"<<std::endl;
+    for(int index = 0; index < 10; index ++){
+        std::cout<<"( "<<inputVec1[index]<<", "<<inputVec2[index]<<", "<<outputVec[index]<<" )"<<std::endl;
+    }
+
 
     // void wbExport(const char * file, wbReal_t * data, int rows);
     
     std::string inputFile1 = directory + string("/input0.raw");
     std::string inputFile2 = directory + string("/input1.raw");
     std::string outputFile = directory + string("/output.raw");
+
+    wbLog(TRACE, "input file 1 path: ", inputFile1);
+    wbLog(TRACE, "input file 2 path: ", inputFile2);
+    wbLog(TRACE, "output file path: ", outputFile);
+
 
     wbExport(inputFile1.c_str(), inputVec1, vectorLength);
     wbExport(inputFile2.c_str(), inputVec2, vectorLength);
