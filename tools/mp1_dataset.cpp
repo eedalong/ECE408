@@ -18,10 +18,10 @@ void vecAdd(float* input1, float* input2, float* output, int length){
     }
 }
 int main(int argc, char** argv){
-    // MP1_Dataset -d [directory] -vectorLength [vector length]
+    // MP1_Dataset -d [directory] -vector_length [vector length]
 
     if(argc != 5){
-        std::cout<< "this should be used like: "<<"MP1_Dataset -d [directory] -vectorLength [vector length]"<<std::endl;
+        std::cout<< "this should be used like: "<<"MP1_Dataset -d [directory] -vector_length [vector length]"<<std::endl;
         exit(-1);
     }
     srand(time(NULL));
@@ -33,12 +33,13 @@ int main(int argc, char** argv){
             argIndex += 1;
             directory = std::string(argv[argIndex]);
         }
-        if(strcmp(argv[argIndex], "-vectorLength") == 0){
+        if(strcmp(argv[argIndex], "-vector_length") == 0){
             argIndex += 1;
             vectorLength = atoi(argv[argIndex]);
         }
         argIndex += 1;
     }
+    wbLog(TRACE, "vec length", vectorLength);
 
     float* inputVec1 = (float*) malloc(sizeof(float) * vectorLength);
     float* inputVec2 = (float*) malloc(sizeof(float) * vectorLength);
