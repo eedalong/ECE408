@@ -42,7 +42,7 @@ def readPPM(file_path):
     for row in range(shape[1]):
         for col in range(shape[2]):
             for channel in range(channel_num):
-                image[channel][row][col] = int(data[(row * shape[3] + col) * 3 + channel]) / 255.0
+                image[channel][row][col] = int(data[(row * shape[2] + col) * 3 + channel]) / 255.0
     #print(f"check image {image[0][0][:5][:5]}")
     return image
 
