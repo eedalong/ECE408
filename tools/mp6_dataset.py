@@ -23,8 +23,9 @@ def readPPM(file_path):
     # N, C, H, W 
     shape = shape.decode()
     shape = shape.split()
+    shape.reverse()
     print(shape[0], shape[1], "")
-    channel_num = 1
+    channel_num = 3
     shape = [1, channel_num] + [int(item) for item in shape]
     print("shape is ", shape)
     total_size = 1
