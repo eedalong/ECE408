@@ -44,7 +44,6 @@ __global__ void cal_cdf(unsigned int * inputHist, unsigned int * cdf) {
 
     // clear last element to zero and save it to block_sum
     if(tid == 0){
-        printf("check total sum: %d \n", shared_data[HISTOGRAM_LENGTH - 1]);
         shared_data[HISTOGRAM_LENGTH - 1] = 0;
         
     }
@@ -89,9 +88,6 @@ __global__ void histogram_equalization(float * deviceInputImage, float* deviceOu
     if(row < height && col < width){
         int val = (unsigned char)(255 * deviceInputImage[(row * width + col) * CHANNEL + channel]);
         deviceOutputImage[(row * width + col) * CHANNEL + channel] = ((unsigned char)(255.0*(cdf[val] - cdf[0])/(cdf[HISTOGRAM_LENGTH - 1] - cdf[0]))) / 255.0;
-        if(row == 0 && col == 0 && channel == 0){
-            printf("(%d, %d, %d): %f\n", row, col, channel, deviceOutputImage[(row * width + col) * CHANNEL + channel]);
-        }
     }
 }
 
@@ -113,10 +109,6 @@ __global__ void hist(unsigned char* inputImage, int length, unsigned int* hist_o
         pixel += stride;
     }
     __syncthreads();
-    if(blockIdx.x == 0 && threadIdx.x == 0){
-        printf("check hist %d \n", int(hist[0]));
-    }
-
     // copy output to global memory
     if(threadIdx.x < 256){
         atomicAdd(&(hist_output[threadIdx.x]), hist[threadIdx.x]);
@@ -142,11 +134,6 @@ __global__ void cast_and_convert(float* inputImage, unsigned char* outputImage, 
         res += 0.21 * (unsigned char)(255 * inputImage[(row * width + col) * CHANNEL]);
         res += 0.71 * (unsigned char)(255 * inputImage[(row * width + col) * CHANNEL + 1]);
         res += 0.07 * (unsigned char)(255 * inputImage[(row * width + col) * CHANNEL + 2]);
-        if(row == 0 && col == 0){
-            printf("(r, g, b): (%f, %f, %f)\n ", inputImage[(row * width + col) * CHANNEL], inputImage[(row * width + col) * CHANNEL + 1], inputImage[(row * width + col) * CHANNEL + 2]);
-            printf("check result %d\n", (unsigned char)res);
-        }
-    
         outputImage[row * width + col] = (unsigned char)res;
         
     }
@@ -215,6 +202,7 @@ int main(int argc, char ** argv) {
     // 1. cast float to unsigned char
     cast_and_convert<<<DimGrid1, DimBlock1>>>(deviceInputImageData, deviceInputImageDataGray, imageHeight, imageWidth);
     // TODO: This is for debugging
+    /*
     cudaDeviceSynchronize();
     unsigned char* hostInputImageDataGray = (unsigned char*) malloc(imageHeight * imageWidth * sizeof(unsigned char*));
     cudaMemcpy(hostInputImageDataGray, deviceInputImageDataGray, imageHeight * imageWidth * sizeof(unsigned char), cudaMemcpyDeviceToHost);
@@ -225,6 +213,7 @@ int main(int argc, char ** argv) {
         }
         std::cout<<endl;
     }
+    */
 
     // 2. calculate hist 
     dim3 DimGrid2(ceil(imageHeight * imageWidth, BLOCK_WIDTH * BLOCK_WIDTH), 1, 1);
@@ -232,6 +221,7 @@ int main(int argc, char ** argv) {
     hist<<<DimGrid2, DimBlock2>>>(deviceInputImageDataGray, imageWidth * imageHeight, deviceHist);
 
     // this is for debugging
+    /*
     cudaDeviceSynchronize();
     unsigned int* hostHist = (unsigned int *) malloc(sizeof(unsigned int) * HISTOGRAM_LENGTH);
     cudaMemcpy(hostHist, deviceHist, sizeof(unsigned int) * HISTOGRAM_LENGTH, cudaMemcpyDeviceToHost);
@@ -239,6 +229,7 @@ int main(int argc, char ** argv) {
     for(int index = 0; index < HISTOGRAM_LENGTH; index++){
         printf("%d, ", hostHist[index]);
     }
+    */
 
     // 3. calculate cdf
     dim3 DimGrid4(1, 1, 1);
@@ -246,6 +237,7 @@ int main(int argc, char ** argv) {
     cal_cdf<<<DimGrid4, DimBlock4>>>(deviceHist, deviceCDF);
 
     //TODO This is for debugging
+    /*
     cudaDeviceSynchronize();
     unsigned int * hostCDF = (unsigned int *) malloc(sizeof(unsigned int) * HISTOGRAM_LENGTH);
     cudaMemcpy(hostCDF, deviceCDF, sizeof(unsigned int) * HISTOGRAM_LENGTH, cudaMemcpyDeviceToHost);
@@ -253,7 +245,7 @@ int main(int argc, char ** argv) {
     for(int index = 0; index < HISTOGRAM_LENGTH; index++){
         printf("%d, ", hostCDF[index]);
     }
-
+    */
     // 4. histogram equalization
 
     dim3 DimGrid3(ceil(imageWidth, BLOCK_WIDTH), ceil(imageHeight, BLOCK_WIDTH), 3);
@@ -280,7 +272,6 @@ int main(int argc, char ** argv) {
     wbImage_delete(inputImage);
     wbImage_delete(outputImage);
     
-
     return 0;
 }
 
