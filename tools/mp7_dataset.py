@@ -47,7 +47,7 @@ def readPPM(file_path):
     return image
 
 
-inputImage = readPPM("input.ppm")
+inputImage = readPPM("../build/input.ppm")
 inputImage = 255.0 * inputImage
 inputImage = inputImage.astype(np.ubyte)
 gray_image = inputImage[0] * 0.21 + inputImage[1] * 0.71 + inputImage[2] * 0.07
