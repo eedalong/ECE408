@@ -7,6 +7,7 @@
 
 void initVec(float* input, int length){
     for(int index = 0; index < length; index++){
+        std::cout<< "check rand "<<rand() % 255<<std::endl;
         input[index] = rand() % 255;
     }
 }
@@ -47,7 +48,7 @@ int main(int argc, char** argv){
     initVec(inputVec2, vectorLength);
     vecAdd(inputVec1, inputVec2, outputVec, vectorLength);
 
-    std::cout<<"check inputVec 1"<<std::endl;
+    std::cout<<"check Vec"<<std::endl;
     for(int index = 0; index < 10; index ++){
         std::cout<<"( "<<inputVec1[index]<<", "<<inputVec2[index]<<", "<<outputVec[index]<<" )"<<std::endl;
     }
