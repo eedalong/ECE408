@@ -65,23 +65,23 @@ int main(int argc, char ** argv) {
         // copy data
         if(currentPtr1 < inputLength){
             length1 = min(SEGMENT_LENGTH, inputLength - currentPtr1);
-            cudaMemcpyAsync(&deviceInput1[0], hostInput1[currentPtr1], sizeof(float) * length1, cudaMemcpyHostToDevice, stream0);
-            cudaMemcpyAsync(&deviceInput2[0], hostInput2[currentPtr1], sizeof(float) * length1, cudaMemcpyHostToDevice, stream0);
+            cudaMemcpyAsync(&deviceInput1[0], &hostInput1[currentPtr1], sizeof(float) * length1, cudaMemcpyHostToDevice, stream0);
+            cudaMemcpyAsync(&deviceInput2[0], &hostInput2[currentPtr1], sizeof(float) * length1, cudaMemcpyHostToDevice, stream0);
         }
         if(currentPtr2 < inputLength){
             length2 = min(SEGMENT_LENGTH, inputLength - currentPtr2);
-            cudaMemcpyAsync(&deviceInput1[SEGMENT_LENGTH], hostInput1[currentPtr2], sizeof(float) * length2, cudaMemcpyHostToDevice, stream1);
-            cudaMemcpyAsync(&deviceInput2[SEGMENT_LENGTH], hostInput2[currentPtr2], sizeof(float) * length2, cudaMemcpyHostToDevice, stream1);
+            cudaMemcpyAsync(&deviceInput1[SEGMENT_LENGTH], &hostInput1[currentPtr2], sizeof(float) * length2, cudaMemcpyHostToDevice, stream1);
+            cudaMemcpyAsync(&deviceInput2[SEGMENT_LENGTH], &hostInput2[currentPtr2], sizeof(float) * length2, cudaMemcpyHostToDevice, stream1);
         }
         if(currentPtr3 < inputLength){
             length3 = min(SEGMENT_LENGTH, inputLength - currentPtr3);
-            cudaMemcpyAsync(&deviceInput1[SEGMENT_LENGTH * 2], hostInput1[currentPtr3], sizeof(float) * length3, cudaMemcpyHostToDevice, stream2);
-            cudaMemcpyAsync(&deviceInput2[SEGMENT_LENGTH * 2], hostInput2[currentPtr3], sizeof(float) * length3, cudaMemcpyHostToDevice, stream2);
+            cudaMemcpyAsync(&deviceInput1[SEGMENT_LENGTH * 2], &hostInput1[currentPtr3], sizeof(float) * length3, cudaMemcpyHostToDevice, stream2);
+            cudaMemcpyAsync(&deviceInput2[SEGMENT_LENGTH * 2], &hostInput2[currentPtr3], sizeof(float) * length3, cudaMemcpyHostToDevice, stream2);
         }
         if(currentPtr4 < inputLength){
             length4 = min(SEGMENT_LENGTH, inputLength - currentPtr4);
-            cudaMemcpyAsync(&deviceInput1[SEGMENT_LENGTH * 3], hostInput1[currentPtr4], sizeof(float) * length4, cudaMemcpyHostToDevice, stream3);
-            cudaMemcpyAsync(&deviceInput2[SEGMENT_LENGTH * 3], hostInput2[currentPtr4], sizeof(float) * length4, cudaMemcpyHostToDevice, stream3);
+            cudaMemcpyAsync(&deviceInput1[SEGMENT_LENGTH * 3], &hostInput1[currentPtr4], sizeof(float) * length4, cudaMemcpyHostToDevice, stream3);
+            cudaMemcpyAsync(&deviceInput2[SEGMENT_LENGTH * 3], &hostInput2[currentPtr4], sizeof(float) * length4, cudaMemcpyHostToDevice, stream3);
         }
         // do calculation
         if(currentPtr1 < inputLength){
@@ -100,16 +100,16 @@ int main(int argc, char ** argv) {
 
         // do memory copy from device to host
         if(currentPtr1 < inputLength){
-            cudaMemcpyAsync(&hostOutput[currentPtr1], deviceOutput[0], sizeof(float) * length1, cudaMemcpyDeviceToHost, stream0);
+            cudaMemcpyAsync(&hostOutput[currentPtr1], &deviceOutput[0], sizeof(float) * length1, cudaMemcpyDeviceToHost, stream0);
         }
         if(currentPtr2 < inputLength){
-            cudaMemcpyAsync(&hostOutput[currentPtr2], deviceOutput[SEGMENT_LENGTH], sizeof(float) * length2, cudaMemcpyDeviceToHost, stream1);
+            cudaMemcpyAsync(&hostOutput[currentPtr2], &deviceOutput[SEGMENT_LENGTH], sizeof(float) * length2, cudaMemcpyDeviceToHost, stream1);
         }
         if(currentPtr3 < inputLength){
-            cudaMemcpyAsync(&hostOutput[currentPtr3], deviceOutput[SEGMENT_LENGTH * 2], sizeof(float) * length3, cudaMemcpyDeviceToHost, stream2);
+            cudaMemcpyAsync(&hostOutput[currentPtr3], &deviceOutput[SEGMENT_LENGTH * 2], sizeof(float) * length3, cudaMemcpyDeviceToHost, stream2);
         }
         if(currentPtr4 < inputLength){
-            cudaMemcpyAsync(&hostOutput[currentPtr4], deviceOutput[SEGMENT_LENGTH * 3], sizeof(float) * length4, cudaMemcpyDeviceToHost, stream3);
+            cudaMemcpyAsync(&hostOutput[currentPtr4], &deviceOutput[SEGMENT_LENGTH * 3], sizeof(float) * length4, cudaMemcpyDeviceToHost, stream3);
         }        
     }
     cudaDeviceSynchronize();
