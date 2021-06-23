@@ -39,7 +39,7 @@ int main(int argc, char** argv){
 
     float* inputVec1 = (float*) malloc(sizeof(float) * vectorLength);
     float* inputVec2 = (float*) malloc(sizeof(float) * vectorLength);
-    float* outputVec = (float*) malloc(sizeof(float), vectorLength);
+    float* outputVec = (float*) malloc(sizeof(float) * vectorLength);
 
     initVec(inputVec1, vectorLength);
     initVec(inputVec2, vectorLength);
