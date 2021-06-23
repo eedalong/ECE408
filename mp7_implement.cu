@@ -272,7 +272,6 @@ int main(int argc, char ** argv) {
     wbImage_delete(inputImage);
     wbImage_delete(outputImage);
     
-
     return 0;
 }
 
