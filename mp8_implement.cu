@@ -46,10 +46,10 @@ int main(int argc, char ** argv) {
     hostOutput = (float *) malloc(inputLength * sizeof(float));
     wbTime_stop(Generic, "Importing data and creating memory on host");
 
-    // 1. Allocate memory on GPU
-    cudaMalloc((void**) &deviceInput1, sizeof(float) * 4 * SEGMENT_LENGTH);
-    cudaMalloc((void**) &deviceInput2, sizeof(float) * 4 * SEGMENT_LENGTH);
-    cudaMalloc((void**) &deviceOutput, sizeof(float) * 4 * SEGMENT_LENGTH);
+    // 1. Allocate memory on GPU, use paged locked memory
+    cudaMallocHost((void**) &deviceInput1, sizeof(float) * 4 * SEGMENT_LENGTH);
+    cudaMallocHost((void**) &deviceInput2, sizeof(float) * 4 * SEGMENT_LENGTH);
+    cudaMallocHost((void**) &deviceOutput, sizeof(float) * 4 * SEGMENT_LENGTH);
 
 
     dim3 DimGrid(ceil(SEGMENT_LENGTH, BLOCK_SIZE), 1, 1);
