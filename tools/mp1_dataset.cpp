@@ -23,7 +23,7 @@ int main(int argc, char** argv){
         std::cout<< "this should be used like: "<<"MP1_Dataset -d [directory] -vectorLength [vector length]"<<std::endl;
         exit(-1);
     }
-    srand(time(NULL))
+    srand(time(NULL));
     int argIndex = 0;
     int vectorLength = 0;
     std:;string directory;
