@@ -48,11 +48,12 @@ def readPPM(file_path):
 
 
 inputImage = readPPM("../build/input.ppm")
+outputImage = np.zeros(inputImage.shape)
 inputImage = 255.0 * inputImage
 inputImage = inputImage.astype(np.ubyte)
 gray_image = inputImage[0] * 0.21 + inputImage[1] * 0.71 + inputImage[2] * 0.07
 gray_image = gray_image.astype(np.ubyte)
-print(gray_image)
+total_pixel_count = gray_image.shape[0] * gray_image.shape[1]
 
 globalHist = [0] * 256
 globalCDF = [0] * 256
@@ -60,6 +61,20 @@ for row in range(gray_image.shape[0]):
     for col in range(gray_image.shape[1]):
         globalHist[gray_image[row][col]] += 1
 
-print(globalHist)
+globalCDF[0] = globalHist[0] / total_pixel_count
+for index in range(1, 256):
+    globalCDF[index]  = globalHist[index] / total_pixel_count + globalCDF[index - 1]
+
+for channel in range(inputImage.shape[0]):
+    for row in range(inputImage.shape[1]):
+        for col in range(inputImage.shape[2]):
+            outputImage[channel][row][col] = int(255*(globalCDF[inputImage[channel][row][col]] - globalCDF[0])/(1 - globalCDF[0]))
+            
+outputImage = np.clip(outputImage, 0, 255)
+
+expectImage = readPPM("../build/output.ppm")
+
+print(outputImage[0][:5][:5])
+print(expectImage[0][:5][:5])
 
 

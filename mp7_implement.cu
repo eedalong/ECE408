@@ -90,7 +90,7 @@ __global__ void histogram_equalization(float * deviceInputImage, float* deviceOu
         int val = (unsigned char)(255 * deviceInputImage[(row * width + col) * CHANNEL + channel]);
         deviceOutputImage[(row * width + col) * CHANNEL + channel] = ((unsigned char)(255.0*(cdf[val] - cdf[0])/(cdf[HISTOGRAM_LENGTH - 1] - cdf[0]))) / 255.0;
         if(row == 0 && col == 0 && channel == 0){
-            printf("(%d, %d, %d): %f", row, col, channel, deviceOutputImage[(row * width + col) * CHANNEL + channel]);
+            printf("(%d, %d, %d): %f\n", row, col, channel, deviceOutputImage[(row * width + col) * CHANNEL + channel]);
         }
     }
 }
