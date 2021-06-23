@@ -46,9 +46,9 @@ void cast_and_convert_and_hist(wbImage_t inputImage){
     for(int row = 0; row < wbImage_getHeight(inputImage); row ++){
         for(int col = 0; col < wbImage_getWidth(inputImage); col ++){
             
-            unsigned char r = imageGetPixel(inputImage, row, col, 0);
-            unsigned char g = imageGetPixel(inputImage, row, col, 1);
-            unsigned char b = imageGetPixel(inputImage, row, col, 2);
+            unsigned char r = (unsigned char) 255 * imageGetPixel(inputImage, row, col, 0);
+            unsigned char g = (unsigned char) 255 * imageGetPixel(inputImage, row, col, 1);
+            unsigned char b = (unsigned char) 255 * imageGetPixel(inputImage, row, col, 2);
             unsigned char grayValue = (unsigned char) (0.21*r + 0.71*g + 0.07*b);
             //imageSetPixel(grayImage, row, col, 0, (float)grayValue);
             globalHist[grayValue] += 1;
