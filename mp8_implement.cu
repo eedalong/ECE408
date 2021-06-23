@@ -1,4 +1,5 @@
 #include	<wb.h>
+#include    <iostream>
 
 #define SEGMENT_LENGTH 256
 #define BLOCK_SIZE 256
@@ -113,6 +114,11 @@ int main(int argc, char ** argv) {
         }        
     }
     cudaDeviceSynchronize();
+    std::cout<<"check hostoutput"<<std::endl;
+    for(int index = 0; index < myMin(10, inputLength), index++){
+        std::cout<<hostOutput[index]<<", ";
+    }
+    std::cout<<std::endl;
 
     wbSolution(args, hostOutput, inputLength);
 
