@@ -115,7 +115,7 @@ int main(int argc, char ** argv) {
     }
     cudaDeviceSynchronize();
     std::cout<<"check hostoutput"<<std::endl;
-    for(int index = 0; index < myMin(10, inputLength), index++){
+    for(int index = 0; index < myMin(10, inputLength); index++){
         std::cout<<hostOutput[index]<<", ";
     }
     std::cout<<std::endl;
