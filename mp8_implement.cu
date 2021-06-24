@@ -27,10 +27,13 @@ int main(int argc, char ** argv) {
     int inputLength;
     float * hostInput1;
     float * hostInput2;
-    float * hostOutput;
     float * deviceInput1;
     float * deviceInput2;
     float * deviceOutput;
+
+    float* pinnedHostInput1;
+    float* pinnedHostInput2;
+    float* pinnedHostOutput;
 
     cudaStream_t stream0, stream1, stream2, stream3;
     cudaStreamCreate( &stream0);
@@ -43,13 +46,23 @@ int main(int argc, char ** argv) {
     wbTime_start(Generic, "Importing data and creating memory on host");
     hostInput1 = (float *) wbImport(wbArg_getInputFile(args, 0), &inputLength);
     hostInput2 = (float *) wbImport(wbArg_getInputFile(args, 1), &inputLength);
-    hostOutput = (float *) malloc(inputLength * sizeof(float));
     wbTime_stop(Generic, "Importing data and creating memory on host");
 
-    // 1. Allocate memory on GPU, use paged locked memory
-    cudaMallocHost((void**) &deviceInput1, sizeof(float) * 4 * SEGMENT_LENGTH);
-    cudaMallocHost((void**) &deviceInput2, sizeof(float) * 4 * SEGMENT_LENGTH);
-    cudaMallocHost((void**) &deviceOutput, sizeof(float) * 4 * SEGMENT_LENGTH);
+    // allocate page-locked memory on CPU 
+    cudaMallocHost((void **)&pinnedHostInput1, sizeof(float) * inputLength);
+    cudaMallocHost((void **)&pinnedHostInput2, sizeof(float) * inputLength);
+    cudaMallocHost((void **)&pinnedHostOutput, sizeof(float) * inputLength);
+
+    // memcpy input
+    memcpy(pinnedHostInput1, hostInput1, sizeof(float) * inputLength);
+    memcpy(pinnedHostInput2, hostInput2, sizeof(float) * inputLength);
+
+
+
+    // 1. Allocate memory on GPU
+    cudaMalloc((void**) &deviceInput1, sizeof(float) * 4 * SEGMENT_LENGTH);
+    cudaMalloc((void**) &deviceInput2, sizeof(float) * 4 * SEGMENT_LENGTH);
+    cudaMalloc((void**) &deviceOutput, sizeof(float) * 4 * SEGMENT_LENGTH);
 
 
     dim3 DimGrid(ceil(SEGMENT_LENGTH, BLOCK_SIZE), 1, 1);
@@ -66,23 +79,23 @@ int main(int argc, char ** argv) {
         // copy data
         if(currentPtr1 < inputLength){
             length1 = myMin(SEGMENT_LENGTH, inputLength - currentPtr1);
-            cudaMemcpyAsync(&deviceInput1[0], &hostInput1[currentPtr1], sizeof(float) * length1, cudaMemcpyHostToDevice, stream0);
-            cudaMemcpyAsync(&deviceInput2[0], &hostInput2[currentPtr1], sizeof(float) * length1, cudaMemcpyHostToDevice, stream0);
+            cudaMemcpyAsync(&deviceInput1[0], &pinnedHostInput1[currentPtr1], sizeof(float) * length1, cudaMemcpyHostToDevice, stream0);
+            cudaMemcpyAsync(&deviceInput2[0], &pinnedHostInput2[currentPtr1], sizeof(float) * length1, cudaMemcpyHostToDevice, stream0);
         }
         if(currentPtr2 < inputLength){
             length2 = myMin(SEGMENT_LENGTH, inputLength - currentPtr2);
-            cudaMemcpyAsync(&deviceInput1[SEGMENT_LENGTH], &hostInput1[currentPtr2], sizeof(float) * length2, cudaMemcpyHostToDevice, stream1);
-            cudaMemcpyAsync(&deviceInput2[SEGMENT_LENGTH], &hostInput2[currentPtr2], sizeof(float) * length2, cudaMemcpyHostToDevice, stream1);
+            cudaMemcpyAsync(&deviceInput1[SEGMENT_LENGTH], &pinnedHostInput1[currentPtr2], sizeof(float) * length2, cudaMemcpyHostToDevice, stream1);
+            cudaMemcpyAsync(&deviceInput2[SEGMENT_LENGTH], &pinnedHostInput2[currentPtr2], sizeof(float) * length2, cudaMemcpyHostToDevice, stream1);
         }
         if(currentPtr3 < inputLength){
             length3 = myMin(SEGMENT_LENGTH, inputLength - currentPtr3);
-            cudaMemcpyAsync(&deviceInput1[SEGMENT_LENGTH * 2], &hostInput1[currentPtr3], sizeof(float) * length3, cudaMemcpyHostToDevice, stream2);
-            cudaMemcpyAsync(&deviceInput2[SEGMENT_LENGTH * 2], &hostInput2[currentPtr3], sizeof(float) * length3, cudaMemcpyHostToDevice, stream2);
+            cudaMemcpyAsync(&deviceInput1[SEGMENT_LENGTH * 2], &pinnedHostInput1[currentPtr3], sizeof(float) * length3, cudaMemcpyHostToDevice, stream2);
+            cudaMemcpyAsync(&deviceInput2[SEGMENT_LENGTH * 2], &pinnedHostInput2[currentPtr3], sizeof(float) * length3, cudaMemcpyHostToDevice, stream2);
         }
         if(currentPtr4 < inputLength){
             length4 = myMin(SEGMENT_LENGTH, inputLength - currentPtr4);
-            cudaMemcpyAsync(&deviceInput1[SEGMENT_LENGTH * 3], &hostInput1[currentPtr4], sizeof(float) * length4, cudaMemcpyHostToDevice, stream3);
-            cudaMemcpyAsync(&deviceInput2[SEGMENT_LENGTH * 3], &hostInput2[currentPtr4], sizeof(float) * length4, cudaMemcpyHostToDevice, stream3);
+            cudaMemcpyAsync(&deviceInput1[SEGMENT_LENGTH * 3], &pinnedHostInput1[currentPtr4], sizeof(float) * length4, cudaMemcpyHostToDevice, stream3);
+            cudaMemcpyAsync(&deviceInput2[SEGMENT_LENGTH * 3], &pinnedHostInput2[currentPtr4], sizeof(float) * length4, cudaMemcpyHostToDevice, stream3);
         }
         // do calculation
         if(currentPtr1 < inputLength){
@@ -101,35 +114,41 @@ int main(int argc, char ** argv) {
 
         // do memory copy from device to host
         if(currentPtr1 < inputLength){
-            cudaMemcpyAsync(&hostOutput[currentPtr1], &deviceOutput[0], sizeof(float) * length1, cudaMemcpyDeviceToHost, stream0);
+            cudaMemcpyAsync(&pinnedHostOutput[currentPtr1], &deviceOutput[0], sizeof(float) * length1, cudaMemcpyDeviceToHost, stream0);
         }
         if(currentPtr2 < inputLength){
-            cudaMemcpyAsync(&hostOutput[currentPtr2], &deviceOutput[SEGMENT_LENGTH], sizeof(float) * length2, cudaMemcpyDeviceToHost, stream1);
+            cudaMemcpyAsync(&pinnedHostOutput[currentPtr2], &deviceOutput[SEGMENT_LENGTH], sizeof(float) * length2, cudaMemcpyDeviceToHost, stream1);
         }
         if(currentPtr3 < inputLength){
-            cudaMemcpyAsync(&hostOutput[currentPtr3], &deviceOutput[SEGMENT_LENGTH * 2], sizeof(float) * length3, cudaMemcpyDeviceToHost, stream2);
+            cudaMemcpyAsync(&pinnedHostOutput[currentPtr3], &deviceOutput[SEGMENT_LENGTH * 2], sizeof(float) * length3, cudaMemcpyDeviceToHost, stream2);
         }
         if(currentPtr4 < inputLength){
-            cudaMemcpyAsync(&hostOutput[currentPtr4], &deviceOutput[SEGMENT_LENGTH * 3], sizeof(float) * length4, cudaMemcpyDeviceToHost, stream3);
+            cudaMemcpyAsync(&pinnedHostOutput[currentPtr4], &deviceOutput[SEGMENT_LENGTH * 3], sizeof(float) * length4, cudaMemcpyDeviceToHost, stream3);
         }        
     }
     cudaDeviceSynchronize();
     std::cout<<"check hostoutput"<<std::endl;
     for(int index = 0; index < myMin(10, inputLength); index++){
-        std::cout<<hostOutput[index]<<", ";
+        std::cout<<pinnedHostOutput[index]<<", ";
     }
     std::cout<<std::endl;
 
-    wbSolution(args, hostOutput, inputLength);
+    wbSolution(args, pinnedHostOutput, inputLength);
 
     // free GPU memory
     cudaFree(deviceInput1);
     cudaFree(deviceInput2);
     cudaFree(deviceOutput);
 
+    // free page-locked memory
+    cudaFreeHost(pinnedHostInput1);
+    cudaFreeHost(pinnedHostInput2);
+    cudaFreeHost(pinnedHostOutput);
+
+    // free pageable memory
     free(hostInput1);
     free(hostInput2);
-    free(hostOutput);
+    
 
     return 0;
 }
